@@ -15,16 +15,16 @@ router.route("/signIn/failed").get(AuthController.signUpFailed);
 router.route("/signIn/success").get(AuthController.signInSuccess);
 router.route("/logout").post(verifyToken, AuthController.logout);
 router
-  .route("/auth/google")
+  .route("/google")
   .get(passport.authenticate("google", { scope: ["email", "profile"] }));
 
-router.route("/auth/google/callback").get(AuthController.googleCallBack);
+router.route("/google/callback").get(AuthController.googleCallBack);
 
 router
-  .route("/auth/github")
+  .route("/github")
   .get(passport.authenticate("github", { scope: ["user:email", "profile"] }));
 
-router.route("/auth/github/callback").get(AuthController.githubCallBack);
+router.route("/github/callback").get(AuthController.githubCallBack);
 
 router.route("/refresh").post(AuthController.refresh);
 module.exports = router;

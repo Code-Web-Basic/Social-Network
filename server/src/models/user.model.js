@@ -7,7 +7,7 @@ const userCollectionName = "Users";
 
 const userCollectionSchema = Joi.object({
   Name: Joi.string().max(50).default(null),
-  UserName: Joi.string().default(null),
+  userName: Joi.string().default(null),
   password: Joi.string().min(5).max(30).trim().default(null),
   createdAt: Joi.date().timestamp().default(Date.now()),
   updatedAt: Joi.date().timestamp().default(null),
@@ -16,6 +16,7 @@ const userCollectionSchema = Joi.object({
   lastLogin: Joi.date().timestamp().default(null),
   intro: Joi.string().default(null),
   profile: Joi.string().default(null),
+  avatar: Joi.string().default(null),
   authGoogleId: Joi.string().default(null),
   authGithubId: Joi.string().default(null),
   authType: Joi.string().valid("local", "google", "github").default("local"),
@@ -97,10 +98,32 @@ const getAllUser = async () => {
   return result;
 };
 
+const findUser = async (data) => {
+  try {
+    const result = await getDB()
+      .collection(userCollectionName)
+      .find({
+        $or: [
+          {
+            Name: { $regex: data },
+          },
+          {
+            userName: { $regex: data },
+          },
+        ],
+      })
+      .toArray();
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   signUp,
   findOneById,
   validateSchema,
   login,
   getAllUser,
+  findUser,
 };

@@ -1,6 +1,6 @@
 const bcryptjs = require("bcryptjs");
 const JWT = require("jsonwebtoken");
-
+const UserModel = require("../models/user.model");
 const encodedAccessToken = (userId) => {
   return JWT.sign(
     {
