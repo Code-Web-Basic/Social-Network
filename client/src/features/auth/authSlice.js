@@ -16,67 +16,67 @@ export const authSlice = createSlice({
         typeLogin: '',
     },
     reducers: {},
-    extraReducers: {
-        [signInPassWord.pending]: (state) => {
+    extraReducers: (builder) => {
+        builder.addCase(signInPassWord.pending, (state, action) => {
             state.loading = true;
-        },
-        [signInPassWord.rejected]: (state, action) => {
+        });
+        builder.addCase(signInPassWord.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
-        },
-        [signInPassWord.fulfilled]: (state, action) => {
+        });
+        builder.addCase(signInPassWord.fulfilled, (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'password';
-        },
-        [signUpPassWord.pending]: (state) => {
+        });
+        builder.addCase(signUpPassWord.pending, (state, action) => {
             state.loading = true;
-        },
-        [signUpPassWord.rejected]: (state, action) => {
+        });
+        builder.addCase(signUpPassWord.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
-        },
-        [signUpPassWord.fulfilled]: (state, action) => {
+        });
+        builder.addCase(signUpPassWord.fulfilled, (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'password';
-        },
-        [signInGoogle.pending]: (state) => {
+        });
+        builder.addCase(signInGoogle.pending, (state, action) => {
             state.loading = true;
-        },
-        [signInGoogle.rejected]: (state, action) => {
+        });
+        builder.addCase(signInGoogle.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
-        },
-        [signInGoogle.fulfilled]: (state, action) => {
+        });
+        builder.addCase(signInGoogle.fulfilled, (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'google';
-        },
-        [signInFacebook.pending]: (state) => {
+        });
+        builder.addCase(signInFacebook.pending, (state, action) => {
             state.loading = true;
-        },
-        [signInFacebook.rejected]: (state, action) => {
+        });
+        builder.addCase(signInFacebook.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
-        },
-        [signInFacebook.fulfilled]: (state, action) => {
+        });
+        builder.addCase(signInFacebook.fulfilled, (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'facebook';
-        },
-        [logout.pending]: (state) => {
+        });
+        builder.addCase(logout.pending, (state, action) => {
             state.loading = true;
-        },
-        [logout.rejected]: (state, action) => {
+        });
+        builder.addCase(logout.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
-        },
-        [logout.fulfilled]: (state) => {
+        });
+        builder.addCase(logout.fulfilled, (state, action) => {
             state.loading = false;
-            state.currentUser = null;
+            state.currentUser = action.payload;
             state.typeLogin = '';
-        },
+        });
     },
 });
 
