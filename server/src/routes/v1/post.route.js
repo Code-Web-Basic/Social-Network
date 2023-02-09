@@ -2,19 +2,12 @@ const postController = require("../../controllers/post.controller");
 const express = require("express");
 const verifyToken = require("../../middlewares/verifyToken");
 const router = express.Router();
-const multer = require("multer");
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
+const videoFileUploader = require("../../middlewares/videocloudinary");
+const imageFileUploader = require("../../middlewares/imagecloudinary");
 router
-  .route("/uploadFile")
-  .post(upload.array("files"), postController.uploadFile);
-
+  .route("/uploadImage")
+  .post(imageFileUploader.array("files"), postController.uploadFile);
+router
+  .route("/uploadVideo")
+  .post(videoFileUploader.array("files"), postController.uploadFile);
 module.exports = router;

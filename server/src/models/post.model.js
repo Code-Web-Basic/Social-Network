@@ -7,14 +7,16 @@ const postCollectionName = "Posts";
 const postCollectionSchema = Joi.object({
   caption: Joi.string().required(),
   ownerId: Joi.string().required(),
-  source: Joi.array().items(Joi.string()).default([]),
+  source: Joi.array()
+    .items({ type: Joi.string(), data: Joi.string() })
+    .default([]),
   isVideo: Joi.boolean().required(),
   reaction: Joi.array().items(Joi.string()).default([]),
   createdAt: Joi.date().default(Date.now()),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
 const validateSchema = async (data) => {
-  return await postCollectionName.validateAsync(data, { abortEarly: false });
+  return await postCollectionSchema.validateAsync(data, { abortEarly: false });
 };
 
 const findOneById = async (id) => {
@@ -30,7 +32,11 @@ const findOneById = async (id) => {
 
 const create = async (data) => {
   try {
-    const result = await getDB().collection(postCollectionName).insertOne(data);
+    const validatedValue = await validateSchema(data);
+
+    const result = await getDB()
+      .collection(postCollectionName)
+      .insertOne(validatedValue);
     return await findOneById(result.insertedId.toString());
   } catch (error) {
     throw new Error(error);
@@ -58,4 +64,10 @@ const reaction = async (id, userId) => {
   } catch (error) {
     throw new Error(error);
   }
+};
+
+module.exports = {
+  create,
+  update,
+  reaction,
 };

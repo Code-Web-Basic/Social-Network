@@ -1,6 +1,5 @@
 const postService = require("../services/post.service");
 const { HttpStatusCode } = require("../utilities/constants");
-
 const uploadFile = async (req, res) => {
   try {
     const result = await postService.uploadFile(req);
