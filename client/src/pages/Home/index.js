@@ -1,6 +1,7 @@
 import { Grid, Paper, Stack, styled } from '@mui/material';
 import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
 import Posts from '~/layout/components/Home/Posts/Post';
+import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/SuggestionsUser';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -20,7 +21,11 @@ function Home() {
                         <Posts />
                     </Stack>
                 </Grid>
-                <Grid item xs={3.5}></Grid>
+                <Grid item xs={3.5}>
+                    <Stack direction={'column'}>
+                        <SuggestionsUser />
+                    </Stack>
+                </Grid>
                 <Grid item xs={2}></Grid>
             </Grid>
         </>
