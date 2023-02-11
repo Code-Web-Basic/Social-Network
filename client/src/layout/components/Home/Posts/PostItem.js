@@ -9,6 +9,7 @@ import NewCommentPost from './CommentPost/NewCommentPost';
 import MenuUserFollowing from './MenuUserFollowing/MenuUserFollowing';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import CommentPost from './CommentPost/CommentPost';
+import SharePost from './SharePost/SharePost';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -129,10 +130,11 @@ function PostItem() {
                                     <ChatCircle size={24} />
                                 </ItemReaction>
                             </CommentPost>
-
-                            <ItemReaction>
-                                <PaperPlaneTilt size={24} />
-                            </ItemReaction>
+                            <SharePost>
+                                <ItemReaction>
+                                    <PaperPlaneTilt size={24} />
+                                </ItemReaction>
+                            </SharePost>
                         </Stack>
                         <Stack direction="row">
                             <ItemReaction>
