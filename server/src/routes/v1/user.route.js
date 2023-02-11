@@ -3,6 +3,5 @@ const express = require("express");
 const verifyToken = require("../../middlewares/verifyToken");
 const router = express.Router();
 
-router.route("/").get(UserController.findUser);
-
+router.route("/search/:userName").get(UserController.findUser);
 module.exports = router;

@@ -12,20 +12,24 @@ const secret = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const result = await UserService.login(req.body.email, req.body.password);
-    const accessToken = UserService.encodedAccessToken(result._id);
-    const refreshToken = UserService.encodedRefreshToken(result._id);
-    const { password, ...other } = result;
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      path: "/",
-      sameSite: "strict",
-    });
-    refreshTokenList.push(refreshToken);
-    res.setHeader("token", "Bearer " + accessToken);
-    res
-      .status(HttpStatusCode.OK)
-      .json({ user: other, accessToken: accessToken });
+    if (result) {
+      const accessToken = UserService.encodedAccessToken(result._id);
+      const refreshToken = UserService.encodedRefreshToken(result._id);
+      const { password, ...other } = result;
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+      refreshTokenList.push(refreshToken);
+      res.setHeader("token", "Bearer " + accessToken);
+      res
+        .status(HttpStatusCode.OK)
+        .json({ user: other, accessToken: accessToken });
+    } else {
+      res.status(HttpStatusCode.OK).json({ status: "email chưa được đăng ký" });
+    }
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
       error: new Error(error).message,

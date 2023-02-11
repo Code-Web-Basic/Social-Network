@@ -1,4 +1,5 @@
 const UserService = require("../services/user.service");
+const { HttpStatusCode } = require("../utilities/constants");
 
 const findUser = async (req, res) => {
   try {

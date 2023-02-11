@@ -6,8 +6,18 @@ const videoFileUploader = require("../../middlewares/videocloudinary");
 const imageFileUploader = require("../../middlewares/imagecloudinary");
 router
   .route("/uploadImage")
-  .post(imageFileUploader.array("files"), postController.uploadFile);
+  .post(
+    verifyToken,
+    imageFileUploader.array("files"),
+    postController.createPost
+  );
 router
   .route("/uploadVideo")
-  .post(videoFileUploader.array("files"), postController.uploadFile);
+  .post(
+    verifyToken,
+    videoFileUploader.array("files"),
+    postController.createPost
+  );
+router.route("/updatePost").put(verifyToken, postController.updatePost);
+router.route("/deletePost/:id").put(verifyToken, postController.deletePost);
 module.exports = router;

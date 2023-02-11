@@ -1,8 +1,8 @@
 const postService = require("../services/post.service");
 const { HttpStatusCode } = require("../utilities/constants");
-const uploadFile = async (req, res) => {
+const createPost = async (req, res) => {
   try {
-    const result = await postService.uploadFile(req);
+    const result = await postService.createPost(req);
     res.status(HttpStatusCode.OK).json({ data: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -11,6 +11,28 @@ const uploadFile = async (req, res) => {
   }
 };
 
+const deletePost = async (req, res) => {
+  try {
+    const result = await postService.deletePost(req.params, req.user.sub);
+    res.status(HttpStatusCode.OK).json({ data: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
+const updatePost = async (req, res) => {
+  try {
+    const result = await postService.updatePost(req.params, req.body);
+    res.status(HttpStatusCode.OK).json({ data: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
-  uploadFile,
+  createPost,
+  deletePost,
+  updatePost,
 };

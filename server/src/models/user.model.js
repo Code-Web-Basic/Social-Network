@@ -112,6 +112,7 @@ const findUser = async (data) => {
           },
         ],
       })
+      .limit(20)
       .toArray();
     return result;
   } catch (error) {

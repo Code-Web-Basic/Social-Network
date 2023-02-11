@@ -8,11 +8,11 @@ const postCollectionSchema = Joi.object({
   caption: Joi.string().required(),
   ownerId: Joi.string().required(),
   source: Joi.array()
-    .items({ type: Joi.string(), data: Joi.string() })
+    .items({ type: Joi.string(), data: Joi.string(), filename: Joi.string() })
     .default([]),
   isVideo: Joi.boolean().required(),
   reaction: Joi.array().items(Joi.string()).default([]),
-  createdAt: Joi.date().default(Date.now()),
+  createdAt: Joi.date().timestamp().default(Date.now()),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
 const validateSchema = async (data) => {
@@ -38,6 +38,17 @@ const create = async (data) => {
       .collection(postCollectionName)
       .insertOne(validatedValue);
     return await findOneById(result.insertedId.toString());
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const deletePost = async (id) => {
+  try {
+    await getDB()
+      .collection(postCollectionName)
+      .deleteOne({ _id: ObjectId(id) });
+    return "deleted successfully";
   } catch (error) {
     throw new Error(error);
   }
@@ -70,4 +81,6 @@ module.exports = {
   create,
   update,
   reaction,
+  deletePost,
+  findOneById,
 };
