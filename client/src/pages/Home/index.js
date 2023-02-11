@@ -1,4 +1,5 @@
 import { Grid, Paper, Stack, styled } from '@mui/material';
+import AccountItem from '~/layout/components/Home/AccountItem/AccountItem';
 import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
 import Posts from '~/layout/components/Home/Posts/Post';
 import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/SuggestionsUser';
@@ -22,7 +23,8 @@ function Home() {
                     </Stack>
                 </Grid>
                 <Grid item xs={3.5}>
-                    <Stack direction={'column'}>
+                    <Stack direction={'column'} paddingTop="40px">
+                        <AccountItem />
                         <SuggestionsUser />
                     </Stack>
                 </Grid>
