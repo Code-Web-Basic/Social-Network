@@ -24,7 +24,7 @@ function SuggestionsUser({ data, typeLayout = 'column' }) {
         const data = [1, 2, 3, 4, 5];
         return data.map((item) => {
             return (
-                <SwiperSlide>
+                <SwiperSlide key={item}>
                     <SuggestionsUserItem typeLayout="column" data={item} />
                 </SwiperSlide>
             );

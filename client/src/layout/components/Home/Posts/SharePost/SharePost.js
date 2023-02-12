@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Checkbox, Modal, Radio, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Button, Checkbox, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { X } from 'phosphor-react';
 import { useState } from 'react';
 

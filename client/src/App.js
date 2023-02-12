@@ -1,14 +1,22 @@
 import { Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { publicRoutes } from '~/router/Router';
+import { privateRoutes, publicRoutes } from '~/router/Router';
 import DefaultLayout from '~/layout/DefaultLayout';
+import { useSelector } from 'react-redux';
+import { router as routerConfig } from '~/config/config';
+
 function App() {
+    const currentUser = true;
+    let routerCheck = publicRoutes;
+
+    if (currentUser) {
+        routerCheck = privateRoutes;
+    }
     return (
         <Router>
             <div className="App">
                 <Routes>
-                    {/* <Route path="/" element={<Home />} /> */}
-                    {publicRoutes.map((route, index) => {
+                    {routerCheck.map((route, index) => {
                         const Page = route.component;
                         let Layout = DefaultLayout;
                         if (route.layout) {
