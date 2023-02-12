@@ -107,4 +107,6 @@ const getFollowing = async (userId, paging) => {
 module.exports = {
   follow,
   unFollow,
+  getFollowers,
+  getFollowing,
 };
