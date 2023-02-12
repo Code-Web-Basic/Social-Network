@@ -23,6 +23,9 @@ function Sidebar() {
         if (activeCurrent === 1) {
             return <Search />;
         }
+        if (activeCurrent === 5) {
+            return <Search />;
+        }
     };
     return (
         <Box sx={{ position: 'sticky', top: '0px' }}>

@@ -63,7 +63,7 @@ const MENU_ITEMS = [
 function PostItem() {
     const theme = useTheme();
     return (
-        <Box sx={{ borderBottom: '1px solid', borderColor: theme.palette.grey[300] }}>
+        <Box>
             <Stack direction="column" spacing={1.5}>
                 {/* information post */}
                 <Stack direction="row" justifyContent="space-between">

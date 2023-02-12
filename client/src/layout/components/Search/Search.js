@@ -3,7 +3,6 @@ import { XCircle } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import useDebounce from '~/hook/useDebounce';
 import UserSearchItem from './UserSearchItem';
-import ItemAccount from './UserSearchItem';
 
 function Search() {
     const theme = useTheme();
