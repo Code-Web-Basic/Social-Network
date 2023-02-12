@@ -54,10 +54,18 @@ passport.use(
         if (existUser) {
           return done(null, existUser);
         }
-        //if new account
+        let l = 0;
+        for (let i = 0; i < profile.email.length; i++) {
+          if (profile.email[i] === "@") {
+            l = i;
+            break;
+          }
+        }
+        const userName = profile.email.slice(0, l);
+        // if new account
         const newUser = await UserModel.signUp({
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
+          Name: profile.displayName,
+          userName: userName,
           authType: "google",
           email: profile.emails[0].value,
           authGoogleId: profile.id,
@@ -74,7 +82,7 @@ passport.use(
     {
       clientID: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
-      callbackURL: `http://${process.env.APP_HOST}:3240/v1/users/auth/github/callback`,
+      callbackURL: `http://${process.env.APP_HOST}:3240/v1/auth/github/callback`,
       passReqToCallback: true,
       proxy: true,
       scope: ["user:email"], //This is all it takes to get emails
@@ -88,13 +96,23 @@ passport.use(
         if (existUser) {
           return done(null, existUser);
         }
-        //if new account
+        let l = 0;
+        for (let i = 0; i < profile.email.length; i++) {
+          if (profile.email[i] === "@") {
+            l = i;
+            break;
+          }
+        }
+        const userName = profile.email.slice(0, l);
+        // if new account
         const newUser = await UserModel.signUp({
-          firstName: profile.username,
-          authType: "github",
+          Name: profile.displayName,
+          userName: userName,
+          authType: "google",
           email: profile.emails[0].value,
           authGithubId: profile.id,
         });
+
         return done(null, newUser);
       } catch (error) {
         done(error, false);

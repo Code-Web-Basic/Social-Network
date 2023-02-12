@@ -24,6 +24,7 @@ const login = async (req, res, next) => {
       });
       refreshTokenList.push(refreshToken);
       res.setHeader("token", "Bearer " + accessToken);
+      userInfo = other;
       res
         .status(HttpStatusCode.OK)
         .json({ user: other, accessToken: accessToken });
@@ -117,7 +118,6 @@ const logout = (req, res, next) => {
   );
   res.status(200).json("Logged out successfully");
 };
-
 const refresh = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   console.log("refreshToken from cookie: ", refreshToken);

@@ -12,6 +12,7 @@ const postCollectionSchema = Joi.object({
     .default([]),
   isVideo: Joi.boolean().required(),
   reaction: Joi.array().items(Joi.string()).default([]),
+  commentCount: Joi.number().default(0),
   createdAt: Joi.date().timestamp().default(Date.now()),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
@@ -56,10 +57,10 @@ const deletePost = async (id) => {
 
 const update = async (id, data) => {
   try {
-    data.updatedAt = Date.now();
+    const updateData = { ...data, updatedAt: Date.now() };
     await getDB()
       .collection(postCollectionName)
-      .findOneAndUpdate({ _id: id }, { $set: data });
+      .findOneAndUpdate({ _id: ObjectId(id) }, { $set: updateData });
     return await findOneById(id);
   } catch (error) {
     throw new Error(error);

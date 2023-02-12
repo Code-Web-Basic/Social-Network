@@ -11,11 +11,14 @@ const commentCollectionSchema = Joi.object({
   isReply: Joi.boolean().required(),
   replyId: Joi.string().default(null),
   reaction: Joi.array().items(Joi.string()).default([]),
-  createdAt: Joi.date().default(Date.now()),
+  replyCount: Joi.number().default(0),
+  createdAt: Joi.date().timestamp().default(Date.now()),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
 const validateSchema = async (data) => {
-  return await commentCollectionName.validateAsync(data, { abortEarly: false });
+  return await commentCollectionSchema.validateAsync(data, {
+    abortEarly: false,
+  });
 };
 const findOneById = async (id) => {
   try {
@@ -31,7 +34,15 @@ const findOneById = async (id) => {
 const create = async (data) => {
   try {
     const validatedValue = await validateSchema(data);
-
+    if (data.isReply === true) {
+      await getDB()
+        .collection(commentCollectionName)
+        .findOneAndUpdate({ _id: data.replyId }, { $inc: { replyCount: 1 } });
+    } else {
+      await getDB()
+        .collection("Posts")
+        .findOneAndUpdate({ _id: data.postId }, { $inc: { commentCount: 1 } });
+    }
     const result = await getDB()
       .collection(commentCollectionName)
       .insertOne(validatedValue);
@@ -70,7 +81,7 @@ const showCommentOfPost = async (postId, paging) => {
         },
       ])
       .sort({ createdAt: -1 })
-      .skip(15 * paging)
+      .skip(15 * (paging - 1))
       .limit(15)
       .toArray();
     return result;
@@ -95,7 +106,7 @@ const showCommentReply = async (replyId, paging) => {
         },
       ])
       .sort({ createdAt: -1 })
-      .skip(15 * paging)
+      .skip(15 * (paging - 1))
       .limit(15)
       .toArray();
     return result;
@@ -113,6 +124,17 @@ const deleteComment = async (id) => {
     throw new Error(error);
   }
 };
+
+const reaction = async (id, userId) => {
+  try {
+    await getDB()
+      .collection(commentCollectionName)
+      .findOneAndUpdate({ _id: id }, { $push: { reaction: userId } });
+    return await findOneById(id);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   create,
   update,
@@ -120,4 +142,5 @@ module.exports = {
   findOneById,
   showCommentReply,
   deleteComment,
+  reaction,
 };

@@ -53,6 +53,15 @@ const showCommentReply = async (id, paging) => {
     throw new Error(error);
   }
 };
+const reaction = async (id, req) => {
+  try {
+    const userId = req.user.sub;
+    const result = await commentModel.reaction(id, userId);
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 module.exports = {
   create,
@@ -60,4 +69,5 @@ module.exports = {
   showCommentOfPost,
   showCommentReply,
   deleteComment,
+  reaction,
 };

@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const AuthRoutes = require("./auth.route");
-const friendShipRoutes = require("./friendShip.route");
 const messageRoutes = require("./message.route");
 const userRoutes = require("./user.route");
 const postRoutes = require("./post.route");
+const commentRoutes = require("./comment.route");
 router.use("/auth", AuthRoutes);
-router.use("/friend", friendShipRoutes);
 router.use("/message", messageRoutes);
+router.use("/comment", commentRoutes);
 router.use("/user", userRoutes);
 router.use("/post", postRoutes);
 module.exports = router;

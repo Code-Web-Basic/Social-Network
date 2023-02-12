@@ -18,6 +18,7 @@ router
     videoFileUploader.array("files"),
     postController.createPost
   );
-router.route("/updatePost").put(verifyToken, postController.updatePost);
+router.route("/updatePost/:id").put(verifyToken, postController.updatePost);
 router.route("/deletePost/:id").put(verifyToken, postController.deletePost);
+router.route("/reaction/:id").post(verifyToken, postController.reaction);
 module.exports = router;

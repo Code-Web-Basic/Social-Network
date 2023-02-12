@@ -11,8 +11,8 @@ router
 router.route("/register").post(AuthController.register);
 
 router.route("/login").post(AuthController.login);
-router.route("/signIn/failed").get(AuthController.signUpFailed);
-router.route("/signIn/success").get(AuthController.signInSuccess);
+router.route("/login/failed").get(AuthController.signUpFailed);
+router.route("/login/success").get(AuthController.signInSuccess);
 router.route("/logout").post(verifyToken, AuthController.logout);
 router
   .route("/google")

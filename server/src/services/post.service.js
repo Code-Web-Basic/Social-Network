@@ -43,7 +43,7 @@ const createPost = async (data) => {
   }
 };
 
-const updatePost = async (id, ownerId, data) => {
+const updatePost = async (id, data) => {
   try {
     const result = await postModel.update(id, data);
     return result;
@@ -52,8 +52,17 @@ const updatePost = async (id, ownerId, data) => {
   }
 };
 
+const reaction = async (id, userId) => {
+  try {
+    const result = await postModel.reaction(id, userId);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
 module.exports = {
   createPost,
   deletePost,
   updatePost,
+  reaction,
 };
