@@ -12,7 +12,7 @@ const secret = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const result = await UserService.login(req.body.email, req.body.password);
-    if (result) {
+    if (result.status === true) {
       const accessToken = UserService.encodedAccessToken(result._id);
       const refreshToken = UserService.encodedRefreshToken(result._id);
       const { password, ...other } = result;
@@ -27,9 +27,9 @@ const login = async (req, res, next) => {
       userInfo = other;
       res
         .status(HttpStatusCode.OK)
-        .json({ user: other, accessToken: accessToken });
-    } else {
-      res.status(HttpStatusCode.OK).json({ status: "email chưa được đăng ký" });
+        .json({ result: other, accessToken: accessToken });
+    } else if (result.status === false) {
+      res.status(401).json({ result });
     }
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -84,7 +84,7 @@ const signInSuccess = async (req, res) => {
       accessToken: accessToken,
     });
   } else {
-    res.json({ success: false, message: "Error" });
+    res.status(400).json({ success: false, message: "Error" });
     userInfo = null;
   }
 };
@@ -111,12 +111,18 @@ const githubCallBack = [
   },
 ];
 const logout = (req, res, next) => {
-  res.clearCookie("refreshToken");
-  userInfo = null;
-  refreshTokenList = refreshTokenList.filter(
-    (token) => token !== req.cookies.refreshToken
-  );
-  res.status(200).json("Logged out successfully");
+  try {
+    res.clearCookie("refreshToken");
+    userInfo = null;
+    refreshTokenList = refreshTokenList.filter(
+      (token) => token !== req.cookies.refreshToken
+    );
+    res.status(200).json({ status: true, msg: "Logged out successfully" });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
 };
 const refresh = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
@@ -142,7 +148,7 @@ const refresh = async (req, res) => {
       path: "/",
       sameSite: "strict",
     });
-    res.status(200).json({ accessToken: newAccessToken });
+    res.status(200).json({ accessToken: newAccessToken, status: true });
   });
 };
 
