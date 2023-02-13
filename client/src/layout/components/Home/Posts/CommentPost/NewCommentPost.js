@@ -8,7 +8,6 @@ import EmojiPicker from '@emoji-mart/react';
 import dataEmoji from '@emoji-mart/data';
 
 function NewCommentPost(props) {
-    const [showNavigate, setShowNavigate] = useState(false);
     // console.log(currentUser);
     // const [commentLine, setCommentLine] = useState(false);
     const [enableBtn, setEnableBtn] = useState(true);
@@ -18,10 +17,7 @@ function NewCommentPost(props) {
     const messageRef = useRef();
 
     const theme = useTheme();
-    const commentFocusIn = () => {
-        // setCommentLine(true);
-        setShowNavigate(true);
-    };
+
     const commentFocusOut = () => {
         // setCommentLine(false);
     };
@@ -77,14 +73,13 @@ function NewCommentPost(props) {
                 }}
                 value={valueInput}
                 onChange={(e) => setValueInput(e.target.value)}
-                onFocus={commentFocusIn}
                 onBlur={commentFocusOut}
                 onKeyUp={commentStroke}
                 ref={messageRef}
             />
             <Stack direction="row" alignItems="center" justifyContent="center">
                 {!enableBtn && (
-                    <Button variant="text" size="small">
+                    <Button variant="text" size="small" onClick={sendComment}>
                         Post
                     </Button>
                 )}
