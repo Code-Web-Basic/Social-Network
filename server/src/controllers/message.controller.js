@@ -23,7 +23,7 @@ const editMessage = async (req, res) => {
   }
 };
 
-const showDirectMessage = async (req, res) => {
+const showMessage = async (req, res) => {
   try {
     const result = await messageService.showDirectMessage(req.body);
     res.status(HttpStatusCode.OK).json({ result: result });
@@ -37,5 +37,5 @@ const showDirectMessage = async (req, res) => {
 module.exports = {
   sendMessage,
   editMessage,
-  showDirectMessage,
+  showMessage,
 };
