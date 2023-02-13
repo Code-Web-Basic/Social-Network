@@ -12,7 +12,7 @@ const secret = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const result = await UserService.login(req.body.email, req.body.password);
-    if (result) {
+    if (result.status === true) {
       const accessToken = UserService.encodedAccessToken(result._id);
       const refreshToken = UserService.encodedRefreshToken(result._id);
       const { password, ...other } = result;
@@ -27,9 +27,9 @@ const login = async (req, res, next) => {
       userInfo = other;
       res
         .status(HttpStatusCode.OK)
-        .json({ user: other, accessToken: accessToken });
-    } else {
-      res.status(HttpStatusCode.OK).json({ status: "email chưa được đăng ký" });
+        .json({ result: other, accessToken: accessToken });
+    } else if (result.status === false) {
+      res.status(401).json({ result });
     }
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({

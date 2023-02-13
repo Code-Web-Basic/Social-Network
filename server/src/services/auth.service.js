@@ -42,10 +42,20 @@ const register = async (data) => {
 const login = async (email, password) => {
   try {
     const result = await UserModel.login(email);
-    const isCorrectPassword = await isValidPassword(password, result.password);
-    if (!isCorrectPassword) return { message: "incorrect password" };
-    return result;
-  } catch (error) {}
+    if (result) {
+      const isCorrectPassword = await isValidPassword(
+        password,
+        result.password
+      );
+      if (!isCorrectPassword)
+        return { status: false, msg: "incorrect password" };
+      return { data: result, status: true };
+    } else {
+      return { status: false, msg: "Email chưa được đăng ký" };
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 const isValidPassword = async (signInPassword, password) => {
   try {
