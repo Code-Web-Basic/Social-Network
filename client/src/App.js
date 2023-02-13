@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { privateRoutes, publicRoutes } from '~/router/Router';
 import DefaultLayout from '~/layout/DefaultLayout';
 import { useSelector } from 'react-redux';
+
 import { router as routerConfig } from '~/config/config';
 
 function App() {
-    const currentUser = true;
+    const currentUser = useSelector((state) => state.auth.currentUser);
+
     let routerCheck = publicRoutes;
 
     if (currentUser) {
