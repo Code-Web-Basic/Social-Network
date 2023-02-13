@@ -96,17 +96,21 @@ function Login() {
         }
     };
     const handleClickFacebook = async () => {
+        const url = process.env.REACT_APP_API_URL;
         try {
-            const actionResult = await dispatch(signInFacebook());
-            const currentUser = unwrapResult(actionResult);
-            console.log(currentUser);
+            window.open(url);
         } catch (error) {
             console.log('failed', error.message);
         }
     };
     const handleClickButtonSignIn = async () => {
+        const dataUser = {
+            password: email,
+            email: password,
+            authType: 'local',
+        };
         try {
-            const actionResult = await dispatch(signInPassWord({ email, password }));
+            const actionResult = await dispatch(signInPassWord({ data: dataUser }));
             const currentUser = unwrapResult(actionResult);
             console.log(currentUser);
         } catch (error) {

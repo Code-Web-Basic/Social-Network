@@ -1,7 +1,17 @@
-const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit');
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import * as authApi from '~/api/authApi/authApi';
 
-export const signUpPassWord = createAsyncThunk('auth/signUpPassWord', async (params, thunkAPI) => {});
-export const signInPassWord = createAsyncThunk('auth/signInPassWord', async (params, thunkAPI) => {});
+export const signUpPassWord = createAsyncThunk('auth/signUpPassWord', async (params, thunkAPI) => {
+    const data = params.data;
+    const res = await authApi.registerPassword(data);
+
+    return res;
+});
+export const signInPassWord = createAsyncThunk('auth/signInPassWord', async (params, thunkAPI) => {
+    const data = params.data;
+    const res = await authApi.loginPass({ data });
+    return res;
+});
 
 export const signInGoogle = createAsyncThunk('auth/signInGoogle', async (params, thunkAPI) => {});
 export const signInFacebook = createAsyncThunk('auth/signInFacebook', async (params, thunkAPI) => {});
