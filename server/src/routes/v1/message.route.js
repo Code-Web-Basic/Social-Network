@@ -10,7 +10,7 @@ router
   .put(verifyToken, messageController.editMessage);
 
 router
-  .route("/showDirectMessage/:id")
-  .get(verifyToken, messageController.showDirectMessage);
+  .route("/showMessage/:id")
+  .get(verifyToken, messageController.showMessage);
 
 module.exports = router;
