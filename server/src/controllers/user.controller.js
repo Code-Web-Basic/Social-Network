@@ -11,6 +11,16 @@ const findUser = async (req, res) => {
     });
   }
 };
+const newFeed = async (req, res) => {
+  try {
+    const result = await UserService.newFeed(req.user.sub);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 
 const update = async (req, res) => {
   try {
@@ -25,4 +35,5 @@ const update = async (req, res) => {
 module.exports = {
   findUser,
   update,
+  newFeed,
 };

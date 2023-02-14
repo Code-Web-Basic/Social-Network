@@ -12,7 +12,7 @@ const followCollectionSchema = Joi.object({
 });
 
 const validateSchema = async (data) => {
-  return await followCollectionName.validateAsync(data, {
+  return await followCollectionSchema.validateAsync(data, {
     abortEarly: false,
   });
 };
@@ -20,7 +20,7 @@ const validateSchema = async (data) => {
 const findOneById = async (id) => {
   try {
     const result = await getDB()
-      .collection(commentCollectionName)
+      .collection(followCollectionName)
       .findOne({ _id: ObjectId(id) });
     return result;
   } catch (error) {

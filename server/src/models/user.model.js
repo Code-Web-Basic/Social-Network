@@ -131,6 +131,41 @@ const update = async (id, data) => {
     throw new Error(error);
   }
 };
+
+const newFeed = async (id) => {
+  try {
+    const result = await getDB()
+      .collection("Follows")
+      .aggregate([
+        { $match: { sourceId: id } },
+        { $addFields: { _targetId: { $toObjectId: "$targetId" } } },
+        {
+          $lookup: {
+            from: "Users",
+            localField: "_targetId",
+            foreignField: "_id",
+            as: "User",
+          },
+        },
+        {
+          $lookup: {
+            from: "Posts",
+            localField: "targetId",
+            foreignField: "ownerId",
+            as: "Post",
+          },
+        },
+        { $unwind: "$Post" },
+        { $unwind: "$User" },
+        { $project: { User: 1, Post: 1 } },
+      ])
+      .toArray();
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   signUp,
   findOneById,
@@ -139,4 +174,5 @@ module.exports = {
   getAllUser,
   findUser,
   update,
+  newFeed,
 };

@@ -8,4 +8,5 @@ router.route("/search/:userName").get(verifyToken, UserController.findUser);
 router
   .route("/update")
   .put(verifyToken, imageFileUploader.single("file"), UserController.update);
+router.route("/newFeed").get(verifyToken, UserController.newFeed);
 module.exports = router;

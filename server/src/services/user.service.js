@@ -22,7 +22,17 @@ const update = async (id, data) => {
     throw new Error(error);
   }
 };
+
+const newFeed = async (id) => {
+  try {
+    const result = await UserModel.newFeed(id);
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   findUser,
   update,
+  newFeed,
 };
