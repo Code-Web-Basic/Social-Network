@@ -69,10 +69,53 @@ const update = async (id, data) => {
 
 const reaction = async (id, userId) => {
   try {
-    await getDB()
+    const checkExists = await getDB()
       .collection(postCollectionName)
-      .findOneAndUpdate({ _id: id }, { $push: { reaction: userId } });
-    return await findOneById(id);
+      .find({ _id: ObjectId(id), reaction: { $in: [userId] } })
+      .toArray();
+
+    if (checkExists.length === 0) {
+      await getDB()
+        .collection(postCollectionName)
+        .findOneAndUpdate(
+          { _id: ObjectId(id) },
+          { $push: { reaction: userId } }
+        );
+      return await findOneById(id);
+    } else {
+      await getDB()
+        .collection(postCollectionName)
+        .findOneAndUpdate(
+          { _id: ObjectId(id) },
+          { $pull: { reaction: userId } }
+        );
+      return await findOneById(id);
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const showReactionOfPost = async (id) => {
+  try {
+    const result = await getDB()
+      .collection(postCollectionName)
+      .aggregate([
+        { $match: { _id: ObjectId(id) } },
+        { $unwind: "$reaction" },
+        { $addFields: { _reaction: { $toObjectId: "$reaction" } } },
+        {
+          $lookup: {
+            from: "Users",
+            localField: "_reaction",
+            foreignField: "_id",
+            as: "User",
+          },
+        },
+        { $group: { _id: "$_id", User: { $push: "$User" } } },
+      ])
+      .toArray();
+    return result;
   } catch (error) {
     throw new Error(error);
   }
@@ -84,4 +127,5 @@ module.exports = {
   reaction,
   deletePost,
   findOneById,
+  showReactionOfPost,
 };

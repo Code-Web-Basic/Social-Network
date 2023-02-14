@@ -60,9 +60,19 @@ const reaction = async (id, userId) => {
     throw error;
   }
 };
+
+const showReactionOfPost = async (id) => {
+  try {
+    const result = await postModel.showReactionOfPost(id);
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   createPost,
   deletePost,
   updatePost,
   reaction,
+  showReactionOfPost,
 };

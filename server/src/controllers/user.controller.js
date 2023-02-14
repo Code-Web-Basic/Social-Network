@@ -12,6 +12,17 @@ const findUser = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+  try {
+    const result = await UserService.update(req.user.sub, req);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   findUser,
+  update,
 };

@@ -120,6 +120,17 @@ const findUser = async (data) => {
   }
 };
 
+const update = async (id, data) => {
+  try {
+    const updateData = { ...data, updatedAt: Date.now() };
+    await getDB()
+      .collection(userCollectionName)
+      .findOneAndUpdate({ _id: ObjectId(id) }, { $set: updateData });
+    return await findOneById(id);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   signUp,
   findOneById,
@@ -127,4 +138,5 @@ module.exports = {
   login,
   getAllUser,
   findUser,
+  update,
 };
