@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const { getDB } = require("../config/mongodb");
 const { ObjectId } = require("mongodb");
-
+const { notification } = require("./other.model");
 const followCollectionName = "Follows";
 
 const followCollectionSchema = Joi.object({
@@ -31,7 +31,8 @@ const findOneById = async (id) => {
 const follow = async (data) => {
   try {
     const validatedValue = await validateSchema(data);
-
+    const notificationData = { ...data, type: { typeName: "follow" } };
+    await notification.createNotification(notificationData);
     const result = await getDB()
       .collection(followCollectionName)
       .insertOne(validatedValue);
