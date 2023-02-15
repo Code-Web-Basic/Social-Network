@@ -132,7 +132,7 @@ const update = async (id, data) => {
   }
 };
 
-const newFeed = async (id) => {
+const newFeed = async (id, paging) => {
   try {
     const result = await getDB()
       .collection("Follows")
@@ -159,6 +159,9 @@ const newFeed = async (id) => {
         { $unwind: "$User" },
         { $project: { User: 1, Post: 1 } },
       ])
+      .sort({ "Post.createdAt": -1 })
+      .skip((paging - 1) * 15)
+      .limit(15)
       .toArray();
     return result;
   } catch (error) {
