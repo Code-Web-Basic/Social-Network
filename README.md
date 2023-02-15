@@ -47,6 +47,12 @@ lấy thông tin user đã đăng nhập : http://localhost:3240/v1/auth/login/s
 user API
 Tìm kiếm User : http://localhost:3240/v1/user/search/:userName
 
+Update info : http://localhost:3240/v1/user/update/ put (gửi bằng form nếu cập nhật avatar)  
+Cần token
+
+NewFeed : http://localhost:3240/v1/user/newFeed get
+token
+
 Post Schema :
 const postCollectionSchema = Joi.object({
 caption: Joi.string().required(),
@@ -94,6 +100,12 @@ cần token
 
 tim bài post : http://localhost:3240/v1/post/reaction/:id post
 Cần token
+
+reaction post : http://localhost:3240/v1/post/reaction/:id post
+token
+
+show những user đã reaction bài post : http://localhost:3240/v1/post/showReactionOfPost/:id get
+token
 
 Comment Schema :
 const commentCollectionSchema = Joi.object({
