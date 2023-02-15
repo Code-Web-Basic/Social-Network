@@ -2,7 +2,6 @@ import * as httpRequest from '~/utils/httpRequest';
 
 export const loginPass = async (params) => {
     try {
-        console.log(params.data);
         const res = await httpRequest.post('/auth/login', {
             email: params.data.email,
             password: params.data.password,

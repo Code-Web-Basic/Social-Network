@@ -68,3 +68,23 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+###
+
+library use:
+
+edit video picture:
+
+-   https://pqina.nl/pintura/ (pintura)
+
+call api:
+
+-   react-query
+-   axiots
+
+ui:
+
+-   mui, tippy, swiper, emoji-mart, phosphor-react
+
+logic project:
+redux, redux toolkit, redux-persist,

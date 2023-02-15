@@ -3,6 +3,7 @@ import Home from '~/pages/Home';
 import { router as routerConfig } from '~/config/config';
 import Login from '~/pages/Login';
 import Register from '~/pages/Register';
+import Create from '~/pages/Create/Create';
 
 const publicRoutes = [
     { path: routerConfig.login, component: Login, layout: null },
@@ -15,7 +16,7 @@ const privateRoutes = [
     { path: routerConfig.reels, component: Home },
     { path: routerConfig.message, component: Home },
     { path: routerConfig.notification, component: Home },
-    { path: routerConfig.create, component: Home },
+    { path: routerConfig.create, component: Create },
     { path: routerConfig.profile, component: Home },
     { path: routerConfig.login, component: Login, layout: null },
     { path: routerConfig.register, component: Register },

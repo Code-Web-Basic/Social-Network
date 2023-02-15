@@ -37,6 +37,7 @@ function Search() {
                 left: '60px',
                 top: '0px',
                 boxShadow: 'rgba(0, 0, 0, 0.24) 9px -1px 20px -10px',
+                background: theme.palette.background.default,
                 zIndex: 100,
             }}
         >

@@ -1,4 +1,7 @@
 import { Grid, Stack } from '@mui/material';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import AccountItem from '~/layout/components/Home/AccountItem/AccountItem';
 import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
 import Posts from '~/layout/components/Home/Posts/Post';
@@ -12,6 +15,14 @@ import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/Suggestion
 //     color: theme.palette.text.secondary,
 // }));
 function Home() {
+    const currentUser = useSelector((state) => state.auth.currentUser);
+    const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     if (!currentUser) {
+    //         navigate('/login');
+    //     }
+    // }, [currentUser, navigate]);
     return (
         <>
             <Grid container>
@@ -24,7 +35,7 @@ function Home() {
                 </Grid>
                 <Grid item xs={3.5}>
                     <Stack direction={'column'} paddingTop="40px">
-                        <AccountItem />
+                        <AccountItem currentUser={currentUser.result.data} />
                         <SuggestionsUser />
                     </Stack>
                 </Grid>

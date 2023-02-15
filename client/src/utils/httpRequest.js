@@ -1,15 +1,15 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { refetchToken } from '~/features/auth/authSlice';
 
 const instance = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
-    // withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
     },
 });
-const refreshToken = async () => {
+const RefreshToken = async () => {
     try {
         const res = await instance.post('users/refresh', {
             withCredentials: true,
@@ -22,30 +22,35 @@ const refreshToken = async () => {
 // instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 instance.interceptors.request.use(
     async (config) => {
+        const dispatch = useDispatch();
         if (config.url.indexOf('/auth/login') >= 0 || config.url.indexOf('/auth/refresh')) {
             return config;
         }
 
         let date = new Date();
         const user = useSelector((state) => state.auth.currentUser);
+        if (user.accessToken) {
+            config.headers.Authorization = user ? `Bearer ${user?.accessToken}` : '';
+            const decodedToken = jwtDecode(user?.accessToken);
+            if (decodedToken.exp < date.getTime() / 1000) {
+                const token = await RefreshToken();
+                console.log('refetch token', token);
 
-        const decodedToken = jwtDecode(user?.accessToken);
-
-        if (decodedToken.exp < date.getTime() / 1000) {
-            const token = await refreshToken();
-            console.log('2 ', token);
-            const refreshUser = {
-                ...user,
-                accessToken: token.accessToken,
-            };
-            console.log(refreshUser);
-            config.headers.Authorization = token ? `Bearer ${token.accessToken}` : '';
+                const refreshUser = {
+                    ...user.result,
+                    accessToken: token.accessToken,
+                };
+                console.log('user refetch data', refreshUser);
+                dispatch(refetchToken(refreshUser));
+                config.headers.Authorization = token ? `Bearer ${token?.accessToken}` : '';
+            }
+        } else {
+            config.cancelToken();
         }
-        // config.cancelToken();
+
         return config;
     },
     (err) => {
-        // console.log('asc');
         return Promise.reject(err);
     },
 );
