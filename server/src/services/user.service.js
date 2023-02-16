@@ -23,9 +23,9 @@ const update = async (id, data) => {
   }
 };
 
-const newFeed = async (id) => {
+const newFeed = async (id, paging) => {
   try {
-    const result = await UserModel.newFeed(id);
+    const result = await UserModel.newFeed(id, paging);
     return result;
   } catch (error) {
     throw new Error(error);

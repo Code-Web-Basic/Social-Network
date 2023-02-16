@@ -45,7 +45,7 @@ RefreshToken : http://localhost:3240/v1/auth/refresh post
 lấy thông tin user đã đăng nhập : http://localhost:3240/v1/auth/login/success (sài khi đnăg nhập qua google và github) get
 
 user API
-Tìm kiếm User : http://localhost:3240/v1/user/search/:userName
+Tìm kiếm User : http://localhost:3240/v1/user/search?query=...
 
 Update info : http://localhost:3240/v1/user/update/ put (gửi bằng form nếu cập nhật avatar)  
 Cần token
@@ -146,3 +146,15 @@ show reply comment : localhost:3240/v1/comment/showCommentReply/:id get
 
 tim comment : localhost:3240/v1/comment/reaction/:id post
 cần token
+
+SearchHistory :
+
+Create : http://localhost:3240/v1/searchHistory/create
+{
+sourceId : ...,
+targetId : ...
+}
+
+delete : http://localhost:3240/v1/searchHistory/delete/:id
+
+show searchHistory : http://localhost:3240/v1/searchHistory

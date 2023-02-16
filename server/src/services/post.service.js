@@ -69,10 +69,19 @@ const showReactionOfPost = async (id) => {
     throw new Error(error);
   }
 };
+
+const explore = async () => {
+  try {
+    return await postModel.explore();
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   createPost,
   deletePost,
   updatePost,
   reaction,
   showReactionOfPost,
+  explore,
 };

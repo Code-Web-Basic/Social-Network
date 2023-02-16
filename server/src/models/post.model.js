@@ -1,6 +1,7 @@
 const Joi = require("joi");
 const { getDB } = require("../config/mongodb");
 const { ObjectId } = require("mongodb");
+const { notification } = require("./other.model");
 
 const postCollectionName = "Posts";
 
@@ -121,6 +122,22 @@ const showReactionOfPost = async (id) => {
   }
 };
 
+const explore = async () => {
+  try {
+    const result = await getDB()
+      .collection(postCollectionName)
+      .aggregate([
+        { $sample: { size: 5 } },
+        { $addFields: { reactionCount: { $size: "$reaction" } } },
+        // { $group: { _id: "$_id" } }
+      ])
+      .toArray();
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   create,
   update,
@@ -128,4 +145,5 @@ module.exports = {
   deletePost,
   findOneById,
   showReactionOfPost,
+  explore,
 };
