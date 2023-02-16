@@ -1,0 +1,21 @@
+{
+  "name": "social-network",
+  "version": "1.0.0",
+  "description": "User schema",
+  "main": "index.js",
+  "scripts": {
+    "server": "npm run dev --prefix server",
+    "client": "npm start --prefix client ",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Code-Web-Basic/Social-Network.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Code-Web-Basic/Social-Network/issues"
+  },
+  "homepage": "https://github.com/Code-Web-Basic/Social-Network#readme"
+}

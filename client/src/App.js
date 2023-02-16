@@ -2,13 +2,15 @@ import { Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { privateRoutes, publicRoutes } from '~/router/Router';
 import DefaultLayout from '~/layout/DefaultLayout';
-import { useSelector } from 'react-redux';
-
-import { router as routerConfig } from '~/config/config';
+import { useSelector, useStore } from 'react-redux';
+import setUpInterceptor from './utils/interceptor';
 
 function App() {
     const currentUser = useSelector((state) => state.auth.currentUser);
+    const store = useStore();
+    setUpInterceptor(store);
 
+    // check user
     let routerCheck = publicRoutes;
 
     if (currentUser) {

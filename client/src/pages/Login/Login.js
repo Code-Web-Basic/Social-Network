@@ -105,8 +105,8 @@ function Login() {
     };
     const handleClickButtonSignIn = async () => {
         const dataUser = {
-            password: email,
-            email: password,
+            password: password,
+            email: email,
             authType: 'local',
         };
         try {
@@ -353,7 +353,7 @@ function Login() {
                                 height: '100%',
                                 width: '100%',
                                 objectFit: 'cover',
-                                transform: 'translateX(-200px)',
+                                transform: 'translateX(-10%)',
                             }}
                         />
                     </Stack>

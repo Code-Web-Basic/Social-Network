@@ -1,46 +1,36 @@
 // mui ui
 import { Avatar, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Link } from 'react-router-dom';
+import * as configRouter from '~/config/config';
 // components
-import TippyHeadless from '@tippyjs/react/headless';
-import MenuUserFollowing from '../Posts/MenuUserFollowing/MenuUserFollowing';
 
-function AccountItem() {
+function AccountItem({ currentUser }) {
     const theme = useTheme();
     return (
-        <Stack direction="row" alignItems="center" justifyContent="space-between" p={1}>
-            <TippyHeadless
-                interactive
-                placement="bottom-start"
-                render={(attrs) => (
-                    <div className="box" tabIndex="-1" {...attrs}>
-                        <MenuUserFollowing />
-                    </div>
-                )}
-            >
-                <Stack direction="row" spacing={2}>
-                    <Avatar src="" alt="user" />
-                    <Stack direction="column">
-                        <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
-                            chithanhduongngoc
-                        </Typography>
-                        <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
-                            Suggested for you
-                        </Typography>
-                    </Stack>
+        <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            p={1}
+            component={Link}
+            to={`${configRouter.router.profile}`}
+        >
+            <Stack direction="row" spacing={2}>
+                <Avatar src={currentUser?.avatar} alt="user" />
+                <Stack direction="column">
+                    <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
+                        {currentUser?.userName}
+                    </Typography>
+                    <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
+                        {currentUser?.Name}
+                    </Typography>
                 </Stack>
-            </TippyHeadless>
+            </Stack>
 
             <Stack direction="row">
                 <Button variant="text" sx={{ fontSize: '0.6rem', fontWeight: 600 }}>
                     Switch
                 </Button>
-                {/* {data?.following ? (
-            <Button variant="text">Following</Button>
-        ) : (
-            <Button variant="text" color={theme.palette.text.secondary}>
-                unFollowing
-            </Button>
-        )} */}
             </Stack>
         </Stack>
     );
