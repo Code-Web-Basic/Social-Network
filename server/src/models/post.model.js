@@ -74,7 +74,6 @@ const reaction = async (id, userId) => {
       .collection(postCollectionName)
       .find({ _id: ObjectId(id), reaction: { $in: [userId] } })
       .toArray();
-
     if (checkExists.length === 0) {
       await getDB()
         .collection(postCollectionName)
@@ -82,7 +81,14 @@ const reaction = async (id, userId) => {
           { _id: ObjectId(id) },
           { $push: { reaction: userId } }
         );
-      return await findOneById(id);
+      const result = await findOneById(id);
+      const notificationData = {
+        sourceId: userId,
+        targetId: result.targetId,
+        type: { typeName: "post", id: id },
+      };
+      await notification.createNotification(notificationData);
+      return result;
     } else {
       await getDB()
         .collection(postCollectionName)

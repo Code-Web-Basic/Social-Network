@@ -1,7 +1,8 @@
 const Joi = require("joi");
 const { getDB } = require("../config/mongodb");
 const { ObjectId } = require("mongodb");
-
+const { notification } = require("./other.model");
+const postModel = require("./post.model");
 const commentCollectionName = "Comments";
 
 const commentCollectionSchema = Joi.object({
@@ -38,10 +39,25 @@ const create = async (data) => {
       await getDB()
         .collection(commentCollectionName)
         .findOneAndUpdate({ _id: data.replyId }, { $inc: { replyCount: 1 } });
+      // create notification
+      const post = await postModel.findOneById(data.postId);
+      const notificationData = {
+        sourceId: data.senderId,
+        targetId: post.ownerId,
+        type: { typeName: "replyComment", id: data.replyId },
+      };
+      await notification.createNotification(notificationData);
     } else {
       await getDB()
         .collection("Posts")
         .findOneAndUpdate({ _id: data.postId }, { $inc: { commentCount: 1 } });
+      const post = await postModel.findOneById(data.postId);
+      const notificationData = {
+        sourceId: data.senderId,
+        targetId: post.ownerId,
+        type: { typeName: "Comment", id: data.postId },
+      };
+      await notification.createNotification(notificationData);
     }
     const result = await getDB()
       .collection(commentCollectionName)
