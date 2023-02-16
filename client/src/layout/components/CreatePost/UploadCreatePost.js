@@ -21,6 +21,7 @@ function UploadCreatePost() {
 
     return (
         <Stack direction="column" width="100%" height="100%">
+            {/* header create post */}
             <Stack
                 direction="row"
                 p={1}
@@ -43,51 +44,71 @@ function UploadCreatePost() {
                 </Stack>
                 <Stack direction={'row'}></Stack>
             </Stack>
+            {/* content */}
             <Box
                 sx={{
+                    position: 'relative',
                     minHeight: 600,
                     maxHeight: 800,
                     width: '100%',
+                    height: '100%',
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    gap: '10px',
                 }}
             >
-                <Stack direction="column" position="relative" spacing={1} justifyContent="center" alignItems={'center'}>
-                    <img src={images.uploadIcon} alt="upload" />
-                    <Typography variant="h6">Drag photos and videos here</Typography>
-                    <input
-                        type="file"
-                        style={{
-                            position: 'absolute',
-                            height: '100%',
-                            width: '100%',
-                            // visibility: 'hidden',
-                            zIndex: 100,
-                        }}
-                        onChange={handlerSelectedFile}
-                    />
-                    <Button
-                        variant="contained"
-                        sx={{
-                            width: '100%',
-                            fontSize: '0.6rem',
-                            background: theme.palette.primary.light,
-                            boxShadow: 'none',
-                            borderRadius: '10px',
-                            '&:hover': {
-                                background: theme.palette.primary.dark,
+                {selectedFile.length === 0 && (
+                    <>
+                        <img src={images.uploadIcon} alt="upload" />
+                        <Typography variant="h6">Drag photos and videos here</Typography>
+                        <input
+                            type="file"
+                            style={{
+                                position: 'absolute',
+                                height: '100%',
+                                width: '100%',
+                                // visibility: 'hidden',
+                                opacity: 0,
+                                zIndex: 100,
+                            }}
+                            onChange={handlerSelectedFile}
+                        />
+                        <Button
+                            variant="contained"
+                            sx={{
+                                fontSize: '0.6rem',
+                                background: theme.palette.primary.light,
                                 boxShadow: 'none',
-                            },
-                            '&:active': {
-                                background: theme.palette.primary.dark,
-                                boxShadow: 'none',
-                            },
-                        }}
-                    >
-                        Select from computer
-                    </Button>
-                </Stack>
+                                borderRadius: '10px',
+                                '&:hover': {
+                                    background: theme.palette.primary.dark,
+                                    boxShadow: 'none',
+                                },
+                                '&:active': {
+                                    background: theme.palette.primary.dark,
+                                    boxShadow: 'none',
+                                },
+                            }}
+                        >
+                            Select from computer
+                        </Button>
+                    </>
+                )}
+                {selectedFile.length > 0 && (
+                    <>
+                        <img
+                            alt="not fount"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                            src={URL.createObjectURL(selectedFile[0])}
+                        />
+                    </>
+                )}
             </Box>
         </Stack>
     );

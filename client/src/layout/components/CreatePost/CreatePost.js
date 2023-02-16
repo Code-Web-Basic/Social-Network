@@ -1,6 +1,7 @@
 import { Avatar, Button, Container, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState } from 'react';
+import ShareCreatePost from './ShareCreatePost';
 import UploadCreatePost from './UploadCreatePost';
 
 // stylessss
@@ -13,7 +14,7 @@ function CreatePost({ children }) {
     const handleClose = () => setOpen(false);
     //render components
     const renderItemMenuModal = () => {
-        return <UploadCreatePost />;
+        return <ShareCreatePost />;
     };
 
     return (

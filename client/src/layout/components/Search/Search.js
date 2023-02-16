@@ -3,6 +3,7 @@ import { XCircle } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import useDebounce from '~/hook/useDebounce';
 import UserSearchItem from './UserSearchItem';
+import * as userApi from '~/api/userApi/userApi';
 
 function Search() {
     const theme = useTheme();
@@ -17,13 +18,16 @@ function Search() {
     useEffect(() => {
         if (valueDebounce) {
             setIsSearching(true);
-            const callApi = () => {};
+            const callApi = async () => {
+                const res = await userApi.searchUser(valueDebounce);
+                setResults(res.result);
+                setIsSearching(false);
+            };
             callApi();
         } else {
             setResults([]);
             setIsSearching(false);
         }
-        return () => {};
     }, [valueDebounce]);
     const clickClear = () => {
         setValueInput('');
@@ -89,7 +93,7 @@ function Search() {
                     </Stack>
                 </Stack>
                 <Stack direction="column" padding={'10px 0px'} spacing={2}>
-                    {results.length === 0 ? (
+                    {results?.length === 0 ? (
                         <>
                             <Stack direction="row" justifyContent="space-between" alignItems={'center'} width="100%">
                                 <Typography variant="body2" fontWeight={600}>
@@ -113,9 +117,12 @@ function Search() {
                         </>
                     ) : (
                         <>
-                            <UserSearchItem />
-                            <UserSearchItem />
-                            <UserSearchItem />
+                            {results?.map((item) => {
+                                return <UserSearchItem data={item} key={item._id} />;
+                            })}
+
+                            {/* <UserSearchItem />
+                            <UserSearchItem /> */}
                         </>
                     )}
                 </Stack>
