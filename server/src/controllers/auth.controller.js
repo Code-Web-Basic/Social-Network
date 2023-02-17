@@ -25,13 +25,13 @@ const login = async (req, res, next) => {
       refreshTokenList.push(refreshToken);
       res.setHeader("token", "Bearer " + accessToken);
       userInfo = other;
-      res
-        .status(HttpStatusCode.OK)
-        .json({
-          result: { ...other, accessToken: accessToken },
-          status: "true",
+      res.status(HttpStatusCode.OK).json({
+        result: {
+          data: { ...other.data, accessToken: accessToken },
+          status: true,
           message: "successfully",
-        });
+        },
+      });
     } else if (result.status === false) {
       res.status(401).json({ result });
     }
