@@ -27,7 +27,11 @@ const login = async (req, res, next) => {
       userInfo = other;
       res
         .status(HttpStatusCode.OK)
-        .json({ result: { ...other, accessToken: accessToken } });
+        .json({
+          result: { ...other, accessToken: accessToken },
+          status: "true",
+          message: "successfully",
+        });
     } else if (result.status === false) {
       res.status(401).json({ result });
     }
@@ -81,8 +85,7 @@ const signInSuccess = async (req, res) => {
       result: {
         status: true,
         message: "successfully",
-        user: userInfo,
-        accessToken: accessToken,
+        data: { ...userInfo, accessToken: accessToken },
       },
     });
   } else {
