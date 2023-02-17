@@ -9,9 +9,9 @@ router.route("/unFollow").post(verifyToken, followController.unFollow);
 
 router
   .route("/getFollowers/:userId/:paging")
-  .get(followController.getFollowers);
+  .get(verifyToken, followController.getFollowers);
 router
   .route("/getFollowing/:userId/:paging")
-  .get(followController.getFollowing);
+  .get(verifyToken, followController.getFollowing);
 
 module.exports = router;

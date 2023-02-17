@@ -21,4 +21,9 @@ router
 router.route("/updatePost/:id").put(verifyToken, postController.updatePost);
 router.route("/deletePost/:id").put(verifyToken, postController.deletePost);
 router.route("/reaction/:id").post(verifyToken, postController.reaction);
+router
+  .route("/showReactionOfPost/:id")
+  .get(verifyToken, postController.showReactionOfPost);
+
+router.route("/explore").get(verifyToken, postController.explore);
 module.exports = router;

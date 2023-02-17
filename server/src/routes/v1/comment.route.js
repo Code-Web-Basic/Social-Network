@@ -12,9 +12,9 @@ router.route("/delete/:id").put(verifyToken, commentController.deleteComment);
 
 router
   .route("/showCommentOfPost/:id/:paging")
-  .get(commentController.showCommentOfPost);
+  .get(verifyToken, commentController.showCommentOfPost);
 router
   .route("/showCommentReply/:id/:paging")
-  .get(commentController.showCommentReply);
+  .get(verifyToken, commentController.showCommentReply);
 router.route("/reaction/:id").put(verifyToken, commentController.reaction);
 module.exports = router;
