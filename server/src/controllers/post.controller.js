@@ -42,9 +42,33 @@ const reaction = async (req, res) => {
     });
   }
 };
+
+const showReactionOfPost = async (req, res) => {
+  try {
+    const result = await postService.showReactionOfPost(req.params.id);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
+
+const explore = async (req, res) => {
+  try {
+    const result = await postService.explore();
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   createPost,
   deletePost,
   updatePost,
+  showReactionOfPost,
   reaction,
+  explore,
 };

@@ -13,8 +13,8 @@ const login = async (req, res, next) => {
   try {
     const result = await UserService.login(req.body.email, req.body.password);
     if (result.status === true) {
-      const accessToken = UserService.encodedAccessToken(result._id);
-      const refreshToken = UserService.encodedRefreshToken(result._id);
+      const accessToken = UserService.encodedAccessToken(result.data._id);
+      const refreshToken = UserService.encodedRefreshToken(result.data._id);
       const { password, ...other } = result;
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -27,7 +27,11 @@ const login = async (req, res, next) => {
       userInfo = other;
       res
         .status(HttpStatusCode.OK)
-        .json({ result: other, accessToken: accessToken });
+        .json({
+          result: { ...other, accessToken: accessToken },
+          status: "true",
+          message: "successfully",
+        });
     } else if (result.status === false) {
       res.status(401).json({ result });
     }
@@ -78,13 +82,14 @@ const signInSuccess = async (req, res) => {
     });
     refreshTokenList.push(refreshToken);
     res.status(HttpStatusCode.OK).json({
-      success: true,
-      message: "successfully",
-      user: userInfo,
-      accessToken: accessToken,
+      result: {
+        status: true,
+        message: "successfully",
+        data: { ...userInfo, accessToken: accessToken },
+      },
     });
   } else {
-    res.status(400).json({ success: false, message: "Error" });
+    res.status(400).json({ status: false, message: "not authenticated" });
     userInfo = null;
   }
 };
@@ -117,7 +122,9 @@ const logout = (req, res, next) => {
     refreshTokenList = refreshTokenList.filter(
       (token) => token !== req.cookies.refreshToken
     );
-    res.status(200).json({ status: true, msg: "Logged out successfully" });
+    res
+      .status(200)
+      .json({ result: { status: true, msg: "Logged out successfully" } });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
       error: new Error(error).message,

@@ -120,6 +120,56 @@ const findUser = async (data) => {
   }
 };
 
+const update = async (id, data) => {
+  try {
+    const updateData = { ...data, updatedAt: Date.now() };
+    await getDB()
+      .collection(userCollectionName)
+      .findOneAndUpdate({ _id: ObjectId(id) }, { $set: updateData });
+    return await findOneById(id);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const newFeed = async (id, paging) => {
+  try {
+    const result = await getDB()
+      .collection("Follows")
+      .aggregate([
+        { $match: { sourceId: id } },
+        { $addFields: { _targetId: { $toObjectId: "$targetId" } } },
+        {
+          $lookup: {
+            from: "Users",
+            localField: "_targetId",
+            foreignField: "_id",
+            as: "User",
+          },
+        },
+        {
+          $lookup: {
+            from: "Posts",
+            localField: "targetId",
+            foreignField: "ownerId",
+            as: "Post",
+          },
+        },
+        { $unwind: "$Post" },
+        { $unwind: "$User" },
+        { $addFields: { reactionCount: { $size: "$Post.reaction" } } },
+        { $project: { User: 1, Post: 1, reactionCount: 1 } },
+      ])
+      .sort({ "Post.createdAt": -1 })
+      .skip((paging - 1) * 15)
+      .limit(15)
+      .toArray();
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   signUp,
   findOneById,
@@ -127,4 +177,6 @@ module.exports = {
   login,
   getAllUser,
   findUser,
+  update,
+  newFeed,
 };

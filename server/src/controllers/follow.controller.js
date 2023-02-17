@@ -3,7 +3,10 @@ const followService = require("../services/follow.service");
 
 const follow = async (req, res) => {
   try {
-    const result = await followService.follow(req.body);
+    const result = await followService.follow({
+      targetId: req.params.targetId,
+      sourceId: req.user.sub,
+    });
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -14,7 +17,10 @@ const follow = async (req, res) => {
 
 const unFollow = async (req, res) => {
   try {
-    const result = await followService.unFollow(req.body);
+    const result = await followService.unFollow({
+      ...req.body,
+      sourceId: req.user.sub,
+    });
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({

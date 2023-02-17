@@ -6,7 +6,6 @@ const messageCollectionName = "message";
 
 const messageCollectionSchema = Joi.object({
   sourceId: Joi.string().required(),
-  targetType: Joi.string().required(),
   targetId: Joi.string().required(),
   message: Joi.string().required(),
   source: Joi.array().items(
@@ -15,7 +14,7 @@ const messageCollectionSchema = Joi.object({
       type: Joi.string().default(null),
     })
   ),
-  isReply: Joi.boolean().default(false),
+  isReply: Joi.boolean().required(),
   isDestroy: Joi.boolean().default(false),
   createdAt: Joi.date().timestamp().default(Date.now()),
   updatedAt: Joi.date().timestamp().default(null),
@@ -72,9 +71,14 @@ const showDirectMessage = async (sourceId, targetId) => {
     throw new Error(error);
   }
 };
-const findInChat = async (findData, sourceId, targetId, type) => {
+const findInChat = async (findData, sourceId, targetId) => {
   try {
-    const dataChat = await show;
+    const dataChat = await getDB()
+      .collection(messageCollectionName)
+      .aggregate([
+        { $match: { sourceId: sourceId, targetId: targetId } },
+         
+      ]);
   } catch (error) {}
 };
 

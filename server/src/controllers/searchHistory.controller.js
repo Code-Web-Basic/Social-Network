@@ -1,19 +1,9 @@
-const UserService = require("../services/user.service");
 const { HttpStatusCode } = require("../utilities/constants");
+const searchHistoryService = require("../services/searchHistory.service");
 
-const findUser = async (req, res) => {
+const createSearchHistory = async (req, res) => {
   try {
-    const result = await UserService.findUser(req.query.query);
-    res.status(HttpStatusCode.OK).json({ result: result });
-  } catch (error) {
-    res.status(HttpStatusCode.INTERNAL_SERVER).json({
-      error: new Error(error).message,
-    });
-  }
-};
-const newFeed = async (req, res) => {
-  try {
-    const result = await UserService.newFeed(req.user.sub, req.params.paging);
+    const result = await searchHistoryService.createSearchHistory(req.body);
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -22,9 +12,9 @@ const newFeed = async (req, res) => {
   }
 };
 
-const update = async (req, res) => {
+const deleteHistory = async (req, res) => {
   try {
-    const result = await UserService.update(req.user.sub, req);
+    const result = await searchHistoryService.deleteHistory(req.params.id);
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -32,8 +22,20 @@ const update = async (req, res) => {
     });
   }
 };
+
+const getSearchHistory = async (req, res) => {
+  try {
+    const result = await searchHistoryService.getSearchHistory(req.user.sub);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
+
 module.exports = {
-  findUser,
-  update,
-  newFeed,
+  deleteHistory,
+  createSearchHistory,
+  getSearchHistory,
 };
