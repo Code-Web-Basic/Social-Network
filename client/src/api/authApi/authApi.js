@@ -6,14 +6,15 @@ export const loginPass = async (params) => {
             email: params.data.email,
             password: params.data.password,
         });
-        return res;
+        return res?.result;
     } catch (error) {
         console.log(error);
     }
 };
 export const getUserInfo = async () => {
     try {
-        await httpRequest.get('/auth/login/success');
+        const res = await httpRequest.get('/auth/login/success');
+        return res?.result;
     } catch (error) {
         console.log(error);
     }
@@ -22,7 +23,7 @@ export const getUserInfo = async () => {
 export const logout = async () => {
     try {
         const res = await httpRequest.post('/auth/logout');
-        console.log(res);
+        console.log(res?.result);
     } catch (error) {
         console.log(error);
     }
@@ -37,7 +38,7 @@ export const registerPassword = async (params) => {
             email: params.email,
             authType: 'local',
         });
-        return res;
+        return res?.result;
     } catch (error) {
         console.log(error);
     }

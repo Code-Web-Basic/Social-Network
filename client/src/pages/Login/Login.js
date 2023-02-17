@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+// mui
 import { LoadingButton } from '@mui/lab';
 import {
     Box,
@@ -14,12 +16,13 @@ import {
     Typography,
     useTheme,
 } from '@mui/material';
-import { unwrapResult } from '@reduxjs/toolkit';
 import { Eye, EyeSlash, GithubLogo } from 'phosphor-react';
-import { useEffect, useState } from 'react';
+// redux
+import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
+import { signInGithub, signInGoogle, signInPassWord } from '~/features/auth/authSlice';
+// component
 import { Link, useNavigate } from 'react-router-dom';
-import { signInFacebook, signInGoogle, signInPassWord } from '~/features/auth/authSlice';
 import images from '~/assets/images';
 import { router as configRouter } from '~/config/config';
 
@@ -88,17 +91,16 @@ function Login() {
 
     const handleClickGoogle = async () => {
         try {
-            const actionResult = await dispatch(signInGoogle());
-            const currentUser = unwrapResult(actionResult);
-            console.log(currentUser);
+            await window.open('http://localhost:3240/v1/auth/google', '_self');
+            await dispatch(signInGoogle());
         } catch (error) {
             console.log('failed', error.message);
         }
     };
-    const handleClickFacebook = async () => {
-        const url = process.env.REACT_APP_API_URL;
+    const handleClickGithub = async () => {
         try {
-            window.open(url);
+            await window.open('http://localhost:3240/v1/auth/github', '_self');
+            await dispatch(signInGithub());
         } catch (error) {
             console.log('failed', error.message);
         }
@@ -200,7 +202,7 @@ function Login() {
                                     },
                                 }}
                                 startIcon={<GithubLogo size={20} />}
-                                onClick={handleClickFacebook}
+                                onClick={handleClickGithub}
                             >
                                 Github
                             </Button>

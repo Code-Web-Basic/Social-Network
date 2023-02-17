@@ -17,12 +17,6 @@ import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/Suggestion
 function Home() {
     const currentUser = useSelector((state) => state.auth.currentUser);
     const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     if (!currentUser) {
-    //         navigate('/login');
-    //     }
-    // }, [currentUser, navigate]);
     return (
         <>
             <Grid container>

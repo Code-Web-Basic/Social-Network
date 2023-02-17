@@ -1,5 +1,6 @@
 import { Box, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 const style = {
     position: 'absolute',
@@ -12,6 +13,8 @@ const style = {
     borderRadius: '10px',
 };
 function MenuModal({ children, data = [] }) {
+    // eslint-disable-next-line no-unused-vars
+    const dispatch = useDispatch();
     const theme = useTheme();
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -34,7 +37,9 @@ function MenuModal({ children, data = [] }) {
                         bgcolor: theme.palette.grey[200],
                         borderRadius: 1,
                     },
+                    cursor: 'pointer',
                 }}
+                onClick={item.onClick}
             >
                 <Typography variant="body2" fontWeight={item.fontWeight} color={item.color}>
                     {item.title}
@@ -70,6 +75,7 @@ function MenuModal({ children, data = [] }) {
                                     bgcolor: theme.palette.grey[200],
                                     borderRadius: 1,
                                 },
+                                cursor: 'pointer',
                             }}
                         >
                             <Typography variant="body2" fontWeight={400}>
