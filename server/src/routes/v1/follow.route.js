@@ -3,7 +3,7 @@ const verifyToken = require("../../middlewares/verifyToken");
 const router = express.Router();
 const followController = require("../../controllers/follow.controller");
 
-router.route("/").post(verifyToken, followController.follow);
+router.route("/:targetId").post(verifyToken, followController.follow);
 
 router.route("/unFollow").post(verifyToken, followController.unFollow);
 
