@@ -29,7 +29,7 @@ function Home() {
                 </Grid>
                 <Grid item xs={3.5}>
                     <Stack direction={'column'} paddingTop="40px">
-                        <AccountItem currentUser={currentUser.result.data} />
+                        <AccountItem currentUser={currentUser.data} />
                         <SuggestionsUser />
                     </Stack>
                 </Grid>

@@ -20,7 +20,7 @@ function Search() {
             setIsSearching(true);
             const callApi = async () => {
                 const res = await userApi.searchUser(valueDebounce);
-                setResults(res.result);
+                setResults(res);
                 setIsSearching(false);
             };
             callApi();
