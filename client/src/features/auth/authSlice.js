@@ -20,12 +20,7 @@ export const signInGithub = createAsyncThunk('auth/signInGithub', async (params,
     return res;
 });
 export const logout = createAsyncThunk('auth/logout', async (params, thunkAPI) => {
-    console.log('logout');
-    try {
-        await authApi.logout();
-    } catch (error) {
-        console.log(error);
-    }
+    await authApi.logout();
 });
 
 export const authSlice = createSlice({
