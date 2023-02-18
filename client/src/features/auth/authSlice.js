@@ -11,9 +11,17 @@ export const signInPassWord = createAsyncThunk('auth/signInPassWord', async (par
     const res = await authApi.loginPass({ data });
     return res;
 });
-export const signInGoogle = createAsyncThunk('auth/signInGoogle', async (params, thunkAPI) => {});
-export const signInFacebook = createAsyncThunk('auth/signInFacebook', async (params, thunkAPI) => {});
-export const logout = createAsyncThunk('auth/logout', async (params, thunkAPI) => {});
+export const signInGoogle = createAsyncThunk('auth/signInGoogle', async (params, thunkAPI) => {
+    const res = await authApi.getUserInfo();
+    return res;
+});
+export const signInGithub = createAsyncThunk('auth/signInGithub', async (params, thunkAPI) => {
+    const res = await authApi.getUserInfo();
+    return res;
+});
+export const logout = createAsyncThunk('auth/logout', async (params, thunkAPI) => {
+    await authApi.logout();
+});
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -65,14 +73,14 @@ export const authSlice = createSlice({
             state.currentUser = action.payload;
             state.typeLogin = 'google';
         });
-        builder.addCase(signInFacebook.pending, (state, action) => {
+        builder.addCase(signInGithub.pending, (state, action) => {
             state.loading = true;
         });
-        builder.addCase(signInFacebook.rejected, (state, action) => {
+        builder.addCase(signInGithub.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
         });
-        builder.addCase(signInFacebook.fulfilled, (state, action) => {
+        builder.addCase(signInGithub.fulfilled, (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'facebook';
@@ -86,7 +94,7 @@ export const authSlice = createSlice({
         });
         builder.addCase(logout.fulfilled, (state, action) => {
             state.loading = false;
-            state.currentUser = action.payload;
+            state.currentUser = null;
             state.typeLogin = '';
         });
     },

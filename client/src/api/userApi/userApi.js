@@ -2,8 +2,12 @@ import * as httpRequest from '~/utils/httpRequest';
 
 export const searchUser = async (query) => {
     try {
-        const res = await httpRequest.get(`user/search/${query}`);
-        return res;
+        const res = await httpRequest.get(`user/search`, {
+            params: {
+                query,
+            },
+        });
+        return res?.result;
     } catch (error) {
         console.log(error);
     }

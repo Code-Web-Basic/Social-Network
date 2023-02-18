@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { privateRoutes, publicRoutes } from '~/router/Router';
 import DefaultLayout from '~/layout/DefaultLayout';
 import { useSelector, useStore } from 'react-redux';
@@ -42,6 +42,7 @@ function App() {
                             />
                         );
                     })}
+                    <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>
             </div>
         </Router>

@@ -17,12 +17,6 @@ import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/Suggestion
 function Home() {
     const currentUser = useSelector((state) => state.auth.currentUser);
     const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     if (!currentUser) {
-    //         navigate('/login');
-    //     }
-    // }, [currentUser, navigate]);
     return (
         <>
             <Grid container>
@@ -35,7 +29,7 @@ function Home() {
                 </Grid>
                 <Grid item xs={3.5}>
                     <Stack direction={'column'} paddingTop="40px">
-                        <AccountItem currentUser={currentUser.result.data} />
+                        <AccountItem currentUser={currentUser.data} />
                         <SuggestionsUser />
                     </Stack>
                 </Grid>
