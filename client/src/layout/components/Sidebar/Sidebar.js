@@ -12,6 +12,7 @@ import {
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { router as configRouter } from '~/config/config';
+import Notifications from '../Notifications/Notifications';
 import Search from '../Search/Search';
 function Sidebar() {
     const theme = useTheme();
@@ -22,6 +23,9 @@ function Sidebar() {
     const renderComponent = () => {
         if (activeCurrent === 1) {
             return <Search />;
+        }
+        if (activeCurrent === 5) {
+            return <Notifications />;
         }
     };
     return (
