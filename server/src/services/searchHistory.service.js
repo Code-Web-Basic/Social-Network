@@ -8,9 +8,9 @@ const createSearchHistory = async (data) => {
   }
 };
 
-const deleteHistory = async (id) => {
+const deleteHistory = async (userId, id) => {
   try {
-    return await searchHistoryModel.deleteHistory(id);
+    return await searchHistoryModel.deleteHistory(userId, id);
   } catch (error) {
     throw new Error(error);
   }
@@ -24,8 +24,16 @@ const getSearchHistory = async (id) => {
   }
 };
 
+const deleteAllHistory = async (userId) => {
+  try {
+    return await searchHistoryModel.deleteAllHistory(userId);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   deleteHistory,
   createSearchHistory,
   getSearchHistory,
+  deleteAllHistory,
 };
