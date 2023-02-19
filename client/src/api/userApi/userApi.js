@@ -12,3 +12,13 @@ export const searchUser = async (query) => {
         console.log(error);
     }
 };
+
+export const getHistorySearch = async () => {
+    try {
+        const res = await httpRequest.get('searchHistory');
+        console.log(res);
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};

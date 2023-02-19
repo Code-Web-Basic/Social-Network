@@ -1,12 +1,11 @@
 import { Grid, Stack } from '@mui/material';
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import AccountItem from '~/layout/components/Home/AccountItem/AccountItem';
 import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
 import Posts from '~/layout/components/Home/Posts/Post';
 import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/SuggestionsUser';
-
+import * as postApi from '~/api/postApi/postApi';
+import { useEffect } from 'react';
 // const Item = styled(Paper)(({ theme }) => ({
 //     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
 //     ...theme.typography.body2,
@@ -16,7 +15,14 @@ import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/Suggestion
 // }));
 function Home() {
     const currentUser = useSelector((state) => state.auth.currentUser);
-    const navigate = useNavigate();
+    useEffect(() => {
+        const callApi = async () => {
+            // const res = await postApi.getNewFeed();
+            // console.log(res);
+        };
+        callApi();
+    }, []);
+
     return (
         <>
             <Grid container>

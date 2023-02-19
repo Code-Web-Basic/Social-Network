@@ -195,7 +195,7 @@ function ShareCreatePost() {
                             <Stack direction="row" p={2} alignItems="center" justifyContent="flex-start" spacing={2}>
                                 <Avatar src="" />
                                 <Typography variant="body1" fontWeight={600} fontSize={'0.8rem'}>
-                                    {currentUser.result.data.userName}
+                                    {currentUser.data.userName}
                                 </Typography>
                             </Stack>
                             {/*  */}
