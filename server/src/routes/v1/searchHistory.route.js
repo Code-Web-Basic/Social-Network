@@ -10,4 +10,7 @@ router
   .route("/delete/:id")
   .post(verifyToken, searchHistoryController.deleteHistory);
 router.route("/").get(verifyToken, searchHistoryController.getSearchHistory);
+router
+  .route("/deleteAll")
+  .post(verifyToken, searchHistoryController.deleteAllHistory);
 module.exports = router;

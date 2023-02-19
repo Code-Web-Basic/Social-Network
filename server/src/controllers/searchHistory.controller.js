@@ -14,7 +14,10 @@ const createSearchHistory = async (req, res) => {
 
 const deleteHistory = async (req, res) => {
   try {
-    const result = await searchHistoryService.deleteHistory(req.params.id);
+    const result = await searchHistoryService.deleteHistory(
+      req.user.sub,
+      req.params.id
+    );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -22,7 +25,16 @@ const deleteHistory = async (req, res) => {
     });
   }
 };
-
+const deleteAllHistory = async (req, res) => {
+  try {
+    const result = await searchHistoryService.deleteAllHistory(req.user.sub);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 const getSearchHistory = async (req, res) => {
   try {
     const result = await searchHistoryService.getSearchHistory(req.user.sub);
@@ -35,6 +47,7 @@ const getSearchHistory = async (req, res) => {
 };
 
 module.exports = {
+  deleteAllHistory,
   deleteHistory,
   createSearchHistory,
   getSearchHistory,
