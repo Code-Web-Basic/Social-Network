@@ -53,7 +53,6 @@ const getSearchHistory = async (id) => {
             as: "User",
           },
         },
-        { $group: { User: "$User" } },
       ])
       .limit(10)
       .toArray();
@@ -63,19 +62,29 @@ const getSearchHistory = async (id) => {
   }
 };
 
-const deleteHistory = async (id) => {
+const deleteHistory = async (userId, id) => {
   try {
     await getDB()
       .collection(searchHistoryCollectionName)
-      .deleteOne({ _id: ObjectId(id) });
+      .deleteOne({ _id: ObjectId(id), sourceId: userId });
     return "deleted successfully";
   } catch (error) {
     throw new Error(error);
   }
 };
-
+const deleteAllHistory = async (userId) => {
+  try {
+    await getDB()
+      .collection(searchHistoryCollectionName)
+      .deleteMany({ sourceId: userId });
+    return "deleted successfully";
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   deleteHistory,
   createSearchHistory,
   getSearchHistory,
+  deleteAllHistory,
 };
