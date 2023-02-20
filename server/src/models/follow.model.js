@@ -70,7 +70,7 @@ const getFollowers = async (userId, paging) => {
         },
       ])
       .sort({ createdAt: -1 })
-      .skip(15 * paging)
+      .skip(15 * (paging - 1))
       .limit(15)
       .toArray();
     return result;
@@ -96,7 +96,7 @@ const getFollowing = async (userId, paging) => {
         },
       ])
       .sort({ createdAt: -1 })
-      .skip(15 * paging)
+      .skip(15 * (paging - 1))
       .limit(15)
       .toArray();
     return result;

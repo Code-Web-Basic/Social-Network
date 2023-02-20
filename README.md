@@ -18,7 +18,6 @@ authGoogleId: Joi.string().default(null),
 authGithubId: Joi.string().default(null),
 authType: Joi.string().valid("local", "google", "github").default("local"),
 });
-
 authentication API:
 
 ĐĂNG KÝ (REGISTER): http://localhost:3240/v1/auth/register post
@@ -74,7 +73,6 @@ Cần token
 truyền vào theo form gồm
 {
 caption (string),
-ownerId(string) ,
 isVideo(boolean),
 array file image
 }
@@ -84,7 +82,6 @@ Cần token
 truyền vào theo form gồm
 {
 caption (string),
-ownerId(string) ,
 isVideo(boolean),
 file mp4
 }
@@ -126,7 +123,6 @@ Comment : http://localhost:3240/v1/comment/create post
 cần token
 {
 "postId" : "63e88fb49891e7d9449e0889",
-"senderId" : "63e58ee5094127604659bb09",
 "content" :"halo",
 "isReply" : "false"
 }
@@ -151,7 +147,6 @@ SearchHistory :
 
 Create : http://localhost:3240/v1/searchHistory/create
 {
-sourceId : ...,
 targetId : ...
 }
 

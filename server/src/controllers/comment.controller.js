@@ -3,7 +3,7 @@ const commentService = require("../services/commemt.service");
 
 const create = async (req, res) => {
   try {
-    const result = await commentService.create(req.body);
+    const result = await commentService.create(req.user.sub, req.body);
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({

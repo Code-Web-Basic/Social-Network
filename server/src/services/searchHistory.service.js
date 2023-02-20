@@ -1,8 +1,11 @@
 const searchHistoryModel = require("../models/searchHistory.model");
 
-const createSearchHistory = async (data) => {
+const createSearchHistory = async (userId, data) => {
   try {
-    return await searchHistoryModel.createSearchHistory(data);
+    return await searchHistoryModel.createSearchHistory({
+      ...data,
+      sourceId: userId,
+    });
   } catch (error) {
     throw new Error(error);
   }

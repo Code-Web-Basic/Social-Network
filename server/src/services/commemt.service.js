@@ -1,8 +1,8 @@
 const commentModel = require("../models/comment.model");
 
-const create = async (data) => {
+const create = async (userId, data) => {
   try {
-    const result = await commentModel.create(data);
+    const result = await commentModel.create({ ...data, senderId: userId });
     return result;
   } catch (error) {
     throw new Error(error);
