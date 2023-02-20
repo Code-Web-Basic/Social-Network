@@ -10,6 +10,8 @@ import MenuUserFollowing from './MenuUserFollowing/MenuUserFollowing';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import CommentPost from './CommentPost/CommentPost';
 import SharePost from './SharePost/SharePost';
+import { calculateTimePassed } from '~/utils/utils';
+import { useState } from 'react';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -60,11 +62,20 @@ const MENU_ITEMS = [
         fontWeight: 400,
     },
 ];
-function PostItem() {
+function PostItem({ data }) {
     const theme = useTheme();
+    const [openCommentBox, setOpenCommentBox] = useState(false);
+
+    // const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpenCommentBox(true);
+    const handleClose = () => setOpenCommentBox(false);
+
+    const handleOpenComment = (e) => {
+        return openCommentBox && <CommentPost data={data} open={openCommentBox} handleClose={handleClose} />;
+    };
     return (
         <Box>
-            <Stack direction="column" spacing={1.5}>
+            <Stack direction="column" spacing={1.5} marginTop="10px">
                 {/* information post */}
                 <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row" alignItems="center" spacing={2}>
@@ -73,17 +84,20 @@ function PostItem() {
                             placement="bottom-start"
                             render={(attrs) => (
                                 <div className="box" tabIndex="-1" {...attrs}>
-                                    <MenuUserFollowing />
+                                    <MenuUserFollowing id={data?.User?._id} />
                                 </div>
                             )}
                         >
-                            <Avatar src="" sx={{ width: 32, height: 32 }} />
+                            <Avatar
+                                src={data?.User?.avatar ? `${data.User.avatar}` : ''}
+                                sx={{ width: 32, height: 32 }}
+                            />
                         </Tippy>
                         <Typography variant="body2" fontWeight="600">
-                            Nguyen van tu
+                            {data?.User?.userName}
                         </Typography>
                         <Typography variant="body2" fontSize="400">
-                            6h
+                            {calculateTimePassed(data?.Post?.updatedAt)}
                         </Typography>
                     </Stack>
                     <Stack direction="row" alignItems="center" justifyContent="center">
@@ -122,14 +136,15 @@ function PostItem() {
                 <Stack direction="column" spacing={0.5}>
                     <Stack direction="row" justifyContent="space-between">
                         <Stack direction="row" spacing={1.5}>
+                            {/* heart icon */}
                             <ItemReaction>
                                 <Heart size={24} />
                             </ItemReaction>
-                            <CommentPost>
-                                <ItemReaction>
-                                    <ChatCircle size={24} />
-                                </ItemReaction>
-                            </CommentPost>
+                            {/* comment icon */}
+                            <ItemReaction onClick={handleOpen}>
+                                <ChatCircle size={24} />
+                            </ItemReaction>
+                            {/* share icon */}
                             <SharePost>
                                 <ItemReaction>
                                     <PaperPlaneTilt size={24} />
@@ -145,34 +160,41 @@ function PostItem() {
                     {/* like */}
                     <Stack direction="row" p={0.5}>
                         <Typography variant="body2" fontWeight="600">
-                            232,106 likes
+                            {`${data?.reactionCount} likes`}
                         </Typography>
                     </Stack>
                     {/* body */}
                     <Stack direction="row">
-                        <Typography variant="body2">mancity Working hard! ⚔️</Typography>
+                        <Typography variant="body2">{data.Post.caption}</Typography>
                     </Stack>
                     {/* comment */}
-                    <CommentPost>
-                        <Stack
-                            direction="row"
-                            spacing={0.3}
-                            sx={{
-                                color: theme.palette.grey[500],
-                                cursor: 'pointer',
-                                '&:active': {
-                                    color: theme.palette.grey[400],
-                                },
-                            }}
-                        >
-                            <Typography variant="body2">View all</Typography>
-                            <Typography variant="body2">1,033</Typography>
-                            <Typography variant="body2"> comments</Typography>
-                        </Stack>
-                    </CommentPost>
+
+                    <Stack
+                        direction="row"
+                        spacing={0.3}
+                        sx={{
+                            color: theme.palette.grey[500],
+                            cursor: 'pointer',
+                            '&:active': {
+                                color: theme.palette.grey[400],
+                            },
+                        }}
+                        onClick={handleOpen}
+                    >
+                        {data.Post.commentCount > 0 && (
+                            <>
+                                <Typography variant="body2">View all</Typography>
+                                <Typography variant="body2">{data.Post.commentCount}</Typography>
+                                <Typography variant="body2"> comments</Typography>
+                            </>
+                        )}
+                    </Stack>
+
                     <Stack direction="row">
                         <NewCommentPost />
                     </Stack>
+                    {/* comment box */}
+                    {handleOpenComment()}
                 </Stack>
             </Stack>
         </Box>

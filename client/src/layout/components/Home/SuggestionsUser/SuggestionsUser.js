@@ -31,7 +31,7 @@ function SuggestionsUser({ data, typeLayout = 'column' }) {
         });
     };
     return typeLayout === 'column' ? (
-        <Stack direction="column" width="100%" p={1} spacing={2} marginTop="30px">
+        <Stack direction="column" width="100%" p={1} spacing={2} margin="10px 0px">
             <Stack direction="row" justifyContent="space-between" width="100%">
                 <Typography variant="body1" fontSize="0.8rem" fontWeight={500} color={theme.palette.text.secondary}>
                     Suggestions for you
@@ -45,7 +45,7 @@ function SuggestionsUser({ data, typeLayout = 'column' }) {
             </Stack>
         </Stack>
     ) : (
-        <Stack direction="column" width="100%" p={1} spacing={2} marginTop="30px">
+        <Stack direction="column" width="100%" p={1} spacing={2} margin="10px 0px">
             <Stack direction="row" justifyContent="space-between" width="100%">
                 <Typography variant="body1" fontSize="0.8rem" fontWeight={500} color={theme.palette.text.secondary}>
                     Suggestions for you

@@ -6,20 +6,30 @@ import PostItem from './PostItem';
 const StyleDivider = styled(Divider)(({ theme }) => ({
     width: '100%',
     color: theme.palette.grey[300],
-    padding: '10px 0px',
+    paddingBottom: '10px',
 }));
 
-function Posts() {
+function Posts({ data }) {
     // const [use]
     return (
         <div>
             <Stack direction="column" spacing={2} p="30px 10px">
-                <PostItem />
-                <StyleDivider />
-                <SuggestionsUser typeLayout="row" />
-                <StyleDivider />
-                <PostEnd />
-                <StyleDivider />
+                {data?.map((item, index) =>
+                    index === 1 ? (
+                        <Stack direction={'column'} key={item.Post._id}>
+                            <StyleDivider />
+                            <SuggestionsUser typeLayout="row" />
+                            <StyleDivider />
+                            <PostItem data={item} />
+                            {/* <StyleDivider /> */}
+                        </Stack>
+                    ) : (
+                        <Stack direction="column" key={item.Post._id}>
+                            <StyleDivider />
+                            <PostItem data={item} />
+                        </Stack>
+                    ),
+                )}
             </Stack>
         </div>
     );

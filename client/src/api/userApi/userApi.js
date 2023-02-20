@@ -17,7 +17,7 @@ export const getHistorySearch = async () => {
     try {
         const res = await httpRequest.get('searchHistory');
         console.log(res);
-        return res;
+        return res?.result;
     } catch (error) {
         console.log(error);
     }

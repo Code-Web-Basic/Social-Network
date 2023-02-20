@@ -1,24 +1,22 @@
 import { Stack, Typography, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
 import UserSearchItem from './UserSearchItem';
 import * as userApi from '~/api/userApi/userApi';
+import SkeletonLoading from '~/components/SkeletonLoading/SkeletonLoading';
 
 function HistorySearch() {
     const theme = useTheme();
-    // const { loading, error, data } = useQuery('searchHistory');
-
-    const [historySearch, setHistorySearch] = useState([1, 2, 3]);
-    console.log('test');
-    // useEffect(() => {
-    //     if (data) {
-    //         setHistorySearch([...data]);
-    //     }
-    // }, [data]);
+    // const { loading, error, data } = useQuery('searchHistory', userApi.getHistorySearch());
+    const [loading, setLoading] = useState(false);
+    const [historySearch, setHistorySearch] = useState([]);
     useEffect(() => {
         const callApi = async () => {
-            const res = await userApi.getHistorySearch('');
-            console.log(res);
+            setLoading(true);
+            const res = await userApi.getHistorySearch();
+            if (res?.length > 0) {
+                setHistorySearch([...res]);
+            }
+            setLoading(false);
         };
         callApi();
     }, []);
@@ -41,8 +39,14 @@ function HistorySearch() {
                     clear all
                 </Typography>
             </Stack>
-            <Stack direction="column" width="100%" spacing={1}>
-                {renderItemHistory()}
+            <Stack direction="column" width="100%" spacing={1} alignItems="center">
+                {loading ? (
+                    <SkeletonLoading layout="row" type="account" />
+                ) : historySearch.length > 0 ? (
+                    renderItemHistory()
+                ) : (
+                    <Typography>No recent searches.</Typography>
+                )}
             </Stack>
         </>
     );

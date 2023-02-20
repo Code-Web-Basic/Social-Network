@@ -2,8 +2,10 @@ import * as httpRequest from '~/utils/httpRequest';
 
 export const getComment = async (params) => {
     try {
-        const res = await httpRequest.get(`comment/showCommentOfPost/${params.id}`);
-        return res;
+        const res = await httpRequest.get(`comment/showCommentOfPost/${params.id}/${params.paging}`);
+        console.log(res);
+        return res?.result;
+        // console.log(params.id);
     } catch (error) {
         console.log(error);
     }

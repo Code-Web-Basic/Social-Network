@@ -1,4 +1,6 @@
-import { useState } from 'react';
+// import { useState } from 'react';
+import PropTypes from 'prop-types';
+
 // mui ui
 import { Avatar, Box, Grid, Modal, Stack, styled, Typography, useTheme } from '@mui/material';
 //icon
@@ -8,6 +10,7 @@ import ScrollComment from './ScrollComment';
 import images from '~/assets/images';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import NewCommentPost from './NewCommentPost';
+import { calculateTimePassed } from '~/utils/utils';
 
 // styles
 const ItemReaction = styled('div')(({ theme }) => ({
@@ -71,14 +74,12 @@ const MENU_ITEMS = [
     },
 ];
 //comment post modal
-function CommentPost({ data, children }) {
+function CommentPost({ data = [], children, open = false, handleClose }) {
     const theme = useTheme();
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    console.log(data);
     return (
         <>
-            <div onClick={handleOpen}>{children}</div>
+            {/* <div onClick={handleOpen}>{children}</div> */}
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -127,7 +128,7 @@ function CommentPost({ data, children }) {
                                                     fontWeight={600}
                                                     color={theme.palette.text.primary}
                                                 >
-                                                    officialnffc
+                                                    {data?.User?.userName}
                                                 </Typography>
                                                 <Typography
                                                     variant="body2"
@@ -135,7 +136,7 @@ function CommentPost({ data, children }) {
                                                     fontSize="0.7rem"
                                                     color={theme.palette.text.secondary}
                                                 >
-                                                    Original audio
+                                                    {data?.User?.name}
                                                 </Typography>
                                             </Stack>
                                         </Stack>
@@ -148,7 +149,7 @@ function CommentPost({ data, children }) {
                                         </Stack>
                                     </Stack>
                                     <Stack direction="row" height="100%">
-                                        <ScrollComment />
+                                        <ScrollComment id={data?.Post?._id} />
                                     </Stack>
                                     <Stack
                                         direction="column"
@@ -181,7 +182,7 @@ function CommentPost({ data, children }) {
                                                 fontWeight="600"
                                                 color={theme.palette.text.primary}
                                             >
-                                                232,106 likes
+                                                {data?.reactionCount} likes
                                             </Typography>
                                         </Stack>
                                         {/* time */}
@@ -192,7 +193,7 @@ function CommentPost({ data, children }) {
                                                 color={theme.palette.text.secondary}
                                                 fontSize="0.5rem"
                                             >
-                                                12h
+                                                {calculateTimePassed(data?.Post?.updatedAt)}
                                             </Typography>
                                         </Stack>
                                     </Stack>
@@ -214,3 +215,9 @@ function CommentPost({ data, children }) {
 }
 
 export default CommentPost;
+
+CommentPost.prototype = {
+    data: PropTypes.array,
+    open: PropTypes.bool,
+    handleClose: PropTypes.func,
+};

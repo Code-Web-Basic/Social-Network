@@ -4,8 +4,9 @@ import { Avatar, Box, Button, IconButton, Stack, useTheme } from '@mui/material'
 import { Smiley, X } from 'phosphor-react';
 import { useRef, useState } from 'react';
 import TippyHeadless from '@tippyjs/react/headless';
+import { useSelector } from 'react-redux';
 function NewReplyComment(props) {
-    const currentUser = {};
+    const currentUser = useSelector((state) => state.auth.currentUser);
     const theme = useTheme();
     const [valueInput, setValueInput] = useState('');
     const [enableBtn, setEnableBtn] = useState(true);
@@ -56,7 +57,7 @@ function NewReplyComment(props) {
                 >
                     <Stack direction={'row'}>
                         <Avatar
-                            src={currentUser?.user?.photoURL}
+                            src={currentUser?.data?.avatar}
                             sx={{ width: 25, height: 25, transform: 'translateY(10px)' }}
                         />
                     </Stack>
