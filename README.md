@@ -50,8 +50,10 @@ Tìm kiếm User : http://localhost:3240/v1/user/search?query=...
 Update info : http://localhost:3240/v1/user/update/ put (gửi bằng form nếu cập nhật avatar)  
 Cần token
 
-NewFeed : http://localhost:3240/v1/user/newFeed get
-token
+NewFeed : http://localhost:3240/v1/user/newFeed/1
+(get)
+paging :1
+authentication: header key token
 
 Post Schema :
 const postCollectionSchema = Joi.object({

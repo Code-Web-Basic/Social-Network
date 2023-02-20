@@ -1,5 +1,7 @@
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 import { refetchToken } from '~/features/auth/authSlice';
+import Cookies from 'js-cookie';
 
 import instance from '~/utils/httpRequest';
 
@@ -22,6 +24,7 @@ const setUpInterceptor = (store) => {
     function select(state) {
         return state.auth.currentUser;
     }
+
     instance.interceptors.request.use(async (config) => {
         if (
             config?.url.includes('auth/login') ||
@@ -64,7 +67,7 @@ const setUpInterceptor = (store) => {
             const user = select(store.getState());
 
             const originalRequest = error.config;
-            if (error.response.status === 403 && !originalRequest._retry) {
+            if (error?.response?.status === 403 && !originalRequest?._retry) {
                 originalRequest._retry = true;
                 const access_token = await refreshAccessToken();
                 // console.log('refetch token', access_token);

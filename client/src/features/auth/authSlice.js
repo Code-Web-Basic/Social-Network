@@ -35,6 +35,12 @@ export const authSlice = createSlice({
         refetchToken: (state, action) => {
             state.currentUser = action.payload;
         },
+        resetStoreAuth: (state, action) => {
+            state.currentUser = null;
+            state.loading = false;
+            state.error = '';
+            state.typeLogin = '';
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(signInPassWord.pending, (state, action) => {
@@ -99,6 +105,6 @@ export const authSlice = createSlice({
         });
     },
 });
-export const { refetchToken } = authSlice.actions;
+export const { refetchToken, resetStoreAuth } = authSlice.actions;
 
 export default authSlice.reducer;

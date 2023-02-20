@@ -14,7 +14,7 @@ export default configureStore({
     reducer: { auth: authReducer, comment: commentReducer },
 });
 // auth: authReducer
-const rootReducer = combineReducers({ auth: authReducer });
+const rootReducer = combineReducers({ auth: authReducer, comment: commentReducer });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
     reducer: persistedReducer,
