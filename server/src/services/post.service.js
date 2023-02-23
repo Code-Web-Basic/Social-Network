@@ -30,7 +30,7 @@ const createPost = async (data) => {
         filename: data.filename,
       };
     });
-    const addData = { ...data.body, source };
+    const addData = { ...data.body, source, ownerId: data.user.sub };
     const result = await postModel.create(addData);
     return result;
   } catch (error) {

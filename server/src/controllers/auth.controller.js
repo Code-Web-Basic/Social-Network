@@ -133,21 +133,20 @@ const logout = (req, res, next) => {
 };
 const refresh = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  console.log("refreshToken from cookie: ", refreshToken);
-  console.log(refreshTokenList);
   if (!refreshToken) return res.status(401).json("You're not authenticated");
   if (!refreshTokenList.includes(refreshToken)) {
     return res.status(403).json("RefreshToken is not valid");
   }
   Jwt.verify(refreshToken, process.env.JWT_REFRESH, (err, user) => {
+    console.log(user);
     if (err) {
       console.log(err);
     }
     refreshTokenList = refreshTokenList.filter(
       (token) => token !== refreshToken
     );
-    const newAccessToken = UserService.encodedAccessToken(user._id);
-    const newRefreshToken = UserService.encodedRefreshToken(user._id);
+    const newAccessToken = UserService.encodedAccessToken(user.sub);
+    const newRefreshToken = UserService.encodedRefreshToken(user.sub);
     refreshTokenList.push(newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
