@@ -23,7 +23,7 @@ function Home() {
         const callApi = async () => {
             const res = await postApi.getNewFeed({ paging });
             console.log(res);
-            setDataCurrent((prev) => [...res]);
+            setDataCurrent([...res]);
         };
         callApi();
     }, [paging]);
@@ -41,7 +41,7 @@ function Home() {
                 </Grid>
                 <Grid item xs={3.5}>
                     <Stack direction={'column'} paddingTop="40px">
-                        <AccountItem currentUser={currentUser.data} />
+                        <AccountItem currentUser={currentUser?.data} />
                         <SuggestionsUser />
                     </Stack>
                 </Grid>

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { refetchToken } from '~/features/auth/authSlice';
-import Cookies from 'js-cookie';
+import { refetchToken, resetStoreAuth } from '~/features/auth/authSlice';
 
 import instance from '~/utils/httpRequest';
 
@@ -24,7 +23,6 @@ const setUpInterceptor = (store) => {
     function select(state) {
         return state.auth.currentUser;
     }
-
     instance.interceptors.request.use(async (config) => {
         if (
             config?.url.includes('auth/login') ||
@@ -35,10 +33,13 @@ const setUpInterceptor = (store) => {
             return config;
         }
         const user = select(store.getState());
-
+        // if (refetchToken) {
+        //     const decodedToken = jwtDecode(user?.data?.accessToken);
+        //     if (decodedToken.exp < Date.now().getTime() / 1000) {
+        //     }
+        // } else
         if (user?.data?.accessToken) {
             // console.log('call api');
-            config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
 
             // const decodedToken = jwtDecode(user?.data?.accessToken);
             // if (decodedToken.exp < date.getTime() / 1000) {
@@ -55,6 +56,7 @@ const setUpInterceptor = (store) => {
             // } else {
             //     // config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
             // }
+            config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
         }
         return config;
     }, handleError);
@@ -80,6 +82,8 @@ const setUpInterceptor = (store) => {
                 // console.log('call refetch user', refreshUser, user);
                 store.dispatch(refetchToken(refreshUser));
                 return instance(originalRequest);
+            } else if (error?.response?.status === 400) {
+                store.dispatch(resetStoreAuth());
             }
             return Promise.reject(error);
         },

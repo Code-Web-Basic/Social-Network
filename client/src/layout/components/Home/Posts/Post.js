@@ -16,7 +16,7 @@ function Posts({ data }) {
             <Stack direction="column" spacing={2} p="30px 10px">
                 {data?.map((item, index) =>
                     index === 1 ? (
-                        <Stack direction={'column'} key={item.Post._id}>
+                        <Stack direction={'column'} key={item?.Post?._id}>
                             <StyleDivider />
                             <SuggestionsUser typeLayout="row" />
                             <StyleDivider />
@@ -24,7 +24,7 @@ function Posts({ data }) {
                             {/* <StyleDivider /> */}
                         </Stack>
                     ) : (
-                        <Stack direction="column" key={item.Post._id}>
+                        <Stack direction="column" key={item?.Post?._id}>
                             <StyleDivider />
                             <PostItem data={item} />
                         </Stack>
