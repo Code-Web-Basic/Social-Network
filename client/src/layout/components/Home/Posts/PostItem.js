@@ -11,7 +11,8 @@ import MenuModal from '~/components/Popper/Menu/MenuModal';
 import CommentPost from './CommentPost/CommentPost';
 import SharePost from './SharePost/SharePost';
 import { calculateTimePassed } from '~/utils/utils';
-import { useState } from 'react';
+
+import PropTypes from 'prop-types';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -64,15 +65,6 @@ const MENU_ITEMS = [
 ];
 function PostItem({ data }) {
     const theme = useTheme();
-    const [openCommentBox, setOpenCommentBox] = useState(false);
-
-    // const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpenCommentBox(true);
-    const handleClose = () => setOpenCommentBox(false);
-
-    const handleOpenComment = (e) => {
-        return openCommentBox && <CommentPost data={data} open={openCommentBox} handleClose={handleClose} />;
-    };
     return (
         <Box>
             <Stack direction="column" spacing={1.5} marginTop="10px">
@@ -141,9 +133,11 @@ function PostItem({ data }) {
                                 <Heart size={24} />
                             </ItemReaction>
                             {/* comment icon */}
-                            <ItemReaction onClick={handleOpen}>
-                                <ChatCircle size={24} />
-                            </ItemReaction>
+                            <CommentPost data={data}>
+                                <ItemReaction>
+                                    <ChatCircle size={24} />
+                                </ItemReaction>
+                            </CommentPost>
                             {/* share icon */}
                             <SharePost>
                                 <ItemReaction>
@@ -165,36 +159,35 @@ function PostItem({ data }) {
                     </Stack>
                     {/* body */}
                     <Stack direction="row">
-                        <Typography variant="body2">{data.Post.caption}</Typography>
+                        <Typography variant="body2">{data?.Post?.caption}</Typography>
                     </Stack>
                     {/* comment */}
-
-                    <Stack
-                        direction="row"
-                        spacing={0.3}
-                        sx={{
-                            color: theme.palette.grey[500],
-                            cursor: 'pointer',
-                            '&:active': {
-                                color: theme.palette.grey[400],
-                            },
-                        }}
-                        onClick={handleOpen}
-                    >
-                        {data.Post.commentCount > 0 && (
-                            <>
-                                <Typography variant="body2">View all</Typography>
-                                <Typography variant="body2">{data.Post.commentCount}</Typography>
-                                <Typography variant="body2"> comments</Typography>
-                            </>
-                        )}
-                    </Stack>
+                    <CommentPost data={data}>
+                        <Stack
+                            direction="row"
+                            spacing={0.3}
+                            sx={{
+                                color: theme.palette.grey[500],
+                                cursor: 'pointer',
+                                '&:active': {
+                                    color: theme.palette.grey[400],
+                                },
+                            }}
+                        >
+                            {data.Post.commentCount > 0 && (
+                                <>
+                                    <Typography variant="body2">View all</Typography>
+                                    <Typography variant="body2">{data?.Post?.commentCount}</Typography>
+                                    <Typography variant="body2"> comments</Typography>
+                                </>
+                            )}
+                        </Stack>
+                    </CommentPost>
 
                     <Stack direction="row">
                         <NewCommentPost />
                     </Stack>
                     {/* comment box */}
-                    {handleOpenComment()}
                 </Stack>
             </Stack>
         </Box>
@@ -202,3 +195,6 @@ function PostItem({ data }) {
 }
 
 export default PostItem;
+PostItem.prototype = {
+    data: PropTypes.object,
+};

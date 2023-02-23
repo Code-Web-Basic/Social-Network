@@ -5,17 +5,15 @@ import reportWebVitals from '~/reportWebVitals';
 import GlobalStyles from '~/components/GlobalStyles';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
-import { QueryClientProvider, QueryClient } from 'react-query';
-import { BrowserRouter } from 'react-router-dom';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const queryClient = new QueryClient();
 root.render(
     <React.StrictMode>
         <GlobalStyles>
             <Provider store={store}>
-                <QueryClientProvider client={queryClient}>
-                    <App />
-                </QueryClientProvider>
+                {/* <CookiesProvider> */}
+                <App />
+                {/* </CookiesProvider> */}
             </Provider>
         </GlobalStyles>
     </React.StrictMode>,

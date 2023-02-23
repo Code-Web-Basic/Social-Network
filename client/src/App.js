@@ -4,12 +4,15 @@ import { privateRoutes, publicRoutes } from '~/router/Router';
 import DefaultLayout from '~/layout/DefaultLayout';
 import { useSelector, useStore } from 'react-redux';
 import setUpInterceptor from './utils/interceptor';
+// import { useCookies } from 'react-cookie';
+import { Cookies } from 'react-cookie';
 
 function App() {
     const currentUser = useSelector((state) => state.auth.currentUser);
     const store = useStore();
+    // const [cookies, setCookie] = useCookies(['name']);
+    // console.log(Cookies.get('refreshToken'));
     setUpInterceptor(store);
-
     // check user
     let routerCheck = publicRoutes;
 
