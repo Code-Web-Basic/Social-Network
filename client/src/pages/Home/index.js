@@ -1,12 +1,11 @@
 import { Grid, Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import AccountItem from '~/layout/components/Home/AccountItem/AccountItem';
-import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
-import Posts from '~/layout/components/Home/Posts/Post';
 import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/SuggestionsUser';
 import * as postApi from '~/api/postApi/postApi';
 import { useEffect, useState } from 'react';
 import ScrollPost from '~/layout/components/Home/Posts/ScrollPost';
+import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
 // const Item = styled(Paper)(({ theme }) => ({
 //     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
 //     ...theme.typography.body2,
@@ -22,8 +21,9 @@ function Home() {
     useEffect(() => {
         const callApi = async () => {
             const res = await postApi.getNewFeed({ paging });
-            console.log(res);
-            setDataCurrent([...res]);
+            if (res) {
+                setDataCurrent([...res]);
+            }
         };
         callApi();
     }, [paging]);
@@ -35,7 +35,7 @@ function Home() {
                 <Grid item xs={4.5} p={'20px 30px'}>
                     <Stack direction="column">
                         <FollowingUser />
-                        <Posts data={dataCurrent} />
+                        <ScrollPost data={dataCurrent} />
                         {/* <ScrollPost data={dataCurrent} /> */}
                     </Stack>
                 </Grid>
