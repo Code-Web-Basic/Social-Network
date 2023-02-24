@@ -38,7 +38,10 @@ const create = async (data) => {
     if (data.isReply === true) {
       await getDB()
         .collection(commentCollectionName)
-        .findOneAndUpdate({ _id: data.replyId }, { $inc: { replyCount: 1 } });
+        .findOneAndUpdate(
+          { _id: ObjectId(data.replyId) },
+          { $inc: { replyCount: 1 } }
+        );
       // create notification
       const post = await postModel.findOneById(data.postId);
       const notificationData = {
@@ -50,7 +53,10 @@ const create = async (data) => {
     } else {
       await getDB()
         .collection("Posts")
-        .findOneAndUpdate({ _id: data.postId }, { $inc: { commentCount: 1 } });
+        .findOneAndUpdate(
+          { _id: ObjectId(data.postId) },
+          { $inc: { commentCount: 1 } }
+        );
       const post = await postModel.findOneById(data.postId);
       const notificationData = {
         sourceId: data.senderId,
