@@ -28,7 +28,7 @@ const validateSchema = async (data) => {
 const findOneById = async (id) => {
   try {
     const result = await getDB()
-      .collection(userCollectionName)
+      .collection(messageCollectionName)
       .findOne({ _id: ObjectId(id) });
     return result;
   } catch (error) {
@@ -41,7 +41,7 @@ const sendMessage = async (data) => {
     const validatedValue = await validateSchema(data);
     const result = await getDB()
       .collection(messageCollectionName)
-      .insert(validatedValue);
+      .insertOne(validatedValue);
     const getNewMessage = await findOneById(result.insertedId.toString());
     return getNewMessage;
   } catch (error) {
@@ -49,6 +49,42 @@ const sendMessage = async (data) => {
   }
 };
 
+const showChats = async (userId) => {
+  try {
+    const result = await getDB()
+      .collection(messageCollectionName)
+      .aggregate([
+        { $match: { sourceId: userId } },
+        {
+          $group: {
+            _id: "$targetId",
+            createdAt: { $first: "$createdAt" },
+          },
+        },
+        { $addFields: { _targetId: { $toObjectId: "$_id" } } },
+        {
+          $lookup: {
+            from: "Users",
+            localField: "_targetId",
+            foreignField: "_id",
+            as: "User",
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            User: { $first: "$User" },
+            createdAt: { $first: "$createdAt" },
+          },
+        },
+      ])
+      .sort({ createdAt: -1 })
+      .toArray();
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 const editMessage = async (updateData, id) => {
   try {
     const result = await getDB()
@@ -75,10 +111,7 @@ const findInChat = async (findData, sourceId, targetId) => {
   try {
     const dataChat = await getDB()
       .collection(messageCollectionName)
-      .aggregate([
-        { $match: { sourceId: sourceId, targetId: targetId } },
-         
-      ]);
+      .aggregate([{ $match: { sourceId: sourceId, targetId: targetId } }]);
   } catch (error) {}
 };
 
@@ -91,4 +124,5 @@ module.exports = {
   sendMessage,
   editMessage,
   showDirectMessage,
+  showChats,
 };

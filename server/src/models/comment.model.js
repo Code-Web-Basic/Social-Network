@@ -91,7 +91,7 @@ const showCommentOfPost = async (postId, paging) => {
     const result = await getDB()
       .collection(commentCollectionName)
       .aggregate([
-        { $match: { postId: postId } },
+        { $match: { postId: postId, isReply: false } },
         { $addFields: { _senderId: { $toObjectId: "$senderId" } } },
         {
           $lookup: {
