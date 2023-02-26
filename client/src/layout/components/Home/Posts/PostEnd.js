@@ -8,13 +8,9 @@ function PostEnd() {
             direction="column"
             justifyContent={'center'}
             alignItems="center"
-            padding="30px 0px"
+            padding="10px 0px"
             width="100%"
             spacing={1}
-            sx={{
-                borderBottom: '1px solid',
-                borderColor: theme.palette.grey[300],
-            }}
         >
             <img src={images.iconCheck} alt="icon" height={96} width={96} />
             <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>

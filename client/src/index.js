@@ -11,7 +11,9 @@ root.render(
     <React.StrictMode>
         <GlobalStyles>
             <Provider store={store}>
+                {/* <CookiesProvider> */}
                 <App />
+                {/* </CookiesProvider> */}
             </Provider>
         </GlobalStyles>
     </React.StrictMode>,

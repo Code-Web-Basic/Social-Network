@@ -29,7 +29,7 @@ function Sidebar() {
         }
     };
     return (
-        <Box sx={{ position: 'sticky', top: '0px' }}>
+        <Box sx={{ position: 'sticky', top: '0px', zIndex: 1000 }}>
             <Stack direction="row">
                 <Stack
                     direction={'column'}
@@ -346,9 +346,9 @@ function Sidebar() {
                                         : 'transparent',
                                 borderRadius: '15px',
                             }}
-                            spacing={3}
                             component={Link}
                             to={configRouter.create}
+                            spacing={3}
                             onClick={() => {
                                 setOpenSidebar(true);
                                 SetActiveCurrent(6);
@@ -374,6 +374,7 @@ function Sidebar() {
                                 </>
                             )}
                         </Stack>
+
                         {/* Profile */}
                         <Stack
                             direction={'row'}
@@ -422,8 +423,8 @@ function Sidebar() {
                         </Stack>
                     </Stack>
                 </Stack>
-                {renderComponent()}
             </Stack>
+            {renderComponent()}
         </Box>
     );
 }

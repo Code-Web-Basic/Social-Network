@@ -7,7 +7,7 @@
 /temp
 # testing
 /coverage
-
+/uploads
 # production
 /build
 # misc

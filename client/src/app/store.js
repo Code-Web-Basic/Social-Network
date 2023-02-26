@@ -9,11 +9,12 @@ const persistConfig = {
     storage,
     blacklist: ['comment'],
 };
+
 export default configureStore({
     reducer: { auth: authReducer, comment: commentReducer },
 });
 // auth: authReducer
-const rootReducer = combineReducers({ auth: authReducer });
+const rootReducer = combineReducers({ auth: authReducer, comment: commentReducer });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
     reducer: persistedReducer,
@@ -26,3 +27,4 @@ export const store = configureStore({
 });
 
 export let persistor = persistStore(store);
+// export const storePublic = createStore({ auth: authReducer });

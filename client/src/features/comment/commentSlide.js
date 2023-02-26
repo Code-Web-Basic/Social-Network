@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import * as commentApi from '~/api/CommentApi/CommentApi';
 
 export const getFirstComment = createAsyncThunk('comment/getFirstComment', async (params, thunkAPI) => {
-    return;
+    const res = await commentApi.getComment({ id: params?.id, paging: params?.paging });
+
+    return res;
 });
 export const getSkipComment = createAsyncThunk('comment/getSkipComment', async (params, thinAPI) => {
     return;
