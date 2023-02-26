@@ -6,6 +6,7 @@ import * as postApi from '~/api/postApi/postApi';
 import { useEffect, useState } from 'react';
 import ScrollPost from '~/layout/components/Home/Posts/ScrollPost';
 import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
+import { calculateTimePassed } from '~/utils/utils';
 // const Item = styled(Paper)(({ theme }) => ({
 //     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
 //     ...theme.typography.body2,
@@ -21,6 +22,8 @@ function Home() {
     useEffect(() => {
         const callApi = async () => {
             const res = await postApi.getNewFeed({ paging });
+            // console.log(date.getTime());
+            // console.log(calculateTimePassed(1677983119));
             if (res) {
                 setDataCurrent([...res]);
             }

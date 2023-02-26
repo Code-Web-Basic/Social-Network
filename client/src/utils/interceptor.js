@@ -8,7 +8,7 @@ const refreshAccessToken = async () => {
         const res = await instance.post('auth/refresh', {
             withCredentials: true,
         });
-        console.log('refetch api call', res);
+        // console.log('refetch api call', res);
         return res.data?.accessToken;
     } catch (error) {
         console.log(error);
@@ -52,7 +52,7 @@ const setUpInterceptor = (store) => {
             ) {
                 originalRequest._retry = true;
                 const access_token = await refreshAccessToken();
-                console.log('refetch token', access_token);
+                // console.log('refetch token', access_token);
                 if (access_token) {
                     axios.defaults.headers.common['token'] = `Bearer ${access_token}`;
                     const refreshUser = {
@@ -70,10 +70,10 @@ const setUpInterceptor = (store) => {
             ) {
                 localStorage.removeItem('persist:root');
                 store.dispatch(resetStoreAuth());
-                console.log('refetch het han');
+                console.log('refetch token het han');
                 // return ;
             }
-            return Promise.reject(error);
+            return error;
         },
     );
 };

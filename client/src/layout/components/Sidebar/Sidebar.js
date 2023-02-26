@@ -28,7 +28,7 @@ function Sidebar() {
         }
     };
     return (
-        <Box sx={{ position: 'sticky', top: '0px', height: '100vh', zIndex: 1000 }}>
+        <Box sx={{ position: 'sticky', top: '0px', zIndex: 1000 }}>
             <Stack direction="row">
                 <Stack
                     direction={'column'}

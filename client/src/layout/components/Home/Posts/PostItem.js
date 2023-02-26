@@ -185,7 +185,7 @@ function PostItem({ data }) {
                     </CommentPost>
 
                     <Stack direction="row">
-                        <NewCommentPost />
+                        <NewCommentPost postId={data?.Post?._id} />
                     </Stack>
                     {/* comment box */}
                 </Stack>

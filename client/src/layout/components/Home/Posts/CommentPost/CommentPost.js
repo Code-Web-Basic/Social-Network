@@ -28,6 +28,7 @@ const style = {
     transform: 'translate(-50%, -50%)',
     bgcolor: 'background.paper',
     background: 'rgb(255, 255, 255)',
+    maxHeight: 'calc(100vh - 100px)',
     p: 1,
     borderRadius: '10px',
 };
@@ -91,15 +92,9 @@ function CommentPost({ data, children }) {
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    <Box
-                        sx={style}
-                        minWidth="800px"
-                        maxWidth="calc(100% - 100px)"
-                        maxheight="calc(100vh - 100px)"
-                        overflow="hidden"
-                    >
-                        <Grid container direction="row">
-                            <Grid item xs={6}>
+                    <Box sx={style} minWidth="800px" maxWidth="calc(100% - 100px)">
+                        <Grid container direction="row" maxHeight="calc(100vh - 116px)">
+                            <Grid item xs={6} height="100%">
                                 <Box sx={{ position: 'relative', width: '100%', minHeight: 700 }}>
                                     <img
                                         src={images.post}
@@ -110,55 +105,99 @@ function CommentPost({ data, children }) {
                                     />
                                 </Box>
                             </Grid>
-                            <Grid item xs={6}>
-                                <Box sx={{ width: '100%', height: '100%' }}>
-                                    <Stack direction="column" width="100%" height={'100%'}>
-                                        <Stack
-                                            direction="row"
-                                            height="200"
-                                            p={1}
-                                            alignItems="center"
-                                            justifyContent="space-between"
-                                            sx={{
-                                                width: '100%',
-                                                borderBottom: '1px solid',
-                                                borderColor: theme.palette.grey[300],
-                                            }}
-                                        >
-                                            <Stack direction="row" spacing={2}>
-                                                <Avatar />
-                                                <Stack direction="column">
-                                                    <Typography
-                                                        variant="body2"
-                                                        fontWeight={600}
-                                                        color={theme.palette.text.primary}
-                                                    >
-                                                        {dataCurrent?.User?.userName}
-                                                    </Typography>
-                                                    <Typography
-                                                        variant="body2"
-                                                        fontWeight={400}
-                                                        fontSize="0.7rem"
-                                                        color={theme.palette.text.secondary}
-                                                    >
-                                                        {data?.User?.name}
-                                                    </Typography>
-                                                </Stack>
-                                            </Stack>
-                                            <Stack direction="row" spacing={2}>
-                                                <MenuModal data={MENU_ITEMS}>
-                                                    <ItemReaction>
-                                                        <DotsThreeCircle size={24} />
-                                                    </ItemReaction>
-                                                </MenuModal>
+                            <Grid item xs={6} maxHeight="calc(100vh - 116px)">
+                                <Stack
+                                    direction="column"
+                                    width="100%"
+                                    height="100%"
+                                    justifyContent="center"
+                                    position="relative"
+                                    flexGrow={1}
+                                >
+                                    {/* info user */}
+                                    <Stack
+                                        direction="row"
+                                        height="60px"
+                                        p={1}
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        sx={{
+                                            width: '100%',
+                                            borderBottom: '1px solid',
+                                            borderColor: theme.palette.grey[300],
+                                        }}
+                                    >
+                                        <Stack direction="row" spacing={2}>
+                                            <Avatar />
+                                            <Stack direction="column">
+                                                <Typography
+                                                    variant="body2"
+                                                    fontWeight={600}
+                                                    color={theme.palette.text.primary}
+                                                >
+                                                    {dataCurrent?.User?.userName}
+                                                </Typography>
+                                                <Typography
+                                                    variant="body2"
+                                                    fontWeight={400}
+                                                    fontSize="0.7rem"
+                                                    color={theme.palette.text.secondary}
+                                                >
+                                                    {data?.User?.name}
+                                                </Typography>
                                             </Stack>
                                         </Stack>
-                                        <Stack direction="row" height="100%">
-                                            <ScrollComment id={data?.Post?._id} />
+                                        <Stack direction="row" spacing={2}>
+                                            <MenuModal data={MENU_ITEMS}>
+                                                <ItemReaction>
+                                                    <DotsThreeCircle size={24} />
+                                                </ItemReaction>
+                                            </MenuModal>
                                         </Stack>
+                                    </Stack>
+                                    {/* content */}
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            flexDirection: 'column',
+                                            height: 'calc(100% - 60px)',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        {/* comment */}
+
                                         <Stack
                                             direction="column"
                                             width="100%"
+                                            height="100%"
+                                            overflow="auto"
+                                            sx={{
+                                                // '&::-webkit-scrollbar-track': {
+                                                //     // backgroundColor: '#F5F5F5',
+                                                // },
+                                                '&::-webkit-scrollbar': {
+                                                    width: 5,
+                                                    backgroundColor: 'transparent',
+                                                },
+                                                '&::-webkit-scrollbar-thumb': {
+                                                    backgroundColor: theme.palette.grey[300],
+                                                    borderRadius: '10px',
+                                                    display: 'none',
+                                                    transition: '0.3s linear',
+                                                },
+                                                '&::hover::-webkit-scrollbar-thumb': {
+                                                    display: 'flex',
+                                                },
+                                            }}
+                                        >
+                                            <ScrollComment id={data?.Post?._id} />
+                                        </Stack>
+                                        {/* post navigate */}
+                                        <Stack
+                                            direction="column"
+                                            width="100%"
+                                            // height="100%"
                                             p={1}
                                             sx={{ borderTop: '1px solid', borderColor: theme.palette.grey[300] }}
                                         >
@@ -203,14 +242,16 @@ function CommentPost({ data, children }) {
                                             </Stack>
                                         </Stack>
                                         <Stack
+                                            // height={'100%'}
                                             direction="row"
+                                            width={'100%'}
                                             padding={'0px 10px'}
                                             sx={{ borderTop: '1px solid', borderColor: theme.palette.grey[300] }}
                                         >
-                                            <NewCommentPost />
+                                            <NewCommentPost postId={data?.Post?._id} />
                                         </Stack>
-                                    </Stack>
-                                </Box>
+                                    </Box>
+                                </Stack>
                             </Grid>
                         </Grid>
                     </Box>

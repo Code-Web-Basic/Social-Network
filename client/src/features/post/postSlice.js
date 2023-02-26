@@ -28,7 +28,7 @@ export const replyNewComment = createAsyncThunk('comment/replyNewComment', async
     };
     // call api comment
     const res = await commentApi.createComment(data);
-    return { ...res?.result, User: params?.User };
+    return params?.replyId;
 });
 export const CommentSlice = createSlice({
     name: 'comment',
@@ -88,11 +88,12 @@ export const CommentSlice = createSlice({
         builder.addCase(replyNewComment.fulfilled, (state, action) => {
             state.loading = false;
             state.error = '';
-            let arrTmp = [...state.data];
-            const index = arrTmp.findIndex((obj) => obj._id === action.payload.replyId);
+
+            const arrTmp = [...state.data];
+            const index = arrTmp.findIndex((obj) => obj._id === action.payload);
             arrTmp[index].replyCount += 1;
             state.data = JSON.parse(JSON.stringify(arrTmp));
-            // state.data[index].replyCount++;
+            state.data[index].replyCount++;
         });
     },
 });

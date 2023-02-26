@@ -147,6 +147,7 @@ const refresh = async (req, res) => {
     );
     const newAccessToken = UserService.encodedAccessToken(user.sub);
     const newRefreshToken = UserService.encodedRefreshToken(user.sub);
+    console.log(newRefreshToken);
     refreshTokenList.push(newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,

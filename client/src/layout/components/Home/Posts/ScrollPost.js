@@ -15,12 +15,12 @@ function ScrollPost({ data }) {
         <div>
             <Stack direction="column" spacing={2} p="30px 10px">
                 {data?.map((item, index) =>
-                    index === 1 ? (
+                    index === 0 ? (
                         <Stack direction={'column'} key={item?.Post?._id}>
                             <StyleDivider />
-                            <SuggestionsUser typeLayout="row" />
-                            <StyleDivider />
                             <PostItem data={item} />
+                            <StyleDivider />
+                            <SuggestionsUser typeLayout="row" />
                             {/* <StyleDivider /> */}
                         </Stack>
                     ) : (

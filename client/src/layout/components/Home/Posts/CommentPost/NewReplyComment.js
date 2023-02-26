@@ -4,8 +4,10 @@ import { Avatar, Box, Button, IconButton, Stack, useTheme } from '@mui/material'
 import { Smiley, X } from 'phosphor-react';
 import { useRef, useState } from 'react';
 import TippyHeadless from '@tippyjs/react/headless';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { replyNewComment } from '~/features/comment/commentSlide';
 function NewReplyComment(props) {
+    const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.auth.currentUser);
     const theme = useTheme();
     const [valueInput, setValueInput] = useState('');
@@ -30,18 +32,18 @@ function NewReplyComment(props) {
     const sendComment = (event) => {
         event.preventDefault();
         const dataComment = {
-            displayName: currentUser?.user?.displayName,
-            userAvatar: currentUser?.user?.photoURL,
-            body: valueInput,
-            likeNumber: 0,
-            unlikeNumber: 0,
-            parentId: `${props.idComment}`,
-            replyNumber: 0,
-            userId: currentUser?.user?.uid,
-            createAt: Date.now(),
+            postId: props?.idPost,
+            senderId: currentUser?.data._id,
+            content: valueInput,
+            isReply: true,
+            replyId: props?.idComment,
+            reaction: [],
+            replyCount: 0,
+            User: [currentUser?.data],
         };
         if (valueInput.length > 0) {
             console.log(dataComment);
+            dispatch(replyNewComment(dataComment));
             setValueInput('');
         }
     };
@@ -57,7 +59,7 @@ function NewReplyComment(props) {
                 >
                     <Stack direction={'row'}>
                         <Avatar
-                            src={currentUser?.data?.avatar}
+                            src={currentUser?.data?.avatar ? `${currentUser.data.avatar}` : ''}
                             sx={{ width: 25, height: 25, transform: 'translateY(10px)' }}
                         />
                     </Stack>
