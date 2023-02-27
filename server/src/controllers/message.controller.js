@@ -3,7 +3,7 @@ const messageService = require("../services/message.service");
 
 const sendMessage = async (req, res) => {
   try {
-    const result = await messageService.sendMessage(req.body);
+    const result = await messageService.sendMessage(req);
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -33,9 +33,19 @@ const showMessage = async (req, res) => {
     });
   }
 };
-
+const showChats = async (req, res) => {
+  try {
+    const result = await messageService.showChats(req.user.sub);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   sendMessage,
   editMessage,
   showMessage,
+  showChats,
 };
