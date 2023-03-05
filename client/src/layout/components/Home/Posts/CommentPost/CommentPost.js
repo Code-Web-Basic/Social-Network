@@ -28,7 +28,6 @@ const style = {
     transform: 'translate(-50%, -50%)',
     bgcolor: 'background.paper',
     background: 'rgb(255, 255, 255)',
-    maxHeight: 'calc(100vh - 100px)',
     p: 1,
     borderRadius: '10px',
 };
@@ -79,7 +78,7 @@ const MENU_ITEMS = [
 function CommentPost({ data, children }) {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
-    const [dataCurrent, setDataCurrent] = useState(data);
+    // const [dataCurrent, setDataCurrent] = useState(data);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     return (
@@ -92,20 +91,47 @@ function CommentPost({ data, children }) {
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    <Box sx={style} minWidth="800px" maxWidth="calc(100% - 100px)">
-                        <Grid container direction="row" maxHeight="calc(100vh - 116px)">
-                            <Grid item xs={6} height="100%">
-                                <Box sx={{ position: 'relative', width: '100%', minHeight: 700 }}>
-                                    <img
-                                        src={images.post}
-                                        alt="post"
-                                        width={'100%'}
-                                        height="100%"
-                                        style={{ objectFit: 'cover', position: 'absolute', top: 0, left: 0 }}
-                                    />
-                                </Box>
-                            </Grid>
-                            <Grid item xs={6} maxHeight="calc(100vh - 116px)">
+                    <Box sx={style} minWidth="800px" maxWidth="calc(100% - 50px)" maxHeight="calc(100vh - 100px)">
+                        <Stack direction="row" maxHeight="calc(100vh - 116px)" alignItems="stretch" position="relative">
+                            <Stack
+                                height="calc(100vh - 116px)"
+                                minWidth="450px"
+                                overflow="hidden"
+                                direction=" row"
+                                alignItems="center"
+                                justifyContent="center"
+                                sx={{
+                                    aspectRatio: '1 / 1',
+                                    flexBasis: '888px',
+                                    background: 'black',
+                                }}
+                            >
+                                {/* <Box
+                                    sx={{
+                                        position: 'relative',
+                                        width: '100%',
+                                        maxHeight: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        overflow: 'hidden',
+                                    }}
+                                ></Box> */}
+                                <img
+                                    src={`${data?.Post.source[0].data}`}
+                                    alt="post"
+                                    style={{ objectFit: 'cover', maxHeight: '100%', width: '100%' }}
+                                />
+                            </Stack>
+
+                            <Stack
+                                maxHeight="calc(100vh - 116px)"
+                                minWidth="400px"
+                                maxWidth="500px"
+                                borderLeft="1px solid"
+                                borderColor={theme.palette.grey[300]}
+                                direction="column"
+                            >
                                 <Stack
                                     direction="column"
                                     width="100%"
@@ -135,7 +161,7 @@ function CommentPost({ data, children }) {
                                                     fontWeight={600}
                                                     color={theme.palette.text.primary}
                                                 >
-                                                    {dataCurrent?.User?.userName}
+                                                    {data?.User?.userName}
                                                 </Typography>
                                                 <Typography
                                                     variant="body2"
@@ -252,8 +278,8 @@ function CommentPost({ data, children }) {
                                         </Stack>
                                     </Box>
                                 </Stack>
-                            </Grid>
-                        </Grid>
+                            </Stack>
+                        </Stack>
                     </Box>
                 </Modal>
             )}

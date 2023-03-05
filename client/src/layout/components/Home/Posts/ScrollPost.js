@@ -1,4 +1,5 @@
 import { Divider, Stack, styled } from '@mui/material';
+import { useSelector } from 'react-redux';
 import SuggestionsUser from '../SuggestionsUser/SuggestionsUser';
 import PostEnd from './PostEnd';
 import PostItem from './PostItem';
@@ -9,15 +10,16 @@ const StyleDivider = styled(Divider)(({ theme }) => ({
     paddingBottom: '10px',
 }));
 
-function ScrollPost({ data }) {
+function ScrollPost() {
     // const [use]
+    const data = useSelector((state) => state.post);
     return (
         <div>
             <Stack direction="column" spacing={2} p="30px 10px">
-                {data?.map((item, index) =>
+                {data?.data?.map((item, index) =>
                     index === 0 ? (
                         <Stack direction={'column'} key={item?.Post?._id}>
-                            <StyleDivider />
+                            {/* <StyleDivider /> */}
                             <PostItem data={item} />
                             <StyleDivider />
                             <SuggestionsUser typeLayout="row" />

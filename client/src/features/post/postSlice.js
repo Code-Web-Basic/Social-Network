@@ -1,101 +1,77 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import * as commentApi from '~/api/CommentApi/CommentApi';
+import * as postApi from '~/api/postApi/postApi';
 
-export const getFirstComment = createAsyncThunk('comment/getFirstComment', async (params, thunkAPI) => {
-    const res = await commentApi.getComment({ id: params?.id, paging: params?.paging });
+export const getFirstPost = createAsyncThunk('post/getFirstPost', async (params, thunkAPI) => {
+    const res = await postApi.getNewFeed({ paging: 1 });
     return res;
 });
-export const getSkipComment = createAsyncThunk('comment/getSkipComment', async (params, thinAPI) => {
+export const getSkipPost = createAsyncThunk('post/getSkipPost', async (params, thinAPI) => {
+    const res = await postApi.getNewFeed({ paging: 1 });
+    return res;
+});
+export const addNewPost = createAsyncThunk('post/addNewPost', async (params, thunkAPI) => {
     return;
 });
-export const addNewComment = createAsyncThunk('comment/addNewComment', async (params, thunkAPI) => {
-    const data = {
-        postId: params?.postId,
-        content: params?.content,
-        isReply: false,
-    };
-    const res = await commentApi.createComment(data);
-    return { ...res?.result, User: params?.User };
-});
-export const replyNewComment = createAsyncThunk('comment/replyNewComment', async (params, thunkAPI) => {
-    // const newCityRef = doc(collection(db, 'comments'));
-    // await setDoc(newCityRef, data);
-    const data = {
-        postId: params?.postId,
-        content: params?.content,
-        isReply: true,
-        replyId: params?.replyId,
-    };
-    // call api comment
-    const res = await commentApi.createComment(data);
-    return params?.replyId;
-});
-export const CommentSlice = createSlice({
-    name: 'comment',
+
+export const PostSlice = createSlice({
+    name: 'post',
     initialState: {
         loading: false,
         error: '',
         data: [],
     },
+    reducers: {
+        increaseNumberComment: (state, action) => {
+            const arrTmp = state.data;
+            const index = arrTmp.findIndex((obj) => obj.Post._id === action.payload);
+            if (arrTmp[index]) {
+                arrTmp[index].Post.commentCount += 1;
+            }
+            action.state = arrTmp;
+        },
+    },
     extraReducers: (builder) => {
-        builder.addCase(getFirstComment.pending, (state, action) => {
+        builder.addCase(getFirstPost.pending, (state, action) => {
             state.loading = true;
             // state.error = action.error;
         });
-        builder.addCase(getFirstComment.rejected, (state, action) => {
+        builder.addCase(getFirstPost.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
         });
-        builder.addCase(getFirstComment.fulfilled, (state, action) => {
+        builder.addCase(getFirstPost.fulfilled, (state, action) => {
             state.loading = false;
             state.error = '';
             state.data = action.payload;
         });
-        builder.addCase(getSkipComment.pending, (state, action) => {
+        builder.addCase(getSkipPost.pending, (state, action) => {
             state.loading = true;
             state.error = action.error;
         });
-        builder.addCase(getSkipComment.rejected, (state, action) => {
+        builder.addCase(getSkipPost.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
         });
-        builder.addCase(getSkipComment.fulfilled, (state, action) => {
+        builder.addCase(getSkipPost.fulfilled, (state, action) => {
             state.loading = false;
             state.error = '';
             state.data = [...state.data, ...action.payload];
         });
-        builder.addCase(addNewComment.pending, (state, action) => {
+        builder.addCase(addNewPost.pending, (state, action) => {
             state.loading = true;
             // state.error = action.error;
         });
-        builder.addCase(addNewComment.rejected, (state, action) => {
+        builder.addCase(addNewPost.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
         });
-        builder.addCase(addNewComment.fulfilled, (state, action) => {
+        builder.addCase(addNewPost.fulfilled, (state, action) => {
             state.loading = false;
             state.error = '';
             state.data = [action.payload, ...state.data];
         });
-        builder.addCase(replyNewComment.pending, (state, action) => {
-            state.loading = true;
-            // state.error = action.error;
-        });
-        builder.addCase(replyNewComment.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error;
-        });
-        builder.addCase(replyNewComment.fulfilled, (state, action) => {
-            state.loading = false;
-            state.error = '';
-
-            const arrTmp = [...state.data];
-            const index = arrTmp.findIndex((obj) => obj._id === action.payload);
-            arrTmp[index].replyCount += 1;
-            state.data = JSON.parse(JSON.stringify(arrTmp));
-            state.data[index].replyCount++;
-        });
     },
 });
+export const { increaseNumberComment } = PostSlice.actions;
 
-export default CommentSlice.reducer;
+export default PostSlice.reducer;

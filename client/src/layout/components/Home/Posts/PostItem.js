@@ -4,7 +4,6 @@ import { Avatar, Box, Stack, styled, Typography, useTheme } from '@mui/material'
 //icon
 import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt } from 'phosphor-react';
 //components
-import images from '~/assets/images';
 import NewCommentPost from './CommentPost/NewCommentPost';
 import MenuUserFollowing from './MenuUserFollowing/MenuUserFollowing';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
@@ -81,7 +80,7 @@ function PostItem({ data }) {
                             )}
                         >
                             <Avatar
-                                src={data?.User?.avatar ? `${data.User.avatar}` : ''}
+                                src={data?.User?.avatar ? `${data?.User?.avatar[0].data}` : ''}
                                 sx={{ width: 32, height: 32 }}
                             />
                         </Tippy>
@@ -105,22 +104,27 @@ function PostItem({ data }) {
                         overflow: 'hidden',
                         borderRadius: 1,
                         maxHeight: '600px',
-                        minHeight: '550px',
+                        // minHeight: '550px',
+                        // height: '550px',
+
                         width: '100%',
+                        display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                     }}
                 >
                     <img
-                        alt="post1"
-                        src={images.post}
+                        alt={data?.Post.source[0].filename}
+                        src={`${data?.Post.source[0].data}`}
                         style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
+                            // position: 'absolute',
+                            // top: 0,
+                            // left: 0,
+                            // bottom: 0,
                             width: '100%',
                             height: '100%',
                             objectFit: 'cover',
+                            minHeight: '150px',
                         }}
                     />
                 </Box>

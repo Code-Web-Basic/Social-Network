@@ -8,6 +8,7 @@ import EmojiPicker from '@emoji-mart/react';
 import dataEmoji from '@emoji-mart/data';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNewComment } from '~/features/comment/commentSlide';
+import { increaseNumberComment } from '~/features/post/postSlice';
 
 function NewCommentPost(props) {
     const dispatch = useDispatch();
@@ -56,6 +57,7 @@ function NewCommentPost(props) {
         if (valueInput.length > 0 && props?.postId) {
             // handleSendChatValue(valueFormChat);
             dispatch(addNewComment(dataComment));
+            dispatch(increaseNumberComment(props?.postId));
             setValueInput('');
         }
     };
