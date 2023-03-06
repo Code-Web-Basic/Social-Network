@@ -1,13 +1,28 @@
 import { CircularProgress, Stack, Typography } from '@mui/material';
 import CommentItemPost from './CommentItemPost';
 import PropTypes from 'prop-types';
-function ReplyCommentPost({ dataReply = [], replyNumber }) {
+import { useEffect, useState } from 'react';
+import * as commentApi from '~/api/CommentApi/CommentApi';
+function ReplyCommentPost({ replyNumber, idComment }) {
+    const [dataReply, setDataReply] = useState([]);
     const loadReplyComment = () => {
         console.log('load comment');
     };
+
+    useEffect(() => {
+        const callApi = async () => {
+            const res = await commentApi.getCommentReply({ paging: 1, id: idComment });
+            if (res) {
+                setDataReply(res);
+            }
+        };
+        callApi();
+    }, [idComment]);
     const loadingReply = false;
     const renderReply = () => {
-        return <CommentItemPost />;
+        return dataReply.map((item) => {
+            return <CommentItemPost data={item} key={item?._id} replyId={idComment} />;
+        });
     };
     return (
         <Stack direction="column" width="100%">

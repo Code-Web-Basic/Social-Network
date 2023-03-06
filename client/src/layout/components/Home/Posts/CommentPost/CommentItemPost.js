@@ -16,7 +16,7 @@ const MENU_REPORT = [
         color: 'error',
     },
 ];
-function CommentItemPost({ data, reply }) {
+function CommentItemPost({ data, replyId }) {
     const theme = useTheme();
     const likeRef = useRef(null);
     const unLikeRef = useRef(null);
@@ -33,6 +33,9 @@ function CommentItemPost({ data, reply }) {
     }
 
     const likeComment = () => {
+        // if(data.true){
+
+        // }
         return;
     };
     const unlikeComment = () => {
@@ -120,8 +123,9 @@ function CommentItemPost({ data, reply }) {
                     <NewReplyComment
                         autoFocus={false}
                         callbackCancel={() => setShowReplyComment()}
-                        idComment={data?.id}
-                        currentUser={data?.User[0]}
+                        idComment={replyId ? replyId : data?._id}
+                        idPost={data?.postId}
+                        // commentReply={data?.User?._id}
                     />
                 )}
                 {data?.replyCount > 0 && (
@@ -143,7 +147,7 @@ function CommentItemPost({ data, reply }) {
                                 </Typography>
                             </Box>
                         </Stack>
-                        {arrowUp && <ReplyCommentPost />}
+                        {arrowUp && <ReplyCommentPost idComment={data?._id} />}
                     </>
                 )}
             </Stack>

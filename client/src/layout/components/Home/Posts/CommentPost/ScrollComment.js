@@ -58,7 +58,7 @@ function ScrollComment({ id }) {
     }, [bottomBar]);
 
     const renderComment = () => (
-        <Stack direction={'column'} spacing={0.5} width="100%">
+        <Stack direction={'column'} spacing={0.5} width="100%" height="100%">
             {data?.length > 0 ? (
                 data?.map((item) => {
                     return <CommentItemPost key={item?._id} data={item} />;

@@ -16,7 +16,6 @@ export const searchUser = async (query) => {
 export const getHistorySearch = async () => {
     try {
         const res = await httpRequest.get('searchHistory');
-        console.log(res);
         return res?.result;
     } catch (error) {
         console.log(error);

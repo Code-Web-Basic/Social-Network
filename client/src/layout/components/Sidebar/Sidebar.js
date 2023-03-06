@@ -424,7 +424,9 @@ function Sidebar() {
                     </Stack>
                 </Stack>
             </Stack>
-            {renderComponent()}
+            <Stack direction={'column'} height="100%">
+                {renderComponent()}
+            </Stack>
         </Box>
     );
 }
