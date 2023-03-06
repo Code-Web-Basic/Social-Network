@@ -3,6 +3,11 @@ import { NotePencil } from 'phosphor-react';
 import { Avatar, Box, Checkbox, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { X } from 'phosphor-react';
 import ItemUserInbox from './ItemUserInbox';
+import axios from 'axios';
+import { getShowMessage } from '~/api/messageApi/messageApi';
+import * as messApi from '~/api/messageApi/messageApi'
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const style = {
     position: 'absolute',
@@ -14,11 +19,23 @@ const style = {
     p: 1,
     borderRadius: '10px',
 };
+
 function ListUserInbox() {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const currentUser = useSelector((state) => state.auth.currentUser);
+    const idTest1 = ""
+    const idTest2 = "..."
+    // Call api
+    /*useEffect(() => {
+        const callApi = async () => {
+            const res = await messApi.getShowMessage(1);
+            console.log(res);
+        };
+        callApi();
+    }, []);*/
     const renderItemSuggested = () => {
         return (
             <Stack
@@ -51,78 +68,95 @@ function ListUserInbox() {
         );
     };
     return (
-        <div style={{ height: '100%', width: '100%' }}>
-            <Stack direction='column' height='100%'>
-                {/* header */}
-                <Stack direction='row' borderBottom='1px solid rgb(219, 219, 219)' padding='10px' justifyContent='center' alignItems='center'>
-                    <div style={{ fontSize: '16px', fontWeight: '600' }}><h3>Foryour.106</h3></div>
-                    <div><button onClick={handleOpen}><NotePencil size={25} /></button></div>
-                    <Modal
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <Box sx={style} minWidth="500px" maxheight="600px" overflow="hidden">
-                            <Stack direction="column">
-                                <Stack
-                                    direction="row"
-                                    width="100%"
-                                    alignItems="center"
-                                    justifyContent={'center'}
-                                    p={1}
-                                    position="relative"
-                                    borderBottom='1px solid rgb(219, 219, 219)'
-                                >
-                                    <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
-                                        <h3>Tin nhắn mới</h3>
-                                    </Typography>
-                                    <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleClose}>
-                                        <X size={20} />
-                                    </Box>
-                                </Stack>
-                                <Stack
-                                    direction="row"
-                                    borderBottom='1px solid rgb(219, 219, 219)'
-                                    spacing={2}
-                                    p={1}
-                                >
-                                    <Typography variant="body2" fontWeight="600" fontSize="0.8rem">
-                                        Tới:
-                                    </Typography>
-                                    <input placeholder="Tìm kiếm..." ></input>
-                                </Stack>
-                                <Stack direction="column" width="100%" p="10px 0px">
-                                    <Stack direction="row" p={0.5}>
-                                        <Typography variant="body2" fontWeight={600}>
-                                            Gợi ý
-                                        </Typography>
-                                    </Stack>
-                                    {renderItemSuggested()}
-                                </Stack>
-                                <Stack
-                                    direction="column"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    p={1}
-                                    sx={{
-                                        borderTop: '1px solid',
-                                        borderColor: theme.palette.grey[300],
-                                    }}
-                                >
-                                </Stack>
+        <Stack direction='column' height='100%' width='100%'>
+            {/* header */}
+            <Stack direction='row' borderBottom='1px solid rgb(219, 219, 219)' padding='10px' justifyContent='center' alignItems='center' height='50px'>
+                <div style={{ fontSize: '16px', fontWeight: '600' }}><h3>{currentUser.data.userName}</h3></div>
+                <div><button onClick={handleOpen}><NotePencil size={25} /></button></div>
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style} minWidth="500px" maxheight="600px" overflow="hidden">
+                        <Stack direction="column">
+                            <Stack
+                                direction="row"
+                                width="100%"
+                                alignItems="center"
+                                justifyContent={'center'}
+                                p={1}
+                                position="relative"
+                                borderBottom='1px solid rgb(219, 219, 219)'
+                            >
+                                <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
+                                    <h3>Tin nhắn mới</h3>
+                                </Typography>
+                                <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleClose}>
+                                    <X size={20} />
+                                </Box>
                             </Stack>
-                        </Box>
-                    </Modal>
-                </Stack>
-                <Stack direction='column' height='100%' overflow='scroll'>
-                    {/* listuser */}
-                    <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                    <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                    <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                </Stack>
+                            <Stack
+                                direction="row"
+                                borderBottom='1px solid rgb(219, 219, 219)'
+                                spacing={2}
+                                p={1}
+                            >
+                                <Typography variant="body2" fontWeight="600" fontSize="0.8rem">
+                                    Tới:
+                                </Typography>
+                                <input placeholder="Tìm kiếm..." ></input>
+                            </Stack>
+                            <Stack direction="column" width="100%" p="10px 0px">
+                                <Stack direction="row" p={0.5}>
+                                    <Typography variant="body2" fontWeight={600}>
+                                        Gợi ý
+                                    </Typography>
+                                </Stack>
+                                {renderItemSuggested()}
+                            </Stack>
+                            <Stack
+                                direction="column"
+                                justifyContent="center"
+                                alignItems="center"
+                                p={1}
+                                sx={{
+                                    borderTop: '1px solid',
+                                    borderColor: theme.palette.grey[300],
+                                }}
+                            >
+                            </Stack>
+                        </Stack>
+                    </Box>
+                </Modal>
             </Stack>
-        </div>
+            {/* list user chat */}
+            <Stack direction='column' height='calc(100% - 50px)' overflow='auto' sx={{
+                '&::-webkit-scrollbar': {
+                    width: 5,
+                    backgroundColor: 'transparent',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: theme.palette.grey[500],
+                    borderRadius: '10px',
+                },
+            }}>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+            </Stack>
+        </Stack>
     );
 }
 

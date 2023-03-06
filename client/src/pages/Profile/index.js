@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Post from '~/layout/components/Profile/Post';
 import Saved from '~/layout/components/Profile/Saved';
 import Tagged from '~/layout/components/Profile/Tagged';
+import { useSelector } from 'react-redux';
 
 const style = {
     position: 'absolute',
@@ -66,6 +67,8 @@ function Profile() {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    const currentUser = useSelector((state) => state.auth.currentUser);
+    console.log(currentUser.data.userName)
     const handleEdit = () => {
         navigate('/message')
     }
@@ -104,12 +107,12 @@ function Profile() {
         <Grid item xs={9} borderRadius='5px' boxShadow='rgba(0, 0, 0, 0.16) 0px 1px 4px' padding='20px 10px'>
             <div style={{ borderBottom: '1px solid rgb(219, 219, 219)', width: '100%', height: '150px', paddingBottom: '44px', display: 'flex' }}>
                 <div style={{ width: '30%', height: '100%', display: 'flex', objectFit: 'cover', justifyContent: 'center' }}>
-                    <Avatar alt="Remy Sharp" src="https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg" style={{ width: '150px', height: '150px' }} />
+                    <Avatar alt={currentUser.data.avatar.filename} src={currentUser.data.avatar.data} style={{ width: '150px', height: '150px' }} />
                 </div>
                 <div style={{ width: '70%', height: '100%' }}>
                     <div style={{ display: 'flex', padding: '5px' }}>
                         <div>
-                            <h4>foryour.106</h4>
+                            <h4>{currentUser.data.userName}</h4>
                         </div>
                         <div style={{ marginLeft: '10px' }}>
                             <Button variant="text" onClick={handleEdit}><b style={{ color: 'black', fontSize: '13px' }}>Chỉnh sửa thông tin</b></Button>
