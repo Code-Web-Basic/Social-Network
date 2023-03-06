@@ -158,7 +158,25 @@ const newFeed = async (id, paging) => {
         { $unwind: "$Post" },
         { $unwind: "$User" },
         { $addFields: { reactionCount: { $size: "$Post.reaction" } } },
-        { $project: { User: 1, Post: 1, reactionCount: 1 } },
+        {
+          $addFields: {
+            commentPaging: {
+              $ceil: {
+                $divide: [
+                  {
+                    $cond: {
+                      if: { $eq: ["$Post.commentCount", 0] },
+                      then: 1,
+                      else: "$Post.commentCount",
+                    },
+                  },
+                  15,
+                ],
+              },
+            },
+          },
+        },
+        { $project: { User: 1, Post: 1, reactionCount: 1, commentPaging: 1 } },
       ])
       .sort({ "Post.createdAt": -1 })
       .skip((paging - 1) * 15)
