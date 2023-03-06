@@ -40,6 +40,7 @@ export const authSlice = createSlice({
             state.loading = false;
             state.error = '';
             state.typeLogin = '';
+            // window.storage.removeItem('persist:root');
         },
     },
     extraReducers: (builder) => {

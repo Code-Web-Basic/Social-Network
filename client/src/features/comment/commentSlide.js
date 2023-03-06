@@ -3,20 +3,32 @@ import * as commentApi from '~/api/CommentApi/CommentApi';
 
 export const getFirstComment = createAsyncThunk('comment/getFirstComment', async (params, thunkAPI) => {
     const res = await commentApi.getComment({ id: params?.id, paging: params?.paging });
-
     return res;
 });
 export const getSkipComment = createAsyncThunk('comment/getSkipComment', async (params, thinAPI) => {
     return;
 });
-export const addNewComment = createAsyncThunk('comment/addNewComment', async (data, thunkAPI) => {
-    return;
+export const addNewComment = createAsyncThunk('comment/addNewComment', async (params, thunkAPI) => {
+    const data = {
+        postId: params?.postId,
+        content: params?.content,
+        isReply: false,
+    };
+    const res = await commentApi.createComment(data);
+    return { ...res?.result, User: params?.User };
 });
-export const replyNewComment = createAsyncThunk('comment/replyNewComment', async (data, thunkAPI) => {
+export const replyNewComment = createAsyncThunk('comment/replyNewComment', async (params, thunkAPI) => {
     // const newCityRef = doc(collection(db, 'comments'));
     // await setDoc(newCityRef, data);
-
-    return data?.parentId;
+    const data = {
+        postId: params?.postId,
+        content: params?.content,
+        isReply: true,
+        replyId: params?.replyId,
+    };
+    // call api comment
+    const res = await commentApi.createComment(data);
+    return { ...res?.result, User: params?.User };
 });
 export const CommentSlice = createSlice({
     name: 'comment',
@@ -76,12 +88,11 @@ export const CommentSlice = createSlice({
         builder.addCase(replyNewComment.fulfilled, (state, action) => {
             state.loading = false;
             state.error = '';
-
-            const arrTmp = [...state.data];
-            const index = arrTmp.findIndex((obj) => obj.id === action.payload);
-            arrTmp[index].replyNumber += 1;
+            let arrTmp = [...state.data];
+            const index = arrTmp.findIndex((obj) => obj._id === action.payload.replyId);
+            arrTmp[index].replyCount += 1;
             state.data = JSON.parse(JSON.stringify(arrTmp));
-            // state.data[index].replyNumber++;
+            // state.data[index].replyCount++;
         });
     },
 });

@@ -12,7 +12,6 @@ import {
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { router as configRouter } from '~/config/config';
-import CreatePost from '../CreatePost/CreatePost';
 import Search from '../Search/Search';
 function Sidebar() {
     const theme = useTheme();
@@ -424,7 +423,9 @@ function Sidebar() {
                     </Stack>
                 </Stack>
             </Stack>
-            {renderComponent()}
+            <Stack direction={'column'} height="100%">
+                {renderComponent()}
+            </Stack>
         </Box>
     );
 }
