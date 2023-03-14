@@ -33,7 +33,7 @@ const getFollowers = async (req, res) => {
   try {
     const result = await followService.getFollowers(
       req.params.userId,
-      req.params.paging
+      req.query.paging
     );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
@@ -47,7 +47,7 @@ const getFollowing = async (req, res) => {
   try {
     const result = await followService.getFollowing(
       req.params.userId,
-      req.params.paging
+      req.query.paging
     );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
