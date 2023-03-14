@@ -42,6 +42,33 @@ const createNotification = async (data) => {
     throw new Error(error);
   }
 };
+
+const showNotification = async (userId, paging) => {
+  try {
+    const result = await getDB()
+      .collection(notificationCollectionName)
+      .aggregate([
+        { $match: { targetId: userId } },
+        { $addFields: { _sourceId: { $toObjectId: "$sourceId" } } },
+        {
+          $lookup: {
+            from: "Users",
+            localField: "_sourceId",
+            foreignField: "_id",
+            as: "User",
+          },
+        },
+      ])
+      .limit(15)
+      .sort({ createdAt: -1 })
+      .skip((paging - 1) * 15)
+      .toArray();
+
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
-  notification: { createNotification },
+  notification: { createNotification, showNotification },
 };

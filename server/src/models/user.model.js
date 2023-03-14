@@ -3,6 +3,7 @@ const { getDB } = require("../config/mongodb");
 const { ObjectId } = require("mongodb");
 const bcryptjs = require("bcryptjs");
 const { cloneDeep } = require("lodash");
+
 const userCollectionName = "Users";
 
 const userCollectionSchema = Joi.object({
@@ -188,6 +189,21 @@ const newFeed = async (id, paging) => {
   }
 };
 
+const postOfUser = async (id, paging) => {
+  try {
+    const result = await getDB()
+      .collection("Posts")
+      .find({ ownerId: id })
+      .sort({ createdAt: -1 })
+      .skip((paging - 1) * 15)
+      .limit(15)
+      .toArray();
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   signUp,
   findOneById,
@@ -197,4 +213,5 @@ module.exports = {
   findUser,
   update,
   newFeed,
+  postOfUser,
 };

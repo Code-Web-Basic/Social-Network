@@ -105,6 +105,11 @@ const getFollowing = async (userId, paging) => {
   }
 };
 
+const suggestUser = async (id) => {
+  try {
+  } catch (error) {}
+};
+
 module.exports = {
   follow,
   unFollow,

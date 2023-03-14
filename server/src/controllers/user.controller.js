@@ -13,7 +13,7 @@ const findUser = async (req, res) => {
 };
 const newFeed = async (req, res) => {
   try {
-    const result = await UserService.newFeed(req.user.sub, req.params.paging);
+    const result = await UserService.newFeed(req.user.sub, req.query.paging);
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -32,8 +32,34 @@ const update = async (req, res) => {
     });
   }
 };
+const postOfUser = async (req, res) => {
+  try {
+    const result = await UserService.postOfUser(req.params.id);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
+
+const showNotification = async (req, res) => {
+  try {
+    const result = await UserService.showNotification(
+      req.user.sub,
+      req.query.paging
+    );
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   findUser,
   update,
   newFeed,
+  postOfUser,
+  showNotification,
 };

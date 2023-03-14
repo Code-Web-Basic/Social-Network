@@ -10,5 +10,8 @@ router
   .route("/update")
   .put(verifyToken, imageFileUploader.single("file"), UserController.update);
 router.route("/newFeed/:paging").get(verifyToken, UserController.newFeed);
-
+router.route("/postOfUser/:id").get(verifyToken, UserController.postOfUser);
+router
+  .route("/showNotification")
+  .get(verifyToken, UserController.showNotification);
 module.exports = router;

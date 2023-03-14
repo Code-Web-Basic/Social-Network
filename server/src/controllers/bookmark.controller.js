@@ -1,12 +1,9 @@
 const { HttpStatusCode } = require("../utilities/constants");
-const followService = require("../services/follow.service");
+const bookmarkService = require("../services/bookmark..service");
 
-const follow = async (req, res) => {
+const create = async (req, res) => {
   try {
-    const result = await followService.follow({
-      targetId: req.params.targetId,
-      sourceId: req.user.sub,
-    });
+    const result = await bookmarkService.create(req.user.sub, req.body.postId);
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -15,25 +12,11 @@ const follow = async (req, res) => {
   }
 };
 
-const unFollow = async (req, res) => {
+const deleteBookmark = async (req, res) => {
   try {
-    const result = await followService.unFollow({
-      ...req.body,
-      sourceId: req.user.sub,
-    });
-    res.status(HttpStatusCode.OK).json({ result: result });
-  } catch (error) {
-    res.status(HttpStatusCode.INTERNAL_SERVER).json({
-      error: new Error(error).message,
-    });
-  }
-};
-
-const getFollowers = async (req, res) => {
-  try {
-    const result = await followService.getFollowers(
-      req.params.userId,
-      req.query.paging
+    const result = await bookmarkService.deleteBookmark(
+      req.user.sub,
+      req.params.id
     );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
@@ -43,10 +26,21 @@ const getFollowers = async (req, res) => {
   }
 };
 
-const getFollowing = async (req, res) => {
+const deleteAll = async (req, res) => {
   try {
-    const result = await followService.getFollowing(
-      req.params.userId,
+    const result = await bookmarkService.deleteAll(req.user.sub);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
+
+const getBookmarks = async (req, res) => {
+  try {
+    const result = await bookmarkService.getBookmarks(
+      req.user.sub,
       req.query.paging
     );
     res.status(HttpStatusCode.OK).json({ result: result });
@@ -58,8 +52,8 @@ const getFollowing = async (req, res) => {
 };
 
 module.exports = {
-  follow,
-  unFollow,
-  getFollowers,
-  getFollowing,
+  create,
+  deleteAll,
+  deleteBookmark,
+  getBookmarks,
 };
