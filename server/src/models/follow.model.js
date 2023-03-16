@@ -104,15 +104,43 @@ const getFollowing = async (userId, paging) => {
     throw error;
   }
 };
-
-const suggestUser = async (id) => {
+const suggestions = async (userId) => {
   try {
-  } catch (error) {}
-};
+    const result = await getDB()
+      .collection("Follows")
+      .aggregate([
+        { $match: { sourceId: userId } },
+        { $group: { _id: "$sourceId", targetId: { $push: "$$ROOT" } } },
 
+        {
+          $lookup: {
+            from: "Users",
+            let: { ztargetId: "$targetId.targetId" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $not: {
+                      $in: [{ $toString: "$_id" }, "$$ztargetId"],
+                    },
+                  },
+                },
+              },
+            ],
+            as: "User",
+          },
+        },
+      ])
+      .toArray();
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   follow,
   unFollow,
   getFollowers,
   getFollowing,
+  suggestions,
 };

@@ -5,7 +5,9 @@ const followController = require("../../controllers/follow.controller");
 
 router.route("/:targetId").post(verifyToken, followController.follow);
 
-router.route("/unFollow").post(verifyToken, followController.unFollow);
+router
+  .route("/unFollow/:targetId")
+  .post(verifyToken, followController.unFollow);
 
 router
   .route("/getFollowers/:userId")
@@ -13,5 +15,5 @@ router
 router
   .route("/getFollowing/:userId")
   .get(verifyToken, followController.getFollowing);
-
+router.route("/suggestions").get(verifyToken, followController.suggestions);
 module.exports = router;

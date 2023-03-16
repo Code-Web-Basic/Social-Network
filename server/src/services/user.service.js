@@ -50,6 +50,7 @@ const showNotification = async (userId, paging) => {
     throw new Error(error);
   }
 };
+
 module.exports = {
   findUser,
   update,

@@ -3,6 +3,7 @@ const { getDB } = require("../config/mongodb");
 const { ObjectId } = require("mongodb");
 const bcryptjs = require("bcryptjs");
 const { cloneDeep } = require("lodash");
+const { follow } = require("./follow.model");
 
 const userCollectionName = "Users";
 

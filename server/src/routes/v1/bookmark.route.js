@@ -12,3 +12,4 @@ router.route("/deleteAll").post(verifyToken, bookmarkController.deleteAll);
 router.route("/getBookmarks").get(verifyToken, bookmarkController.getBookmarks);
 
 module.exports = router;
+//paging
