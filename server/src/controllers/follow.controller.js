@@ -18,7 +18,7 @@ const follow = async (req, res) => {
 const unFollow = async (req, res) => {
   try {
     const result = await followService.unFollow({
-      ...req.body,
+      targetId: req.params.targetId,
       sourceId: req.user.sub,
     });
     res.status(HttpStatusCode.OK).json({ result: result });
@@ -33,7 +33,7 @@ const getFollowers = async (req, res) => {
   try {
     const result = await followService.getFollowers(
       req.params.userId,
-      req.params.paging
+      req.query.paging
     );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
@@ -47,7 +47,7 @@ const getFollowing = async (req, res) => {
   try {
     const result = await followService.getFollowing(
       req.params.userId,
-      req.params.paging
+      req.query.paging
     );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
@@ -56,10 +56,20 @@ const getFollowing = async (req, res) => {
     });
   }
 };
-
+const suggestions = async (req, res) => {
+  try {
+    const result = await followService.suggestions(req.user.sub);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   follow,
   unFollow,
   getFollowers,
   getFollowing,
+  suggestions,
 };

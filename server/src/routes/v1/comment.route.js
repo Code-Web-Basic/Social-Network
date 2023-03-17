@@ -11,10 +11,10 @@ router.route("/update/:id").put(verifyToken, commentController.update);
 router.route("/delete/:id").put(verifyToken, commentController.deleteComment);
 
 router
-  .route("/showCommentOfPost/:id/:paging")
+  .route("/showCommentOfPost/:id")
   .get(verifyToken, commentController.showCommentOfPost);
 router
-  .route("/showCommentReply/:id/:paging")
+  .route("/showCommentReply/:id")
   .get(verifyToken, commentController.showCommentReply);
 router.route("/reaction/:id").put(verifyToken, commentController.reaction);
 module.exports = router;

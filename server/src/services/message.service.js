@@ -1,4 +1,5 @@
 const messageModel = require("../models/message.model");
+const cloudinary = require("cloudinary").v2;
 
 const sendMessage = async (req) => {
   try {
@@ -30,12 +31,9 @@ const editMessage = async (id, data) => {
   }
 };
 
-const showDirectMessage = async (data) => {
+const showDirectMessage = async (userId, data) => {
   try {
-    const result = await messageModel.showDirectMessage(
-      data.sourceId,
-      data.targetId
-    );
+    const result = await messageModel.showDirectMessage(userId, data);
     return result;
   } catch (error) {
     throw new Error(error);

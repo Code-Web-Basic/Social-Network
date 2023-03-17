@@ -82,9 +82,10 @@ const reaction = async (id, userId) => {
           { $push: { reaction: userId } }
         );
       const result = await findOneById(id);
+      console.log(result);
       const notificationData = {
         sourceId: userId,
-        targetId: result.targetId,
+        targetId: result.ownerId,
         type: { typeName: "post", id: id },
       };
       await notification.createNotification(notificationData);

@@ -8,12 +8,9 @@ const messageCollectionSchema = Joi.object({
   sourceId: Joi.string().required(),
   targetId: Joi.string().required(),
   message: Joi.string().required(),
-  source: Joi.array().items(
-    Joi.object({
-      content: Joi.string().default(null),
-      type: Joi.string().default(null),
-    })
-  ),
+  source: Joi.array()
+    .items({ type: Joi.string(), data: Joi.string(), filename: Joi.string() })
+    .default([]),
   isReply: Joi.boolean().required(),
   isDestroy: Joi.boolean().default(false),
   createdAt: Joi.date().timestamp().default(Date.now()),
@@ -54,14 +51,30 @@ const showChats = async (userId) => {
     const result = await getDB()
       .collection(messageCollectionName)
       .aggregate([
-        { $match: { sourceId: userId } },
+        { $match: { $or: [{ sourceId: userId }, { targetId: userId }] } },
         {
           $group: {
-            _id: "$targetId",
+            _id: "$_id",
+            targetId: { $first: "$targetId" },
+            sourceId: { $first: "$sourceId" },
             createdAt: { $first: "$createdAt" },
           },
         },
-        { $addFields: { _targetId: { $toObjectId: "$_id" } } },
+        {
+          $addFields: {
+            _targetId: {
+              $switch: {
+                branches: [
+                  {
+                    case: { $ne: [userId, "$targetId"] },
+                    then: { $toObjectId: "$targetId" },
+                  },
+                ],
+                default: { $toObjectId: "$sourceId" },
+              },
+            },
+          },
+        },
         {
           $lookup: {
             from: "Users",
@@ -72,13 +85,14 @@ const showChats = async (userId) => {
         },
         {
           $group: {
-            _id: "$_id",
+            _id: "$User._id",
+            // _id: "$_id",
             User: { $first: "$User" },
             createdAt: { $first: "$createdAt" },
           },
         },
       ])
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .toArray();
     return result;
   } catch (error) {
@@ -100,7 +114,16 @@ const showDirectMessage = async (sourceId, targetId) => {
   try {
     const result = await getDB()
       .collection(messageCollectionName)
-      .find({ sourceId: sourceId, targetId: targetId })
+      .aggregate([
+        {
+          $match: {
+            $or: [
+              { sourceId: sourceId, targetId: targetId },
+              { sourceId: targetId, targetId: sourceId },
+            ],
+          },
+        },
+      ])
       .toArray();
     return result;
   } catch (error) {
