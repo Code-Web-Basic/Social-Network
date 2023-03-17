@@ -25,7 +25,10 @@ const editMessage = async (req, res) => {
 
 const showMessage = async (req, res) => {
   try {
-    const result = await messageService.showDirectMessage(req.body);
+    const result = await messageService.showDirectMessage(
+      req.user.sub,
+      req.params.id
+    );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({

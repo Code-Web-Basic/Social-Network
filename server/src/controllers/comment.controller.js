@@ -27,7 +27,7 @@ const showCommentOfPost = async (req, res) => {
   try {
     const result = await commentService.showCommentOfPost(
       req.params.id,
-      req.params.paging
+      req.query.paging
     );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
@@ -52,7 +52,7 @@ const showCommentReply = async (req, res) => {
   try {
     const result = await commentService.showCommentReply(
       req.params.id,
-      req.params.paging
+      req.query.paging
     );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
