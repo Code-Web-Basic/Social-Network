@@ -12,6 +12,7 @@ import SharePost from './SharePost/SharePost';
 import { calculateTimePassed } from '~/utils/utils';
 
 import PropTypes from 'prop-types';
+import { useRef, useState } from 'react';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -64,6 +65,28 @@ const MENU_ITEMS = [
 ];
 function PostItem({ data }) {
     const theme = useTheme();
+    const heartRef = useRef();
+    const bookmarkRef = useRef();
+    const [like, setLike] = useState(false);
+    const [bookmark, setBookmark] = useState(false);
+    const handleLikePost = () => {
+        if (!like) {
+            heartRef.current.style.color = 'red';
+            setLike(true);
+        } else {
+            heartRef.current.style.color = theme.palette.grey[500];
+            setLike(false);
+        }
+    };
+    const handleBookmarkPost = () => {
+        if (!bookmark) {
+            bookmarkRef.current.style.color = 'black';
+            setBookmark(true);
+        } else {
+            bookmarkRef.current.style.color = theme.palette.grey[500];
+            setBookmark(false);
+        }
+    };
     return (
         <Box>
             <Stack direction="column" spacing={1.5} marginTop="10px">
@@ -133,8 +156,8 @@ function PostItem({ data }) {
                     <Stack direction="row" justifyContent="space-between">
                         <Stack direction="row" spacing={1.5}>
                             {/* heart icon */}
-                            <ItemReaction>
-                                <Heart size={24} />
+                            <ItemReaction onClick={handleLikePost}>
+                                <Heart size={24} ref={heartRef} weight={like ? 'fill' : 'regular'} />
                             </ItemReaction>
                             {/* comment icon */}
                             <CommentPost data={data}>
@@ -149,9 +172,9 @@ function PostItem({ data }) {
                                 </ItemReaction>
                             </SharePost>
                         </Stack>
-                        <Stack direction="row">
+                        <Stack direction="row" onClick={handleBookmarkPost}>
                             <ItemReaction>
-                                <BookmarkSimple size={24} />
+                                <BookmarkSimple size={24} ref={bookmarkRef} weight={bookmark ? 'fill' : 'regular'} />
                             </ItemReaction>
                         </Stack>
                     </Stack>

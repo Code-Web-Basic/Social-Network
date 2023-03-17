@@ -40,7 +40,7 @@ function NewCommentPost(props) {
         setValueInput(message);
     };
 
-    const sendComment = (event) => {
+    const sendComment = async (event) => {
         event.preventDefault();
         const dataComment = {
             postId: props?.postId,
@@ -56,8 +56,8 @@ function NewCommentPost(props) {
         };
         if (valueInput.length > 0 && props?.postId) {
             // handleSendChatValue(valueFormChat);
-            dispatch(addNewComment(dataComment));
-            dispatch(increaseNumberComment(props?.postId));
+            await dispatch(addNewComment(dataComment));
+            await dispatch(increaseNumberComment(props?.postId));
             setValueInput('');
         }
     };

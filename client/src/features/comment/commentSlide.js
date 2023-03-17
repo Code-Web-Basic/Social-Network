@@ -62,7 +62,7 @@ export const CommentSlice = createSlice({
         builder.addCase(getSkipComment.fulfilled, (state, action) => {
             state.loading = false;
             state.error = '';
-            state.data = [...state.data, ...action.payload];
+            state.data = [...state.data, action.payload];
         });
         builder.addCase(addNewComment.pending, (state, action) => {
             state.loading = true;
@@ -92,7 +92,7 @@ export const CommentSlice = createSlice({
             const index = arrTmp.findIndex((obj) => obj._id === action.payload.replyId);
             arrTmp[index].replyCount += 1;
             state.data = JSON.parse(JSON.stringify(arrTmp));
-            // state.data[index].replyCount++;
+            state.data[index].replyCount++;
         });
     },
 });
