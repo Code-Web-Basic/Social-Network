@@ -68,7 +68,6 @@ function Profile() {
         setValue(newValue);
     };
     const currentUser = useSelector((state) => state.auth.currentUser);
-    console.log(currentUser.data.userName)
     const handleEdit = () => {
         navigate('/message')
     }

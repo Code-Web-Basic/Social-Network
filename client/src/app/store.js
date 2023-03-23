@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import authReducer from '~/features/auth/authSlice';
 import commentReducer from '~/features/comment/commentSlide';
 import postReducer from '~/features/post/postSlice';
+import messageReducer from '~/features/message/messageSlide';
 const persistConfig = {
     key: 'root',
     version: 1,
@@ -12,10 +13,10 @@ const persistConfig = {
 };
 
 export default configureStore({
-    reducer: { auth: authReducer, comment: commentReducer, post: postReducer },
+    reducer: { auth: authReducer, comment: commentReducer, post: postReducer, message: messageReducer },
 });
 // auth: authReducer
-const rootReducer = combineReducers({ auth: authReducer, comment: commentReducer, post: postReducer });
+const rootReducer = combineReducers({ auth: authReducer, comment: commentReducer, post: postReducer, message: messageReducer });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
     reducer: persistedReducer,

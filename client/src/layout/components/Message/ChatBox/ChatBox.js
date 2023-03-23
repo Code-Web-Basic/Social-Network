@@ -15,12 +15,12 @@ const style = {
     p: 1,
     borderRadius: '10px',
 };
-function ChatBox() {
+function ChatBox(props) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const theme = useTheme();
-    const idUser = 'test'
+    const { userfriend } = props
     const renderItemSuggested = () => {
         return (
             <Stack
@@ -53,9 +53,9 @@ function ChatBox() {
         );
     };
     return (<>
-        {idUser === 'test' ? (<>
-            <ChatDetail />
-        </>) : (<>
+        {userfriend._id ? (
+            <ChatDetail userfriend={userfriend} />
+        ) : (<>
             <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <div style={{ borderRadius: '50%', border: '1px solid black', width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
                     <PaperPlaneTilt size={32} />

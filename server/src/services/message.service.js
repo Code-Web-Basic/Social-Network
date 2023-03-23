@@ -3,7 +3,7 @@ const cloudinary = require("cloudinary").v2;
 
 const sendMessage = async (req) => {
   try {
-    const source = req.files.map((data) => {
+    const source = req.files?.map((data) => {
       return {
         data: data.path,
         type: data.mimetype,
@@ -15,7 +15,7 @@ const sendMessage = async (req) => {
     return result;
   } catch (error) {
     if (req.files) {
-      req.files.map((item) => {
+      req.files?.map((item) => {
         cloudinary.uploader.destroy(item.filename);
       });
     }

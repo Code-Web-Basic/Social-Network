@@ -31,22 +31,26 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     },
 }));
 
-function ItemUserInbox() {
+function ItemUserInbox(props) {
+    const { user } = props
+    //console.log(user)
     return (<Stack direction='row' height='80px' width='100%' padding='10px'>
-        <div style={{ width: '50px', height: '50px', marginRight: '10px' }}>
+        <div style={{
+            width: '50px', height: '50px', marginRight: '10px'
+        }}>
             <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 variant="dot"
             >
-                <Avatar alt="Avatar" src="https://cdn-icons-png.flaticon.com/512/1088/1088537.png" style={{
+                <Avatar alt="Avatar" src={user[0]?.avatar.data} style={{
                     width: '100%',
                     height: '100%'
                 }} />
             </StyledBadge>
         </div>
         <div style={{ fontSize: '14px', display: 'flex', alignContent: 'flex-start', flexDirection: 'column', justifyContent: 'center', textAlign: 'left' }}>
-            <h4 style={{ padding: '3px 0' }}>Van Tu</h4>
+            <h4 style={{ padding: '3px 0' }}>{user[0]?.Name}</h4>
             <p>Đang hoạt động</p>
         </div>
     </Stack >);

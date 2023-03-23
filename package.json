@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/Code-Web-Basic/Social-Network/issues"
   },
-  "homepage": "https://github.com/Code-Web-Basic/Social-Network#readme"
+  "homepage": "https://github.com/Code-Web-Basic/Social-Network#readme",
+  "dependencies": {
+    "emoji-mart": "^5.5.2",
+    "i": "^0.3.7",
+    "npm": "^9.6.2"
+  }
 }

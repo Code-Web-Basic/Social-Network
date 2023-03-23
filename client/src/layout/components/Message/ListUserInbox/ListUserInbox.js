@@ -3,10 +3,6 @@ import { NotePencil } from 'phosphor-react';
 import { Avatar, Box, Checkbox, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { X } from 'phosphor-react';
 import ItemUserInbox from './ItemUserInbox';
-import axios from 'axios';
-import { getShowMessage } from '~/api/messageApi/messageApi';
-import * as messApi from '~/api/messageApi/messageApi'
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 const style = {
@@ -20,22 +16,17 @@ const style = {
     borderRadius: '10px',
 };
 
-function ListUserInbox() {
+function ListUserInbox(props) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const currentUser = useSelector((state) => state.auth.currentUser);
-    const idTest1 = ""
-    const idTest2 = "..."
-    // Call api
-    /*useEffect(() => {
-        const callApi = async () => {
-            const res = await messApi.getShowMessage(1);
-            console.log(res);
-        };
-        callApi();
-    }, []);*/
+    const { setUserfriend } = props
+    const ListUserChat = useSelector((state) => state.message.data);
+    const handleGetUser = (e) => {
+        setUserfriend(e)
+    }
     const renderItemSuggested = () => {
         return (
             <Stack
@@ -142,19 +133,9 @@ function ListUserInbox() {
                     borderRadius: '10px',
                 },
             }}>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
-                <button style={{ cursor: 'pointer' }}><ItemUserInbox /></button>
+                {ListUserChat.map((e) => (
+                    <button key={e?._id[0]} style={{ cursor: 'pointer' }} onClick={() => handleGetUser(e)}><ItemUserInbox user={e?.User} /></button>
+                ))}
             </Stack>
         </Stack>
     );
