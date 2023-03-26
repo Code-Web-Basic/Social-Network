@@ -11,7 +11,7 @@ const follow = async (data) => {
 
 const unFollow = async (data) => {
   try {
-    const result = await followModel.follow(data);
+    const result = await followModel.unFollow(data);
     return result;
   } catch (error) {
     throw new Error(error);
@@ -36,9 +36,19 @@ const getFollowing = async (userId, paging) => {
   }
 };
 
+const suggestions = async (userId) => {
+  try {
+    const result = await followModel.suggestions(userId);
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   follow,
   unFollow,
   getFollowers,
   getFollowing,
+  suggestions,
 };
