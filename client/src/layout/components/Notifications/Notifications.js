@@ -1,21 +1,21 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import { HeartStraight } from 'phosphor-react';
 import SuggestionsUserItem from '../Home/SuggestionsUser/SuggestionsUserItem';
+import * as userApi from '~/api/userApi/userApi'
+import { useEffect, useState } from 'react';
 
 function Notifications() {
     const theme = useTheme();
-    const notifys = [
-        /*{
-            "img": 'https://vcdn1-vnexpress.vnecdn.net/2017/08/17/on-PNG-1339-1502964241.png?w=0&h=0&q=100&dpr=2&fit=crop&s=wJwdY9YvQTHdyWHDGtT71g',
-            "content": 'Văn tú đã bắt đầu theo dõi bạn',
-        },
-        {
-            "img": 'https://vcdn1-vnexpress.vnecdn.net/2017/08/17/on-PNG-1339-1502964241.png?w=0&h=0&q=100&dpr=2&fit=crop&s=wJwdY9YvQTHdyWHDGtT71g',
-            "content": 'Văn tú đã bắt đầu theo dõi bạn',
-        }*/
-    ]
+    const [notifys, setNotifys] = useState([])
+    // const getNotify = async () => {
+    //     const res = await userApi.getNotify()
+    //     console.log(res)
+    // }
+    // useEffect(() => {
+    //     getNotify()
+    // }, [])
     return (
-        <Box
+        < Box
             sx={{
                 position: 'absolute',
                 left: '60px',
@@ -23,7 +23,8 @@ function Notifications() {
                 boxShadow: 'rgba(0, 0, 0, 0.24) 9px -1px 20px -10px',
                 background: theme.palette.background.default,
                 zIndex: 100,
-            }}
+            }
+            }
         >
             <Stack>
                 <h2>Thông báo</h2>
@@ -67,7 +68,7 @@ function Notifications() {
                     <SuggestionsUserItem />
                 </Stack>
             </Stack>
-        </Box>
+        </Box >
     );
 }
 

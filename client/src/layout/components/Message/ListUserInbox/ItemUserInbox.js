@@ -33,7 +33,6 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 function ItemUserInbox(props) {
     const { user } = props
-    //console.log(user)
     return (<Stack direction='row' height='80px' width='100%' padding='10px'>
         <div style={{
             width: '50px', height: '50px', marginRight: '10px'

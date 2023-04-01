@@ -5,6 +5,10 @@ import Button from '@mui/material/Button';
 import { Avatar, Box, Checkbox, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { X } from 'phosphor-react';
 import ChatDetail from "./ChatDetail";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getShowMessage } from "~/features/message/messageSlide";
+import { useEffect } from "react";
 const style = {
     position: 'absolute',
     top: '40%',
@@ -15,12 +19,12 @@ const style = {
     p: 1,
     borderRadius: '10px',
 };
-function ChatBox(props) {
+function ChatBox() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const theme = useTheme();
-    const { userfriend } = props
+    //const { userfriend } = props
     const renderItemSuggested = () => {
         return (
             <Stack
@@ -52,9 +56,14 @@ function ChatBox(props) {
             </Stack>
         );
     };
+    const { id } = useParams()
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getShowMessage(id))
+    }, [id])
     return (<>
-        {userfriend._id ? (
-            <ChatDetail userfriend={userfriend} />
+        {id ? (
+            <ChatDetail />
         ) : (<>
             <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <div style={{ borderRadius: '50%', border: '1px solid black', width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>

@@ -9,4 +9,5 @@ export const router = {
     reels: '/reels',
     login: '/login',
     register: '/register',
+    chatdetail: '/message/:id'
 };

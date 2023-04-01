@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import * as configRouter from '~/config/config';
 import { logout } from '~/features/auth/authSlice';
+import { clearMessage } from '~/features/message/messageSlide';
 // components
 
 const style = {
@@ -27,6 +28,7 @@ export function MenuModalUser({ children }) {
     const handleClose = () => setOpen(false);
     const logoutAccount = async () => {
         console.log('call');
+        await dispatch(clearMessage())
         await dispatch(logout());
     };
     return (

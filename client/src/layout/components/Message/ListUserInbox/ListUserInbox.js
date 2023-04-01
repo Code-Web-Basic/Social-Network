@@ -3,7 +3,10 @@ import { NotePencil } from 'phosphor-react';
 import { Avatar, Box, Checkbox, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { X } from 'phosphor-react';
 import ItemUserInbox from './ItemUserInbox';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getShowChats } from '~/features/message/messageSlide';
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -16,17 +19,13 @@ const style = {
     borderRadius: '10px',
 };
 
-function ListUserInbox(props) {
+function ListUserInbox() {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const currentUser = useSelector((state) => state.auth.currentUser);
-    const { setUserfriend } = props
     const ListUserChat = useSelector((state) => state.message.data);
-    const handleGetUser = (e) => {
-        setUserfriend(e)
-    }
     const renderItemSuggested = () => {
         return (
             <Stack
@@ -58,6 +57,14 @@ function ListUserInbox(props) {
             </Stack>
         );
     };
+    const dispatch = useDispatch();
+    const showchats = async () => {
+        const actionResult = await dispatch(getShowChats());
+        return actionResult;
+    };
+    useEffect(() => {
+        showchats();
+    }, []);
     return (
         <Stack direction='column' height='100%' width='100%'>
             {/* header */}
@@ -133,8 +140,8 @@ function ListUserInbox(props) {
                     borderRadius: '10px',
                 },
             }}>
-                {ListUserChat.map((e) => (
-                    <button key={e?._id[0]} style={{ cursor: 'pointer' }} onClick={() => handleGetUser(e)}><ItemUserInbox user={e?.User} /></button>
+                {ListUserChat?.map((e) => (
+                    <button key={e?._id[0]} style={{ cursor: 'pointer' }} ><Link to={`/message/${e?._id[0]}`}><ItemUserInbox user={e?.User} /></Link></button>
                 ))}
             </Stack>
         </Stack>

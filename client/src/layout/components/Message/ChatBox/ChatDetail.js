@@ -1,17 +1,19 @@
 import * as React from 'react';
 // mui ui
-import { Avatar, FormControl, Input, InputAdornment, Stack } from '@mui/material';
+import { Avatar, FormControl, IconButton, Input, InputAdornment, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import { Gear, Heart, Phone, Smiley, VideoCamera } from 'phosphor-react';
-import * as messApi from '~/api/messageApi/messageApi'
+import { Gear, Heart, Image, Phone, Smiley, VideoCamera } from 'phosphor-react';
 import { useState } from 'react';
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getShowMessage } from '~/features/message/messageSlide';
+import { getShowMessage, postSendMessage } from '~/features/message/messageSlide';
 import './ChatDetail.css'
+import { useParams } from 'react-router-dom';
+import * as userApi from '~/api/userApi/userApi'
+import images from '~/assets/images';
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
         backgroundColor: '#44b700',
@@ -39,18 +41,28 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
         },
     },
 }));
-function ChatDetail(props) {
-    const { userfriend } = props
+function ChatDetail() {
+    //const { userfriend } = props
     const [isPickerVisible, setPickerVisible] = useState(false)
     const [currentChat, setCurrentChat] = useState('')
+    const [userfriend, setUserfriend] = useState([])
+    const { id } = useParams()
+    const getfriend = async () => {
+        const res = await userApi.getFriend(id)
+        setUserfriend(res)
+    }
+    useEffect(() => {
+        getfriend()
+    }, [id])
+    const dispatch = useDispatch();
     const handleHeart = async () => {
         const data = {
-            targetId: userfriend?._id[0],
+            targetId: id,
             message: '❤',
             isReply: false
         }
-        const res = await messApi.postSendMessage(data)
-        console.log(res)
+        await dispatch(postSendMessage(data));
+        await dispatch(getShowMessage(id))
     }
     const handleEmojiClick = (event) => {
         let message = currentChat;
@@ -60,15 +72,36 @@ function ChatDetail(props) {
     const handlePickerVisible = () => {
         setPickerVisible(!isPickerVisible)
     }
-    const dispatch = useDispatch();
-    const getMessages = async () => {
-        const actionResult = await dispatch(getShowMessage(userfriend?._id[0]));
-        return actionResult;
-    };
-    useEffect(() => {
-        getMessages();
-    }, [userfriend]);
-    const messageData = useSelector((state) => state.message?.messages);
+    const handleInputImage = async (e) => {
+        // const formData = new FormData();
+        // formData.append('targetId', id);
+        // formData.append('isReply', false);
+        // formData.append('message', ' ');
+        // formData.append('files', e.target.files[0]);
+        // console.log(formData)
+        const data = {
+            targetId: id,
+            isReply: false,
+            message: ' ',
+            files: new File([e.target.files[0]], e.target.files[0].name, { type: e.target.files[0].type })
+        }
+        console.log(data)
+        await dispatch(postSendMessage(data));
+        await dispatch(getShowMessage(id))
+    }
+    const handleSubmit = async (event) => {
+        const data = {
+            targetId: id,
+            message: currentChat,
+            isReply: false
+        }
+        if (event.key === 'Enter' && currentChat !== '') {
+            await dispatch(postSendMessage(data));
+            await dispatch(getShowMessage(id))
+            setCurrentChat('')
+        }
+    }
+    const messageData = useSelector((state) => state.message.messages);
     const currentUser = useSelector((state) => state.auth.currentUser.data);
     return (<Stack direction='column' height='100%' width='100%'>
         {/* header */}
@@ -80,14 +113,14 @@ function ChatDetail(props) {
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                         variant="dot"
                     >
-                        <Avatar alt="Avatar" src={userfriend._id ? userfriend?.User[0]?.avatar?.data : ''} style={{
+                        <Avatar alt="Avatar" src={userfriend?.avatar?.data} style={{
                             width: '100%',
                             height: '100%'
                         }} />
                     </StyledBadge>
                 </div>
                 <div style={{ fontSize: '14px', display: 'flex', alignContent: 'flex-start', flexDirection: 'column', justifyContent: 'center', textAlign: 'left' }}>
-                    <h4 style={{ padding: '3px 0' }}>{userfriend._id ? userfriend?.User[0]?.Name : ''}</h4>
+                    <h4 style={{ padding: '3px 0' }}>{userfriend?.Name}</h4>
                     <p>Đang hoạt động</p>
                 </div>
             </div>
@@ -99,11 +132,11 @@ function ChatDetail(props) {
         </Stack>
         {/* char detail*/}
         <Stack style={{ width: '100%', height: '100%', position: 'relative' }}>
-            <div style={{ height: 'calc(100% - 50px)', overflow: 'auto' }}>
-                {messageData?.map((mess) => (
+            <div style={{ height: 'calc(100% - 80px)', overflow: 'auto' }}>
+                {messageData?.length > 0 ? messageData?.map((mess) => (
                     <div key={mess._id} className={currentUser?._id === mess?.sourceId ? 'item-mess mychat' : 'item-mess'}>
                         <div className='avatar' style={{ width: '30px', height: '30px' }}>
-                            <img src={userfriend?.User[0]?.avatar?.data}></img>
+                            <img src={userfriend?.avatar?.data}></img>
                         </div>
                         <p
                             style={{
@@ -122,11 +155,11 @@ function ChatDetail(props) {
                             {mess.message}
                         </p>
                     </div>
-                ))}
+                )) : <></>}
             </div>
             <div style={{ position: 'absolute', bottom: '20px', width: '90%', height: '50px', left: '5%', right: '5%', borderTop: '1px solid rgb(219, 219, 219)', borderBottom: '1px solid rgb(219, 219, 219)' }}>
-                <FormControl style={{ width: '100%', height: '25px' }}>
-                    <Input style={{ fontSize: '18px' }}
+                <FormControl style={{ width: '100%', height: '25px', display: 'flex', flexDirection: 'row' }}>
+                    <Input style={{ fontSize: '18px', width: '100%' }}
                         startAdornment={
                             <InputAdornment position="start">
                                 <Smiley size={25} onClick={handlePickerVisible} cursor='pointer' />
@@ -140,7 +173,23 @@ function ChatDetail(props) {
                         //
                         onChange={(e) => setCurrentChat(e.target.value)}
                         value={currentChat}
+                        onKeyDown={handleSubmit}
                     />
+                    <div>
+                        <input
+                            type="file"
+                            id="file"
+                            style={{ display: "none" }}
+                            onChange={(e) => {
+                                //setImage(e.target.files[0])
+                                handleInputImage(e)
+                            }}
+                        //onClick={handleInputImage}
+                        />
+                        <label htmlFor="file" >
+                            <img src={images.image} alt="" style={{ margin: '0px 5px', height: '30px', cursor: 'pointer' }} />
+                        </label>
+                    </div>
                     {isPickerVisible ? (<div tabIndex="-1" style={{ position: 'absolute', bottom: '30px' }}>
                         <Picker data={data} onEmojiSelect={handleEmojiClick} theme="light" />
                     </div>) : <></>}

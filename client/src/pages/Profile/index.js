@@ -12,6 +12,10 @@ import Post from '~/layout/components/Profile/Post';
 import Saved from '~/layout/components/Profile/Saved';
 import Tagged from '~/layout/components/Profile/Tagged';
 import { useSelector } from 'react-redux';
+import * as followApi from '~/api/followApi/followApi'
+import * as userApi from '~/api/userApi/userApi'
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const style = {
     position: 'absolute',
@@ -58,47 +62,109 @@ function a11yProps(index) {
     };
 }
 function Profile() {
-    const [value, setValue] = React.useState(0);
-    const navigate = useNavigate();
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
     const theme = useTheme();
+    const navigate = useNavigate();
+    const currentUser = useSelector((state) => state.auth.currentUser);
+    //
+    const [value, setValue] = useState(0);
+    const [openfollower, setOpenFollower] = useState(false);
+    const [openfollowing, setOpenFollowing] = useState(false);
+    const [follower, setFollower] = useState([])
+    const [following, setFollowing] = useState([])
+    const [post, setPost] = useState([])
+    //
+    const handleOpenFollower = () => setOpenFollower(true);
+    const handleCloseFollower = () => setOpenFollower(false);
+    const handleOpenFollowing = () => setOpenFollowing(true);
+    const handleCloseFollowing = () => setOpenFollowing(false);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    const currentUser = useSelector((state) => state.auth.currentUser);
+
     const handleEdit = () => {
         navigate('/message')
     }
+
+    const getPostOfUser = async () => {
+        const res = await userApi.getPostOfUser(currentUser?.data?._id)
+        console.log(res)
+        setPost(res)
+    }
+
+    const getFollower = async () => {
+        const res = await followApi.getFollower(currentUser?.data?._id)
+        console.log(res)
+        setFollower(res)
+    }
+    const getFollowing = async () => {
+        const res = await followApi.getFollowing(currentUser?.data?._id)
+        console.log(res)
+        setFollowing(res)
+    }
+    useEffect(() => {
+        getPostOfUser()
+        getFollower()
+        getFollowing()
+    }, [])
     const renderFollower = () => {
         return (
-            <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                p={1}
-                sx={{
-                    '&:hover': {
-                        background: theme.palette.grey[200],
-                    },
-                }}
-            >
-                <Stack direction="row" spacing={2}>
-                    <Avatar src="" alt="user" />
-                    <Stack direction="column">
-                        <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
-                            LinhNgoc.123
-                        </Typography>
-                        <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
-                            Linh Ngọc
-                        </Typography>
+            <>{
+                follower?.map((e) => (<Stack direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    p={1}
+                    sx={{
+                        '&:hover': {
+                            background: theme.palette.grey[200],
+                        },
+                    }}>
+                    <Stack direction="row" spacing={2}>
+                        <Avatar src={e?.User[0]?.avatar?.data} alt="user" />
+                        <Stack direction="column">
+                            <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
+                                {e?.User[0]?.userName}
+                            </Typography>
+                            <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
+                                {e?.User[0]?.Name}
+                            </Typography>
+                        </Stack>
                     </Stack>
-                </Stack>
-                <Stack direction="row" alignItems="center" justifyContent="center">
-                    <Button style={{ color: 'black' }}>Xóa</Button>
-                </Stack>
-            </Stack>
+                    <Stack direction="coloumn" alignItems="center" justifyContent="center">
+                        <Button style={{ color: 'black' }}>Xóa</Button>
+                    </Stack>
+                </Stack>))
+            }</>
+        );
+    };
+    const renderFollowing = () => {
+        return (
+            <>{
+                following?.map((e) => (<Stack direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    p={1}
+                    sx={{
+                        '&:hover': {
+                            background: theme.palette.grey[200],
+                        },
+                    }}>
+                    <Stack direction="row" spacing={2}>
+                        <Avatar src={e?.User[0]?.avatar?.data} alt="user" />
+                        <Stack direction="column">
+                            <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
+                                {e?.User[0]?.userName}
+                            </Typography>
+                            <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
+                                {e?.User[0]?.Name}
+                            </Typography>
+                        </Stack>
+                    </Stack>
+                    <Stack direction="coloumn" alignItems="center" justifyContent="center">
+                        <Button style={{ color: 'black' }}>Xóa</Button>
+                    </Stack>
+                </Stack>))
+            }</>
         );
     };
     return (<Grid container height='100vh'>
@@ -117,19 +183,19 @@ function Profile() {
                             <Button variant="text" onClick={handleEdit}><b style={{ color: 'black', fontSize: '13px' }}>Chỉnh sửa thông tin</b></Button>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px', position: 'relative' }}>
                         <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                            <p ><b>0</b> bài viết</p>
+                            <p ><b>{post?.length}</b> bài viết</p>
                         </div>
                         <div style={{ cursor: 'pointer' }}>
-                            <button onClick={handleOpen} style={{ cursor: 'pointer', fontSize: '16px' }}><b>47</b> người theo dõi</button>
+                            <button onClick={handleOpenFollower} style={{ cursor: 'pointer', fontSize: '16px' }}><b>{follower?.length}</b> người theo dõi</button>
                             <Modal
-                                open={open}
-                                onClose={handleClose}
+                                open={openfollower}
+                                onClose={handleCloseFollower}
                                 aria-labelledby="modal-modal-title"
                                 aria-describedby="modal-modal-description"
                             >
-                                <Box sx={style} minWidth="500px" maxheight="600px" overflow="hidden">
+                                <Box sx={style} minWidth="400px" maxheight="400px" overflow="auto">
                                     <Stack direction="column">
                                         <Stack
                                             direction="row"
@@ -143,7 +209,7 @@ function Profile() {
                                             <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
                                                 <h3>Người theo dõi</h3>
                                             </Typography>
-                                            <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleClose}>
+                                            <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleCloseFollower}>
                                                 <X size={20} />
                                             </Box>
                                         </Stack>
@@ -153,14 +219,14 @@ function Profile() {
                             </Modal>
                         </div>
                         <div style={{ cursor: 'pointer' }}>
-                            <button onClick={handleOpen} style={{ cursor: 'pointer', fontSize: '16px' }} >Đang theo dõi <b>255</b> người dùng</button>
+                            <button onClick={handleOpenFollowing} style={{ cursor: 'pointer', fontSize: '16px' }} >Đang theo dõi <b>{following?.length}</b> người dùng</button>
                             <Modal
-                                open={open}
-                                onClose={handleClose}
+                                open={openfollowing}
+                                onClose={handleCloseFollowing}
                                 aria-labelledby="modal-modal-title"
                                 aria-describedby="modal-modal-description"
                             >
-                                <Box sx={style} minWidth="500px" maxheight="600px" overflow="hidden">
+                                <Box sx={style} minWidth="400px" maxheight="400px" overflow="auto">
                                     <Stack direction="column">
                                         <Stack
                                             direction="row"
@@ -174,12 +240,12 @@ function Profile() {
                                             <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
                                                 <h3>Người đang theo dõi</h3>
                                             </Typography>
-                                            <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleClose}>
+                                            <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleCloseFollowing}>
                                                 <X size={20} />
                                             </Box>
                                         </Stack>
                                     </Stack>
-                                    {renderFollower()}
+                                    {renderFollowing()}
                                 </Box>
                             </Modal>
                         </div>
@@ -201,7 +267,7 @@ function Profile() {
                 </Box>
             </div>
             <TabPanel value={value} index={0}>
-                <Post />
+                <Post post={post} />
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <Saved />

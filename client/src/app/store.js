@@ -9,7 +9,7 @@ const persistConfig = {
     key: 'root',
     version: 1,
     storage,
-    blacklist: ['comment', 'post'],
+    blacklist: ['comment', 'post', 'message'],
 };
 
 export default configureStore({

@@ -21,5 +21,6 @@ const privateRoutes = [
     { path: routerConfig.profile, component: Profile },
     { path: routerConfig.login, component: Login, layout: null },
     { path: routerConfig.register, component: Register },
+    { path: routerConfig.chatdetail, component: Message }
 ];
 export { publicRoutes, privateRoutes };

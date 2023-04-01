@@ -45,7 +45,7 @@ export const messageSlice = createSlice({
             state.error = action.error;
         });
         builder.addCase(getShowChats.fulfilled, (state, action) => {
-            //console.log(action.payload);
+            // console.log(action.payload);
             state.loading = false;
             state.error = '';
             state.data = action.payload;
@@ -58,10 +58,10 @@ export const messageSlice = createSlice({
             state.error = action.error;
         });
         builder.addCase(postSendMessage.fulfilled, (state, action) => {
-            console.log(action.payload);
+            // console.log(action.payload);
             state.loading = false;
             state.error = '';
-            state.data = action.payload;
+            //state.data = action.payload;
         });
         builder.addCase(getShowMessage.pending, (state, action) => {
             state.loading = true;
