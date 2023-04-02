@@ -19,3 +19,13 @@ export const getFollowing = async (userid) => {
         console.log(error);
     }
 };
+
+export const unFollower = async (userid) => {
+    try {
+        const res = await httpRequest.post(`follow/unFollow/${userid}`);
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};

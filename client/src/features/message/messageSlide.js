@@ -7,7 +7,7 @@ export const getShowChats = createAsyncThunk('/message/showChats', async (params
     return res;
 });
 export const postSendMessage = createAsyncThunk('message/sendMessage', async (params, thunkAPI) => {
-    //console.log(params);
+    console.log(params);
     const res = await messageApi.postSendMessage(params);
     return res;
 });

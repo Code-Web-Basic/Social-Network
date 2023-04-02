@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getShowMessage, postSendMessage } from '~/features/message/messageSlide';
 import './ChatDetail.css'
-import { useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import * as userApi from '~/api/userApi/userApi'
 import images from '~/assets/images';
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -61,6 +61,7 @@ function ChatDetail() {
             message: '❤',
             isReply: false
         }
+
         await dispatch(postSendMessage(data));
         await dispatch(getShowMessage(id))
     }
@@ -73,20 +74,19 @@ function ChatDetail() {
         setPickerVisible(!isPickerVisible)
     }
     const handleInputImage = async (e) => {
-        // const formData = new FormData();
-        // formData.append('targetId', id);
-        // formData.append('isReply', false);
-        // formData.append('message', ' ');
-        // formData.append('files', e.target.files[0]);
-        // console.log(formData)
+        let formData = new FormData();
+        formData.append('targetId', id);
+        formData.append('isReply', false);
+        formData.append('message', ' ');
+        formData.append('files', e.target.files[0]);
         const data = {
             targetId: id,
             isReply: false,
             message: ' ',
-            files: new File([e.target.files[0]], e.target.files[0].name, { type: e.target.files[0].type })
+            files: e.target.files[0]
         }
         console.log(data)
-        await dispatch(postSendMessage(data));
+        await dispatch(postSendMessage(formData));
         await dispatch(getShowMessage(id))
     }
     const handleSubmit = async (event) => {
@@ -125,14 +125,16 @@ function ChatDetail() {
                 </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Phone size={28} style={{ margin: '0px 10px', cursor: 'pointer' }} />
-                <VideoCamera size={28} style={{ margin: '0px 10px', cursor: 'pointer' }} />
+                <Link to={`/roomvoice/${id}`}><Phone size={28} style={{ margin: '0px 10px', cursor: 'pointer' }} /></Link>
+                {/* <Phone size={28} style={{ margin: '0px 10px', cursor: 'pointer' }} /> */}
+                <Link to={`/roomcall/${id}`}><VideoCamera size={28} style={{ margin: '0px 10px', cursor: 'pointer' }} /></Link>
+                {/* <VideoCamera size={28} style={{ margin: '0px 10px', cursor: 'pointer' }} onClick={handleCallVideo} /> */}
                 <Gear size={28} style={{ margin: '0px 10px', cursor: 'pointer' }} />
             </div>
         </Stack>
         {/* char detail*/}
-        <Stack style={{ width: '100%', height: '100%', position: 'relative' }}>
-            <div style={{ height: 'calc(100% - 80px)', overflow: 'auto' }}>
+        <Stack style={{ width: '100%', height: 'calc(100% - 50px)', position: 'relative' }}>
+            <div style={{ height: 'calc(100% - 100px)', overflow: 'auto' }}>
                 {messageData?.length > 0 ? messageData?.map((mess) => (
                     <div key={mess._id} className={currentUser?._id === mess?.sourceId ? 'item-mess mychat' : 'item-mess'}>
                         <div className='avatar' style={{ width: '30px', height: '30px' }}>
@@ -152,7 +154,7 @@ function ChatDetail() {
                                 background: 'rgb(219, 219, 219)'
                             }}
                         >
-                            {mess.message}
+                            {mess.message !== ' ' ? mess.message : <img src={mess.source[0]?.data} style={{ maxWidth: '250px', maxHeight: '250px' }} />}
                         </p>
                     </div>
                 )) : <></>}
@@ -181,10 +183,8 @@ function ChatDetail() {
                             id="file"
                             style={{ display: "none" }}
                             onChange={(e) => {
-                                //setImage(e.target.files[0])
                                 handleInputImage(e)
                             }}
-                        //onClick={handleInputImage}
                         />
                         <label htmlFor="file" >
                             <img src={images.image} alt="" style={{ margin: '0px 5px', height: '30px', cursor: 'pointer' }} />

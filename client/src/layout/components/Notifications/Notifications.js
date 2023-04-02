@@ -7,13 +7,14 @@ import { useEffect, useState } from 'react';
 function Notifications() {
     const theme = useTheme();
     const [notifys, setNotifys] = useState([])
-    // const getNotify = async () => {
-    //     const res = await userApi.getNotify()
-    //     console.log(res)
-    // }
-    // useEffect(() => {
-    //     getNotify()
-    // }, [])
+    const getNotify = async () => {
+        const res = await userApi.getNotify()
+        console.log(res)
+        setNotifys(res)
+    }
+    useEffect(() => {
+        getNotify()
+    }, [])
     return (
         < Box
             sx={{

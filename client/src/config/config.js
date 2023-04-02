@@ -9,5 +9,7 @@ export const router = {
     reels: '/reels',
     login: '/login',
     register: '/register',
-    chatdetail: '/message/:id'
+    chatdetail: '/message/:id',
+    roomcall: '/roomcall/:id',
+    roomvoice: '/roomvoice/:id'
 };

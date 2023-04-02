@@ -107,6 +107,10 @@ function Profile() {
         getFollower()
         getFollowing()
     }, [])
+    const handleUnFollower = async (id) => {
+        await followApi.unFollower(id)
+        await getFollower()
+    }
     const renderFollower = () => {
         return (
             <>{
@@ -118,7 +122,8 @@ function Profile() {
                         '&:hover': {
                             background: theme.palette.grey[200],
                         },
-                    }}>
+                    }}
+                    key={e?.User[0]?._id}>
                     <Stack direction="row" spacing={2}>
                         <Avatar src={e?.User[0]?.avatar?.data} alt="user" />
                         <Stack direction="column">
@@ -131,7 +136,7 @@ function Profile() {
                         </Stack>
                     </Stack>
                     <Stack direction="coloumn" alignItems="center" justifyContent="center">
-                        <Button style={{ color: 'black' }}>Xóa</Button>
+                        <Button style={{ color: 'black' }} onClick={() => handleUnFollower(e?.User[0]?._id)}>Xóa</Button>
                     </Stack>
                 </Stack>))
             }</>
@@ -148,7 +153,8 @@ function Profile() {
                         '&:hover': {
                             background: theme.palette.grey[200],
                         },
-                    }}>
+                    }}
+                    key={e?.User[0]?._id}>
                     <Stack direction="row" spacing={2}>
                         <Avatar src={e?.User[0]?.avatar?.data} alt="user" />
                         <Stack direction="column">
@@ -161,7 +167,7 @@ function Profile() {
                         </Stack>
                     </Stack>
                     <Stack direction="coloumn" alignItems="center" justifyContent="center">
-                        <Button style={{ color: 'black' }}>Xóa</Button>
+                        <Button style={{ color: 'black' }} >Xóa</Button>
                     </Stack>
                 </Stack>))
             }</>
@@ -188,38 +194,7 @@ function Profile() {
                             <p ><b>{post?.length}</b> bài viết</p>
                         </div>
                         <div style={{ cursor: 'pointer' }}>
-                            <button onClick={handleOpenFollower} style={{ cursor: 'pointer', fontSize: '16px' }}><b>{follower?.length}</b> người theo dõi</button>
-                            <Modal
-                                open={openfollower}
-                                onClose={handleCloseFollower}
-                                aria-labelledby="modal-modal-title"
-                                aria-describedby="modal-modal-description"
-                            >
-                                <Box sx={style} minWidth="400px" maxheight="400px" overflow="auto">
-                                    <Stack direction="column">
-                                        <Stack
-                                            direction="row"
-                                            width="100%"
-                                            alignItems="center"
-                                            justifyContent={'center'}
-                                            p={1}
-                                            position="relative"
-                                            borderBottom='1px solid rgb(219, 219, 219)'
-                                        >
-                                            <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
-                                                <h3>Người theo dõi</h3>
-                                            </Typography>
-                                            <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleCloseFollower}>
-                                                <X size={20} />
-                                            </Box>
-                                        </Stack>
-                                    </Stack>
-                                    {renderFollower()}
-                                </Box>
-                            </Modal>
-                        </div>
-                        <div style={{ cursor: 'pointer' }}>
-                            <button onClick={handleOpenFollowing} style={{ cursor: 'pointer', fontSize: '16px' }} >Đang theo dõi <b>{following?.length}</b> người dùng</button>
+                            <button onClick={handleOpenFollowing} style={{ cursor: 'pointer', fontSize: '16px' }}><b>{following?.length}</b> người theo dõi</button>
                             <Modal
                                 open={openfollowing}
                                 onClose={handleCloseFollowing}
@@ -238,7 +213,7 @@ function Profile() {
                                             borderBottom='1px solid rgb(219, 219, 219)'
                                         >
                                             <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
-                                                <h3>Người đang theo dõi</h3>
+                                                <h3>Người theo dõi</h3>
                                             </Typography>
                                             <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleCloseFollowing}>
                                                 <X size={20} />
@@ -246,6 +221,37 @@ function Profile() {
                                         </Stack>
                                     </Stack>
                                     {renderFollowing()}
+                                </Box>
+                            </Modal>
+                        </div>
+                        <div style={{ cursor: 'pointer' }}>
+                            <button onClick={handleOpenFollower} style={{ cursor: 'pointer', fontSize: '16px' }} >Đang theo dõi <b>{follower?.length}</b> người dùng</button>
+                            <Modal
+                                open={openfollower}
+                                onClose={handleCloseFollower}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                            >
+                                <Box sx={style} minWidth="400px" maxheight="400px" overflow="auto">
+                                    <Stack direction="column">
+                                        <Stack
+                                            direction="row"
+                                            width="100%"
+                                            alignItems="center"
+                                            justifyContent={'center'}
+                                            p={1}
+                                            position="relative"
+                                            borderBottom='1px solid rgb(219, 219, 219)'
+                                        >
+                                            <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
+                                                <h3>Người đang theo dõi</h3>
+                                            </Typography>
+                                            <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleCloseFollower}>
+                                                <X size={20} />
+                                            </Box>
+                                        </Stack>
+                                    </Stack>
+                                    {renderFollower()}
                                 </Box>
                             </Modal>
                         </div>

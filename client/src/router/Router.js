@@ -6,6 +6,8 @@ import Profile from '~/pages/Profile';
 import Login from '~/pages/Login';
 import Register from '~/pages/Register';
 import Create from '~/pages/Create/Create';
+import VideoCall from '~/layout/components/Message/ChatBox/VideoCall';
+import VoiceCall from '~/layout/components/Message/ChatBox/VoiceCall';
 
 const publicRoutes = [
     { path: routerConfig.login, component: Login, layout: null },
@@ -21,6 +23,8 @@ const privateRoutes = [
     { path: routerConfig.profile, component: Profile },
     { path: routerConfig.login, component: Login, layout: null },
     { path: routerConfig.register, component: Register },
-    { path: routerConfig.chatdetail, component: Message }
+    { path: routerConfig.chatdetail, component: Message },
+    { path: routerConfig.roomcall, component: VideoCall, layout: null },
+    { path: routerConfig.roomvoice, component: VoiceCall, layout: null }
 ];
 export { publicRoutes, privateRoutes };

@@ -28,8 +28,13 @@ export const postSendMessage = async (data) => {
         //         'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJWdVRoYW5oU2FuZyIsInN1YiI6IjYzZTU4ZWU1MDk0MTI3NjA0NjU5YmIwOSIsImlhdCI6MTY4MDM3Mzc0NiwiZXhwIjoxNjgwMzczODY2fQ.WYm31dlPycSTkpBVpz96CqEAk8WrbaZQ0DMhPZ2tfqA`,
         //     },
         // });
-        const res = await httpRequest.post(`message/sendMessage`, { ...data });
-        // console.log(res)
+        console.log(data)
+        const res = await httpRequest.post(`message/sendMessage`, data,
+            {
+                'Content-Type': 'multipart/form-data',
+            }
+        );
+
         return res?.result;
     } catch (error) {
         console.log(error);
