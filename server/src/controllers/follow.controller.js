@@ -66,10 +66,24 @@ const suggestions = async (req, res) => {
     });
   }
 };
+const deleteFollower = async (req, res) => {
+  try {
+    const result = await followService.deleteFollower(
+      req.user.sub,
+      req.body.followerId
+    );
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   follow,
   unFollow,
   getFollowers,
   getFollowing,
   suggestions,
+  deleteFollower,
 };

@@ -3,7 +3,7 @@ const cloudinary = require("cloudinary").v2;
 
 const sendMessage = async (req) => {
   try {
-    const source = req.files.map((data) => {
+    const source = req.files?.map((data) => {
       return {
         data: data.path,
         type: data.mimetype,
@@ -31,9 +31,9 @@ const editMessage = async (id, data) => {
   }
 };
 
-const showDirectMessage = async (userId, data) => {
+const showDirectMessage = async (userId, data, paging) => {
   try {
-    const result = await messageModel.showDirectMessage(userId, data);
+    const result = await messageModel.showDirectMessage(userId, data, paging);
     return result;
   } catch (error) {
     throw new Error(error);

@@ -27,7 +27,8 @@ const showMessage = async (req, res) => {
   try {
     const result = await messageService.showDirectMessage(
       req.user.sub,
-      req.params.id
+      req.params.id,
+      req.query.paging
     );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
