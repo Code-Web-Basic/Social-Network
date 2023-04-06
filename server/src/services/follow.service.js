@@ -44,11 +44,19 @@ const suggestions = async (userId) => {
     throw new Error(error);
   }
 };
-
+const deleteFollower = async (userId, followerId) => {
+  try {
+    const result = await followModel.deleteFollower(userId, followerId);
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   follow,
   unFollow,
   getFollowers,
   getFollowing,
   suggestions,
+  deleteFollower,
 };

@@ -64,6 +64,17 @@ const explore = async (req, res) => {
     });
   }
 };
+
+const getById = async (req, res) => {
+  try {
+    const result = await postService.getById(req.params.id);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   createPost,
   deletePost,
@@ -71,4 +82,5 @@ module.exports = {
   showReactionOfPost,
   reaction,
   explore,
+  getById,
 };
