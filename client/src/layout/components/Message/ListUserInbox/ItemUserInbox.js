@@ -35,17 +35,14 @@ function ItemUserInbox(props) {
     const { user } = props
     return (<Stack direction='row' height='80px' width='100%' padding='10px'>
         <div style={{
-            width: '50px', height: '50px', marginRight: '10px'
+            width: '50px', height: '50px', marginRight: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center'
         }}>
             <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 variant="dot"
             >
-                <Avatar alt="Avatar" src={user[0]?.avatar.data} style={{
-                    width: '100%',
-                    height: '100%'
-                }} />
+                <Avatar alt="Avatar" src={user[0]?.avatar?.data} />
             </StyledBadge>
         </div>
         <div style={{ fontSize: '14px', display: 'flex', alignContent: 'flex-start', flexDirection: 'column', justifyContent: 'center', textAlign: 'left' }}>

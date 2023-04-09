@@ -9,7 +9,7 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getShowMessage, postSendMessage } from '~/features/message/messageSlide';
+import { getShowMessage, postSendMessage } from '~/features/message/messageSlice';
 import './ChatDetail.css'
 import { Link, Navigate, useParams } from 'react-router-dom';
 import * as userApi from '~/api/userApi/userApi'
@@ -107,16 +107,13 @@ function ChatDetail() {
         {/* header */}
         <Stack direction='row' borderBottom='1px solid rgb(219, 219, 219)' height='50px' marginLeft='15px' justifyContent='space-between'>
             <div style={{ fontSize: '16px', fontWeight: '600', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                <div style={{ width: '30px', height: '30px', marginRight: '10px' }}>
+                <div style={{ width: '30px', height: '30px', marginRight: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <StyledBadge
                         overlap="circular"
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                         variant="dot"
                     >
-                        <Avatar alt="Avatar" src={userfriend?.avatar?.data} style={{
-                            width: '100%',
-                            height: '100%'
-                        }} />
+                        <Avatar alt="Avatar" src={userfriend?.avatar?.data} />
                     </StyledBadge>
                 </div>
                 <div style={{ fontSize: '14px', display: 'flex', alignContent: 'flex-start', flexDirection: 'column', justifyContent: 'center', textAlign: 'left' }}>

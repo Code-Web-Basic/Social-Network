@@ -4,7 +4,7 @@ import { Avatar, Box, Checkbox, Modal, Stack, Typography, useTheme } from '@mui/
 import { X } from 'phosphor-react';
 import ItemUserInbox from './ItemUserInbox';
 import { useDispatch, useSelector } from 'react-redux';
-import { getShowChats } from '~/features/message/messageSlide';
+import { getShowChats } from '~/features/message/messageSlice';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 

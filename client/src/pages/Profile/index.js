@@ -7,10 +7,9 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { BookmarkSimple, GridFour, Tag, X } from 'phosphor-react';
 import { Avatar, Button, Modal, Stack, useTheme } from '@mui/material';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Post from '~/layout/components/Profile/Post';
 import Saved from '~/layout/components/Profile/Saved';
-import Tagged from '~/layout/components/Profile/Tagged';
 import { useSelector } from 'react-redux';
 import * as followApi from '~/api/followApi/followApi'
 import * as userApi from '~/api/userApi/userApi'
@@ -64,7 +63,7 @@ function a11yProps(index) {
 function Profile() {
     const theme = useTheme();
     const navigate = useNavigate();
-    const currentUser = useSelector((state) => state.auth.currentUser);
+    const currentUser = useSelector((state) => state.auth.currentUser.data);
     //
     const [value, setValue] = useState(0);
     const [openfollower, setOpenFollower] = useState(false);
@@ -72,44 +71,71 @@ function Profile() {
     const [follower, setFollower] = useState([])
     const [following, setFollowing] = useState([])
     const [post, setPost] = useState([])
+    const [user, getUser] = useState(null)
+    const [follow, setFollow] = useState(false)
     //
     const handleOpenFollower = () => setOpenFollower(true);
     const handleCloseFollower = () => setOpenFollower(false);
     const handleOpenFollowing = () => setOpenFollowing(true);
     const handleCloseFollowing = () => setOpenFollowing(false);
-
+    const { id } = useParams()
+    //console.log(id)
+    const getfriend = async () => {
+        const res = await userApi.getFriend(id)
+        getUser(res)
+    }
+    useEffect(() => {
+        getfriend()
+    }, [id])
+    const handleFollow = async () => {
+        await followApi.follow(id)
+        await getFollowing()
+        setFollow(true)
+    }
+    const handleUnFollow = async () => {
+        await followApi.unFollower(id)
+        await getFollowing()
+        setFollow(false)
+    }
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
     const handleEdit = () => {
-        navigate('/message')
+        user?._id === currentUser?._id ? navigate(`/profile/${id}`) : navigate(`/message/${id}`)
     }
 
     const getPostOfUser = async () => {
-        const res = await userApi.getPostOfUser(currentUser?.data?._id)
-        console.log(res)
+        const res = await userApi.getPostOfUser(id)
+        //console.log(res)
         setPost(res)
     }
 
     const getFollower = async () => {
-        const res = await followApi.getFollower(currentUser?.data?._id)
-        console.log(res)
+        const res = await followApi.getFollower(id)
+        //console.log(res)
         setFollower(res)
     }
     const getFollowing = async () => {
-        const res = await followApi.getFollowing(currentUser?.data?._id)
-        console.log(res)
+        const res = await followApi.getFollowing(id)
+        //console.log(res)
         setFollowing(res)
     }
     useEffect(() => {
         getPostOfUser()
         getFollower()
         getFollowing()
-    }, [])
+    }, [id])
     const handleUnFollower = async (id) => {
         await followApi.unFollower(id)
         await getFollower()
+    }
+    const handleUnFollowing = async (id) => {
+        const data = {
+            followerId: id
+        }
+        await followApi.unFollowing(data)
+        await getFollowing()
     }
     const renderFollower = () => {
         return (
@@ -124,20 +150,22 @@ function Profile() {
                         },
                     }}
                     key={e?.User[0]?._id}>
-                    <Stack direction="row" spacing={2}>
-                        <Avatar src={e?.User[0]?.avatar?.data} alt="user" />
-                        <Stack direction="column">
-                            <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
-                                {e?.User[0]?.userName}
-                            </Typography>
-                            <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
-                                {e?.User[0]?.Name}
-                            </Typography>
+                    <Link to={`/profile/${e?.User[0]?._id}`} onClick={handleCloseFollower}>
+                        <Stack direction="row" spacing={2}>
+                            <Avatar src={e?.User[0]?.avatar?.data} alt="user" />
+                            <Stack direction="column">
+                                <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
+                                    {e?.User[0]?.userName}
+                                </Typography>
+                                <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
+                                    {e?.User[0]?.Name}
+                                </Typography>
+                            </Stack>
                         </Stack>
-                    </Stack>
-                    <Stack direction="coloumn" alignItems="center" justifyContent="center">
-                        <Button style={{ color: 'black' }} onClick={() => handleUnFollower(e?.User[0]?._id)}>Xóa</Button>
-                    </Stack>
+                    </Link>
+                    {user?._id === currentUser?._id ? <Stack direction="coloumn" alignItems="center" justifyContent="center">
+                        <Button style={{ color: 'blue' }} onClick={() => handleUnFollower(e?.User[0]?._id)}>UnFollow</Button>
+                    </Stack> : ''}
                 </Stack>))
             }</>
         );
@@ -155,20 +183,22 @@ function Profile() {
                         },
                     }}
                     key={e?.User[0]?._id}>
-                    <Stack direction="row" spacing={2}>
-                        <Avatar src={e?.User[0]?.avatar?.data} alt="user" />
-                        <Stack direction="column">
-                            <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
-                                {e?.User[0]?.userName}
-                            </Typography>
-                            <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
-                                {e?.User[0]?.Name}
-                            </Typography>
+                    <Link to={`/profile/${e?.User[0]?._id}`} onClick={handleCloseFollowing}>
+                        <Stack direction="row" spacing={2}>
+                            <Avatar src={e?.User[0]?.avatar?.data} alt="user" />
+                            <Stack direction="column">
+                                <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
+                                    {e?.User[0]?.userName}
+                                </Typography>
+                                <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
+                                    {e?.User[0]?.Name}
+                                </Typography>
+                            </Stack>
                         </Stack>
-                    </Stack>
-                    <Stack direction="coloumn" alignItems="center" justifyContent="center">
-                        <Button style={{ color: 'black' }} >Xóa</Button>
-                    </Stack>
+                    </Link>
+                    {user?._id === currentUser?._id ? <Stack direction="coloumn" alignItems="center" justifyContent="center">
+                        <Button style={{ color: 'blue' }} onClick={() => handleUnFollowing(e?.User[0]?._id)}>Xóa</Button>
+                    </Stack> : ''}
                 </Stack>))
             }</>
         );
@@ -178,16 +208,22 @@ function Profile() {
         <Grid item xs={9} borderRadius='5px' boxShadow='rgba(0, 0, 0, 0.16) 0px 1px 4px' padding='20px 10px'>
             <div style={{ borderBottom: '1px solid rgb(219, 219, 219)', width: '100%', height: '150px', paddingBottom: '44px', display: 'flex' }}>
                 <div style={{ width: '30%', height: '100%', display: 'flex', objectFit: 'cover', justifyContent: 'center' }}>
-                    <Avatar alt={currentUser.data.avatar.filename} src={currentUser.data.avatar.data} style={{ width: '150px', height: '150px' }} />
+                    <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
                 </div>
                 <div style={{ width: '70%', height: '100%' }}>
                     <div style={{ display: 'flex', padding: '5px' }}>
                         <div>
-                            <h4>{currentUser.data.userName}</h4>
+                            <h4>{user?._id === currentUser?._id ? currentUser?.userName : user?.userName}</h4>
                         </div>
                         <div style={{ marginLeft: '10px' }}>
-                            <Button variant="text" onClick={handleEdit}><b style={{ color: 'black', fontSize: '13px' }}>Chỉnh sửa thông tin</b></Button>
+                            <Button variant="text" onClick={handleEdit}><b style={{ color: 'blue', fontSize: '13px' }}>{user?._id === currentUser?._id ? 'Chỉnh sửa thông tin' : 'Nhắn tin'}</b></Button>
                         </div>
+                        {
+                            user?._id !== currentUser?._id ? <div style={{ marginLeft: '10px' }}>
+                                {follow ? <Button variant="text" onClick={handleUnFollow}><b style={{ color: 'blue', fontSize: '13px' }}>UnFollow</b></Button> : <Button variant="text" onClick={handleFollow}><b style={{ color: 'blue', fontSize: '13px' }}>Follow</b></Button>}
+                            </div> : ''
+                        }
+
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px', position: 'relative' }}>
                         <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -220,7 +256,7 @@ function Profile() {
                                             </Box>
                                         </Stack>
                                     </Stack>
-                                    {renderFollowing()}
+                                    {following.length === 0 ? <p>No following</p> : renderFollowing()}
                                 </Box>
                             </Modal>
                         </div>
@@ -251,7 +287,7 @@ function Profile() {
                                             </Box>
                                         </Stack>
                                     </Stack>
-                                    {renderFollower()}
+                                    {follower.length === 0 ? <p>No follower</p> : renderFollower()}
                                 </Box>
                             </Modal>
                         </div>
@@ -266,8 +302,7 @@ function Profile() {
                     <Box sx={{ borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                             <Tab icon={<GridFour />} iconPosition="start" label="BÀI VIẾT" {...a11yProps(0)} />
-                            <Tab icon={<BookmarkSimple />} iconPosition="start" label="ĐÃ LƯU" {...a11yProps(1)} />
-                            <Tab icon={<Tag />} iconPosition="start" label="ĐƯỢC GẮN THẺ" {...a11yProps(2)} />
+                            {user?._id === currentUser?._id ? <Tab icon={<BookmarkSimple />} iconPosition="start" label="ĐÃ LƯU" {...a11yProps(1)} /> : ''}
                         </Tabs>
                     </Box>
                 </Box>
@@ -277,9 +312,6 @@ function Profile() {
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <Saved />
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                <Tagged />
             </TabPanel>
         </Grid>
         <Grid item xs={1.5}></Grid>

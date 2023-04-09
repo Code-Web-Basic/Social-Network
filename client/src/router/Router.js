@@ -22,7 +22,7 @@ const privateRoutes = [
     { path: routerConfig.create, component: Create },
     { path: routerConfig.profile, component: Profile },
     { path: routerConfig.login, component: Login, layout: null },
-    { path: routerConfig.register, component: Register },
+    { path: routerConfig.register, component: Register, layout: null },
     { path: routerConfig.chatdetail, component: Message },
     { path: routerConfig.roomcall, component: VideoCall, layout: null },
     { path: routerConfig.roomvoice, component: VoiceCall, layout: null }

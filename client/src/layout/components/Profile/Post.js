@@ -6,7 +6,7 @@ function Post(props) {
     return (
         <ImageList sx={{ width: '100%', overflow: 'hidden' }} cols={3} rowHeight={250}>
             {post.map((item) => (
-                <ImageListItem key={item.img} className='post' sx={{ border: '1px solid black', width: '100%', height: '100%', overflow: 'hidden' }}>
+                <ImageListItem key={item?.source[0]?.data} className='post' sx={{ width: '100%', height: '100%', overflow: 'hidden' }}>
                     {!item.isVideo ?
                         <img
                             src={`${item?.source[0]?.data}`}

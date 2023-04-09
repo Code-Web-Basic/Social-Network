@@ -29,3 +29,23 @@ export const unFollower = async (userid) => {
         console.log(error);
     }
 };
+
+export const follow = async (userid) => {
+    try {
+        const res = await httpRequest.post(`follow/${userid}`);
+        // console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const unFollowing = async (data) => {
+    try {
+        const res = await httpRequest.post('follow/deleteFollower', data);
+        // console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};

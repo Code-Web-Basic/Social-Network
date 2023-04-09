@@ -7,7 +7,7 @@ import { X } from 'phosphor-react';
 import ChatDetail from "./ChatDetail";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getShowMessage } from "~/features/message/messageSlide";
+import { getShowMessage } from "~/features/message/messageSlice";
 import { useEffect } from "react";
 const style = {
     position: 'absolute',

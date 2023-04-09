@@ -36,9 +36,11 @@ export const registerPassword = async (params) => {
             userName: params.username,
             password: params.password,
             email: params.email,
+            mobile: params.phone,
             authType: 'local',
         });
-        return res?.result;
+        console.log(res)
+        return res;
     } catch (error) {
         console.log(error);
     }

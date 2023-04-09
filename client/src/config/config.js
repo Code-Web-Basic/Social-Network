@@ -4,7 +4,7 @@ export const router = {
     explore: '/explore',
     message: '/message',
     notification: '/notification',
-    profile: '/profile',
+    profile: '/profile/:id',
     create: '/create',
     reels: '/reels',
     login: '/login',
