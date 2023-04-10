@@ -1,0 +1,6 @@
+.post:hover img {
+    transform: scale(1.1);
+}
+.post:hover video {
+    transform: scale(1.1);
+}

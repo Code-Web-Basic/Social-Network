@@ -24,6 +24,6 @@ router.route("/reaction/:id").post(verifyToken, postController.reaction);
 router
   .route("/showReactionOfPost/:id")
   .get(verifyToken, postController.showReactionOfPost);
-
+router.route("/getById/:id").get(verifyToken, postController.getById);
 router.route("/explore").get(verifyToken, postController.explore);
 module.exports = router;

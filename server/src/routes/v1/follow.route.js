@@ -3,6 +3,7 @@ const verifyToken = require("../../middlewares/verifyToken");
 const router = express.Router();
 const followController = require("../../controllers/follow.controller");
 
+
 router.route("/:targetId").post(verifyToken, followController.follow);
 
 router
@@ -16,4 +17,5 @@ router
   .route("/getFollowing/:userId")
   .get(verifyToken, followController.getFollowing);
 router.route("/suggestions").get(verifyToken, followController.suggestions);
+
 module.exports = router;

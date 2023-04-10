@@ -4,9 +4,12 @@ export const router = {
     explore: '/explore',
     message: '/message',
     notification: '/notification',
-    profile: '/profile',
+    profile: '/profile/:id',
     create: '/create',
     reels: '/reels',
     login: '/login',
     register: '/register',
+    chatdetail: '/message/:id',
+    roomcall: '/roomcall/:id',
+    roomvoice: '/roomvoice/:id'
 };

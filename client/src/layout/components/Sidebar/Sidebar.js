@@ -12,19 +12,21 @@ import {
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { router as configRouter } from '~/config/config';
+import Notifications from '../Notifications/Notifications';
 import Search from '../Search/Search';
+import { useSelector } from 'react-redux';
 function Sidebar() {
     const theme = useTheme();
     const location = useLocation();
     const [openSideBar, setOpenSidebar] = useState(true);
     const [activeCurrent, SetActiveCurrent] = useState(0);
-
+    const currentUser = useSelector((state) => state.auth.currentUser.data);
     const renderComponent = () => {
         if (activeCurrent === 1) {
             return <Search />;
         }
         if (activeCurrent === 5) {
-            return <Search />;
+            return <Notifications />;
         }
     };
     return (
@@ -387,20 +389,20 @@ function Sidebar() {
                                     borderRadius: '15px',
                                 },
                                 background:
-                                    location.pathname === configRouter.profile && openSideBar
+                                    location.pathname === `/profile/${currentUser?._id}` && openSideBar
                                         ? theme.palette.grey[300]
                                         : 'transparent',
                                 borderRadius: '15px',
                             }}
                             spacing={3}
                             component={Link}
-                            to={configRouter.profile}
+                            to={`/profile/${currentUser?._id}`}
                             onClick={() => {
                                 setOpenSidebar(true);
                                 SetActiveCurrent(7);
                             }}
                         >
-                            {location.pathname === configRouter.profile ? (
+                            {location.pathname === `/profile/${currentUser?._id}` ? (
                                 <>
                                     <Avatar src="" variant="circular" sx={{ height: 25, width: 25 }} />
                                     {openSideBar && (

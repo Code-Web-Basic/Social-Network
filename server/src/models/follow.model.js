@@ -52,7 +52,16 @@ const unFollow = async (data) => {
     throw error;
   }
 };
-
+const deleteFollower = async (userID, followerId) => {
+  try {
+    await getDB()
+      .collection(followCollectionName)
+      .deleteOne({ targetId: userID, sourceId: followerId });
+    return "unFollow successfully";
+  } catch (error) {
+    throw error;
+  }
+};
 const getFollowers = async (userId, paging) => {
   try {
     const result = await getDB()
@@ -143,4 +152,5 @@ module.exports = {
   getFollowers,
   getFollowing,
   suggestions,
+
 };

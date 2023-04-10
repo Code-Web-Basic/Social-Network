@@ -51,4 +51,5 @@ module.exports = {
   getFollowers,
   getFollowing,
   suggestions,
+
 };

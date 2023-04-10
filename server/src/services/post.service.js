@@ -77,6 +77,14 @@ const explore = async () => {
     throw new Error(error);
   }
 };
+
+const getById = async (id) => {
+  try {
+    return await postModel.findOneById(id);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   createPost,
   deletePost,
@@ -84,4 +92,5 @@ module.exports = {
   reaction,
   showReactionOfPost,
   explore,
+  getById,
 };

@@ -22,6 +22,7 @@ export const getHistorySearch = async () => {
     }
 };
 
+
 export const getUserFollowing = async (params) => {
     try {
         const res = await httpRequest.get(`follow/getFollowing/${params.id}`, {
@@ -34,3 +35,4 @@ export const getUserFollowing = async (params) => {
         console.log(error);
     }
 };
+

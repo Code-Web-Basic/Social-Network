@@ -57,4 +57,5 @@ module.exports = {
   newFeed,
   postOfUser,
   showNotification,
+
 };

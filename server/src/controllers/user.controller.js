@@ -56,10 +56,12 @@ const showNotification = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   findUser,
   update,
   newFeed,
   postOfUser,
   showNotification,
+
 };

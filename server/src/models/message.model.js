@@ -12,6 +12,7 @@ const messageCollectionSchema = Joi.object({
     .items({ type: Joi.string(), data: Joi.string(), filename: Joi.string() })
     .default([]),
   isReply: Joi.boolean().required(),
+  replyId: Joi.string().default(null),
   isDestroy: Joi.boolean().default(false),
   createdAt: Joi.date().timestamp().default(Date.now()),
   updatedAt: Joi.date().timestamp().default(null),
@@ -88,7 +89,7 @@ const showChats = async (userId) => {
             _id: "$User._id",
             // _id: "$_id",
             User: { $first: "$User" },
-            createdAt: { $first: "$createdAt" },
+            createdAt: { $max: "$createdAt" },
           },
         },
       ])
@@ -110,7 +111,7 @@ const editMessage = async (updateData, id) => {
   }
 };
 
-const showDirectMessage = async (sourceId, targetId) => {
+const showDirectMessage = async (sourceId, targetId, paging) => {
   try {
     const result = await getDB()
       .collection(messageCollectionName)
@@ -123,6 +124,7 @@ const showDirectMessage = async (sourceId, targetId) => {
             ],
           },
         },
+
       ])
       .toArray();
     return result;
@@ -135,11 +137,6 @@ const findInChat = async (findData, sourceId, targetId) => {
     const dataChat = await getDB()
       .collection(messageCollectionName)
       .aggregate([{ $match: { sourceId: sourceId, targetId: targetId } }]);
-  } catch (error) {}
-};
-
-const reply = async (id, data, sourceId, targetId) => {
-  try {
   } catch (error) {}
 };
 
