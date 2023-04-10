@@ -31,9 +31,10 @@ const editMessage = async (id, data) => {
   }
 };
 
-const showDirectMessage = async (userId, data, paging) => {
+
+const showDirectMessage = async (userId, data) => {
   try {
-    const result = await messageModel.showDirectMessage(userId, data, paging);
+    const result = await messageModel.showDirectMessage(userId, data);
     return result;
   } catch (error) {
     throw new Error(error);

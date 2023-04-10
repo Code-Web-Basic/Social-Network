@@ -14,5 +14,5 @@ router.route("/postOfUser/:id").get(verifyToken, UserController.postOfUser);
 router
   .route("/showNotification")
   .get(verifyToken, UserController.showNotification);
-router.route("/findById/:id").get(verifyToken, UserController.findOneById);
+
 module.exports = router;

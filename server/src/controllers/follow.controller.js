@@ -79,6 +79,16 @@ const deleteFollower = async (req, res) => {
     });
   }
 };
+const suggestions = async (req, res) => {
+  try {
+    const result = await followService.suggestions(req.user.sub);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   follow,
   unFollow,

@@ -93,7 +93,7 @@ const showChats = async (userId) => {
           },
         },
       ])
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .toArray();
     return result;
   } catch (error) {
@@ -124,33 +124,8 @@ const showDirectMessage = async (sourceId, targetId, paging) => {
             ],
           },
         },
-        {
-          $addFields: {
-            _replyId: {
-              $switch: {
-                branches: [
-                  {
-                    case: { $eq: ["$isReply", true] },
-                    then: { $toObjectId: "$replyId" },
-                  },
-                ],
-                default: null,
-              },
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: "message",
-            localField: "_replyId",
-            foreignField: "_id",
-            as: "messReply",
-          },
-        },
+
       ])
-      .sort({ createdAt: -1 })
-      .skip((paging - 1) * 15)
-      .limit(15)
       .toArray();
     return result;
   } catch (error) {

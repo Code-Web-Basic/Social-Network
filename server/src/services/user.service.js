@@ -51,20 +51,11 @@ const showNotification = async (userId, paging) => {
   }
 };
 
-const findOneById = async (id) => {
-  try {
-    const result = await UserModel.findOneById(id);
-    return result;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
 module.exports = {
   findUser,
   update,
   newFeed,
   postOfUser,
   showNotification,
-  findOneById,
+
 };

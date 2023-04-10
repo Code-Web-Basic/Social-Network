@@ -94,6 +94,7 @@ function CommentPost({ data, children }) {
                     <Box sx={style} minWidth="800px" maxWidth="calc(100% - 50px)" maxHeight="calc(100vh - 100px)">
                         <Stack direction="row" maxHeight="calc(100vh - 116px)" alignItems="stretch" position="relative">
                             <Stack
+                                direction="column"
                                 height="calc(100vh - 116px)"
                                 direction=" row"
                                 minWidth="450px"

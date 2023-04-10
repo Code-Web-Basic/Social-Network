@@ -2,7 +2,11 @@ import * as httpRequest from '~/utils/httpRequest';
 
 export const getNewFeed = async (params) => {
     try {
-        const res = await httpRequest.get(`user/newFeed/${params?.paging}`);
+        const res = await httpRequest.get(`user/newFeed`, {
+            params: {
+                paging: params?.paging,
+            },
+        });
         return res?.result;
     } catch (error) {
         console.log(error);
