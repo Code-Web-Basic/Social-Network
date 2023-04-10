@@ -34,3 +34,33 @@ export const getUserFollowing = async (params) => {
         console.log(error);
     }
 };
+
+export const getFriend = async (idfriend) => {
+    try {
+        const res = await httpRequest.get(`/user/findById/${idfriend}`);
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const getPostOfUser = async (userid) => {
+    try {
+        const res = await httpRequest.get(`/user/postOfUser/${userid}`);
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const getNotify = async () => {
+    try {
+        const res = await httpRequest.get('user/showNotification?paging=1');
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};

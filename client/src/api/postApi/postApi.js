@@ -62,3 +62,11 @@ export const showUserReactionPost = async (params) => {
         console.log(error);
     }
 };
+export const getPostById = async (id) => {
+    try {
+        const res = await httpRequest.get(`post/getById/${id}`);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
