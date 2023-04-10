@@ -4,12 +4,14 @@ import { Avatar, Box, Stack, styled, Typography, useTheme } from '@mui/material'
 //icon
 import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt } from 'phosphor-react';
 //components
-import images from '~/assets/images';
 import NewCommentPost from './CommentPost/NewCommentPost';
 import MenuUserFollowing from './MenuUserFollowing/MenuUserFollowing';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import CommentPost from './CommentPost/CommentPost';
 import SharePost from './SharePost/SharePost';
+import { calculateTimePassed } from '~/utils/utils';
+
+import PropTypes from 'prop-types';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -60,11 +62,11 @@ const MENU_ITEMS = [
         fontWeight: 400,
     },
 ];
-function PostItem() {
+function PostItem({ data }) {
     const theme = useTheme();
     return (
         <Box>
-            <Stack direction="column" spacing={1.5}>
+            <Stack direction="column" spacing={1.5} marginTop="10px">
                 {/* information post */}
                 <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row" alignItems="center" spacing={2}>
@@ -73,17 +75,20 @@ function PostItem() {
                             placement="bottom-start"
                             render={(attrs) => (
                                 <div className="box" tabIndex="-1" {...attrs}>
-                                    <MenuUserFollowing />
+                                    <MenuUserFollowing id={data?.User?._id} />
                                 </div>
                             )}
                         >
-                            <Avatar src="" sx={{ width: 32, height: 32 }} />
+                            <Avatar
+                                src={data?.User?.avatar ? `${data?.User?.avatar[0].data}` : ''}
+                                sx={{ width: 32, height: 32 }}
+                            />
                         </Tippy>
                         <Typography variant="body2" fontWeight="600">
-                            Nguyen van tu
+                            {data?.User?.userName}
                         </Typography>
                         <Typography variant="body2" fontSize="400">
-                            6h
+                            {calculateTimePassed(data?.Post?.updatedAt)}
                         </Typography>
                     </Stack>
                     <Stack direction="row" alignItems="center" justifyContent="center">
@@ -99,22 +104,27 @@ function PostItem() {
                         overflow: 'hidden',
                         borderRadius: 1,
                         maxHeight: '600px',
-                        minHeight: '550px',
+                        // minHeight: '550px',
+                        // height: '550px',
+
                         width: '100%',
+                        display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                     }}
                 >
                     <img
-                        alt="post1"
-                        src={images.post}
+                        alt={data?.Post.source[0].filename}
+                        src={`${data?.Post.source[0].data}`}
                         style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
+                            // position: 'absolute',
+                            // top: 0,
+                            // left: 0,
+                            // bottom: 0,
                             width: '100%',
                             height: '100%',
                             objectFit: 'cover',
+                            minHeight: '150px',
                         }}
                     />
                 </Box>
@@ -122,14 +132,17 @@ function PostItem() {
                 <Stack direction="column" spacing={0.5}>
                     <Stack direction="row" justifyContent="space-between">
                         <Stack direction="row" spacing={1.5}>
+                            {/* heart icon */}
                             <ItemReaction>
                                 <Heart size={24} />
                             </ItemReaction>
-                            <CommentPost>
+                            {/* comment icon */}
+                            <CommentPost data={data}>
                                 <ItemReaction>
                                     <ChatCircle size={24} />
                                 </ItemReaction>
                             </CommentPost>
+                            {/* share icon */}
                             <SharePost>
                                 <ItemReaction>
                                     <PaperPlaneTilt size={24} />
@@ -145,15 +158,15 @@ function PostItem() {
                     {/* like */}
                     <Stack direction="row" p={0.5}>
                         <Typography variant="body2" fontWeight="600">
-                            232,106 likes
+                            {`${data?.reactionCount} likes`}
                         </Typography>
                     </Stack>
                     {/* body */}
                     <Stack direction="row">
-                        <Typography variant="body2">mancity Working hard! ⚔️</Typography>
+                        <Typography variant="body2">{data?.Post?.caption}</Typography>
                     </Stack>
                     {/* comment */}
-                    <CommentPost>
+                    <CommentPost data={data}>
                         <Stack
                             direction="row"
                             spacing={0.3}
@@ -165,14 +178,20 @@ function PostItem() {
                                 },
                             }}
                         >
-                            <Typography variant="body2">View all</Typography>
-                            <Typography variant="body2">1,033</Typography>
-                            <Typography variant="body2"> comments</Typography>
+                            {data.Post.commentCount > 0 && (
+                                <>
+                                    <Typography variant="body2">View all</Typography>
+                                    <Typography variant="body2">{data?.Post?.commentCount}</Typography>
+                                    <Typography variant="body2"> comments</Typography>
+                                </>
+                            )}
                         </Stack>
                     </CommentPost>
+
                     <Stack direction="row">
-                        <NewCommentPost />
+                        <NewCommentPost postId={data?.Post?._id} />
                     </Stack>
+                    {/* comment box */}
                 </Stack>
             </Stack>
         </Box>
@@ -180,3 +199,6 @@ function PostItem() {
 }
 
 export default PostItem;
+PostItem.prototype = {
+    data: PropTypes.object,
+};

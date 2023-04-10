@@ -6,10 +6,14 @@ import Tippy from '@tippyjs/react/headless';
 // different import path!
 import EmojiPicker from '@emoji-mart/react';
 import dataEmoji from '@emoji-mart/data';
+import { useDispatch, useSelector } from 'react-redux';
+import { addNewComment } from '~/features/comment/commentSlice';
+import { increaseNumberComment } from '~/features/post/postSlice';
 
 function NewCommentPost(props) {
-    // console.log(currentUser);
-    // const [commentLine, setCommentLine] = useState(false);
+    const dispatch = useDispatch();
+
+    const currentUser = useSelector((state) => state.auth.currentUser);
     const [enableBtn, setEnableBtn] = useState(true);
 
     const [valueInput, setValueInput] = useState('');
@@ -38,21 +42,22 @@ function NewCommentPost(props) {
 
     const sendComment = (event) => {
         event.preventDefault();
-        // const dataComment = {
-        //     displayName: currentUser?.user?.displayName,
-        //     userAvatar: currentUser?.user?.photoURL,
-        //     body: valueInput,
-        //     likeNumber: 0,
-        //     unlikeNumber: 0,
-        //     parentId: '',
-        //     replyNumber: 0,
-        //     userId: currentUser?.user?.uid,
-        //     mediaId: props?.mediaId,
-        //     createAt: Date.now(),
-        // };
-        if (valueInput.length > 0) {
+        const dataComment = {
+            postId: props?.postId,
+            senderId: currentUser?.data._id,
+            content: valueInput,
+            isReply: false,
+            replyId: null,
+            reaction: [],
+            replyCount: 0,
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+            User: [currentUser?.data],
+        };
+        if (valueInput.length > 0 && props?.postId) {
             // handleSendChatValue(valueFormChat);
-            // dispatch(addNewComment(dataComment));
+            dispatch(addNewComment(dataComment));
+            dispatch(increaseNumberComment(props?.postId));
             setValueInput('');
         }
     };

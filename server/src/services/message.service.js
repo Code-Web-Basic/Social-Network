@@ -15,7 +15,7 @@ const sendMessage = async (req) => {
     return result;
   } catch (error) {
     if (req.files) {
-      req.files.map((item) => {
+      req.files?.map((item) => {
         cloudinary.uploader.destroy(item.filename);
       });
     }

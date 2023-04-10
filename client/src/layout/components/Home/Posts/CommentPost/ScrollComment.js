@@ -1,38 +1,21 @@
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFirstComment } from '~/features/comment/commentSlice';
 import CommentItemPost from './CommentItemPost';
 
-function ScrollComment() {
+function ScrollComment({ id }) {
+    const dispatch = useDispatch();
     const [messages, setMessages] = useState([]);
-    const data = [
-        {
-            id: 1,
-            displayName: 'van tu',
-            replyNumber: 1,
-            parent: '',
-            body: 'parent 1',
-        },
-        {
-            id: 3,
-            displayName: 'van tu',
-            replyNumber: 1,
-            parent: '',
-            body: 'parent 1',
-        },
-        {
-            id: 2,
-            displayName: 'van tu',
-            replyNumber: 1,
-            parent: '',
-            body: 'parent 1',
-        },
-    ];
-    const loading = false;
+    const [paging, setPaging] = useState(1);
+
+    const loadingComment = false;
     // const [showBottomBar, setShowBottomBar] = useState(true);
-
+    const { data, loading, error } = useSelector((state) => state.comment);
+    // console.log(data);
     useEffect(() => {
-        setMessages(data);
-
+        // setMessages(data);
+        dispatch(getFirstComment({ id, paging }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -42,7 +25,7 @@ function ScrollComment() {
             const first = entries[0];
             if (first.isIntersecting) {
                 try {
-                    if (data.length > 0) {
+                    if (data?.length > 0) {
                         setMessages(data);
                     } else {
                         setTimeout(() => {
@@ -75,10 +58,11 @@ function ScrollComment() {
     }, [bottomBar]);
 
     const renderComment = () => (
-        <Stack direction={'column'} spacing={0.5} width="100%">
-            {messages.length > 0 ? (
-                messages.map((item) => {
-                    return <CommentItemPost key={item?.id} data={item} reply={item} />;
+        <Stack direction={'column'} spacing={0.5} width="100%" height="100%">
+            {data?.length > 0 ? (
+                data?.map((item) => {
+                    return <CommentItemPost key={item?._id} data={item} />;
+                    // console.log(item);
                 })
             ) : (
                 <Stack direction={'row'} alignItems="center" justifyContent={'center'} width="100%">
@@ -91,7 +75,7 @@ function ScrollComment() {
     return (
         <>
             {renderComment()}
-            {data.length > 9 && loading ? (
+            {data?.length > 9 && loadingComment ? (
                 <Box sx={{ display: 'flex', justifyContent: ' center', width: '100%' }} ref={setBottomBar}>
                     <CircularProgress size={20} />
                 </Box>

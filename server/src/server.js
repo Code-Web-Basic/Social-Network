@@ -33,7 +33,7 @@ const bootServer = () => {
   app.use(passport.session());
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: `http://${env.APP_HOST}:${env.APP_CLIENT_PORT}`,
       methods: "GET,POST,PUT,DELETE",
       credentials: true,
     })

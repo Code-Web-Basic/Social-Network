@@ -1,12 +1,19 @@
 import { Fragment } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { privateRoutes, publicRoutes } from '~/router/Router';
 import DefaultLayout from '~/layout/DefaultLayout';
-import { useSelector } from 'react-redux';
-import { router as routerConfig } from '~/config/config';
+import { useSelector, useStore } from 'react-redux';
+import setUpInterceptor from './utils/interceptor';
+// import { useCookies } from 'react-cookie';
+import { Cookies } from 'react-cookie';
 
 function App() {
-    const currentUser = true;
+    const currentUser = useSelector((state) => state.auth.currentUser);
+    const store = useStore();
+    // const [cookies, setCookie] = useCookies(['name']);
+    // console.log(Cookies.get('refreshToken'));
+    setUpInterceptor(store);
+    // check user
     let routerCheck = publicRoutes;
 
     if (currentUser) {
@@ -38,6 +45,7 @@ function App() {
                             />
                         );
                     })}
+                    <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>
             </div>
         </Router>

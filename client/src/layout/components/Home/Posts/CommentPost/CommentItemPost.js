@@ -16,7 +16,7 @@ const MENU_REPORT = [
         color: 'error',
     },
 ];
-function CommentItemPost({ data, reply }) {
+function CommentItemPost({ data, replyId }) {
     const theme = useTheme();
     const likeRef = useRef(null);
     const unLikeRef = useRef(null);
@@ -33,6 +33,9 @@ function CommentItemPost({ data, reply }) {
     }
 
     const likeComment = () => {
+        // if(data.true){
+
+        // }
         return;
     };
     const unlikeComment = () => {
@@ -45,19 +48,22 @@ function CommentItemPost({ data, reply }) {
     return (
         <Stack direction={'row'} p={1} spacing={1} width="100%">
             <Box alignItems={'flex-start'} justifyItems={'center'}>
-                <Avatar src={data?.user} sx={{ width: 25, height: 25 }} />
+                <Avatar
+                    src={data?.User[0]?.avatar?.data ? data.User[0].avatar.data : ''}
+                    sx={{ width: 25, height: 25 }}
+                />
             </Box>
             <Stack direction={'column'} width="100%">
                 <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={2} width={'100%'}>
                     <Typography variant="body2" fontWeight={600}>
-                        {data?.displayName}
+                        {data?.User[0]?.userName}
                     </Typography>
-                    <Typography variant="body2" fontSize={'0.5rem'} fontWeight={400}>
-                        {calculateTimePassed(data?.createAt)}
+                    <Typography variant="body2" fontSize={'0.8rem'} fontWeight={400}>
+                        {calculateTimePassed(data?.updatedAt)}
                     </Typography>
                 </Stack>
                 <Stack direction={'row'} width={'100%'}>
-                    <Typography variant="body2">{data?.body}</Typography>
+                    <Typography variant="body2">{data?.content}</Typography>
                 </Stack>
                 <Stack direction={'row'} alignItems="center" justifyContent="flex-start" spacing={5} width={'100%'}>
                     <Stack direction={'row'} alignItems="center" spacing={2}>
@@ -67,8 +73,9 @@ function CommentItemPost({ data, reply }) {
                                     <ThumbsUp size={15} ref={likeRef} />
                                 </IconButton>
                             </Tooltip>
+                            {/* number like */}
                             <Typography variant="body2" fontWeight={600}>
-                                45
+                                {data?.reaction?.length}
                             </Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -77,6 +84,7 @@ function CommentItemPost({ data, reply }) {
                                     <ThumbsDown size={15} ref={unLikeRef} />
                                 </IconButton>
                             </Tooltip>
+                            {/* number unlike */}
                             <Typography variant="body2" fontWeight={600}>
                                 5
                             </Typography>
@@ -115,10 +123,12 @@ function CommentItemPost({ data, reply }) {
                     <NewReplyComment
                         autoFocus={false}
                         callbackCancel={() => setShowReplyComment()}
-                        idComment={data?.id}
+                        idComment={replyId ? replyId : data?._id}
+                        idPost={data?.postId}
+                        // commentReply={data?.User?._id}
                     />
                 )}
-                {data?.replyNumber > 0 && (
+                {data?.replyCount > 0 && (
                     <>
                         <Stack direction={'row'} width={'100%'}>
                             <Box
@@ -137,7 +147,7 @@ function CommentItemPost({ data, reply }) {
                                 </Typography>
                             </Box>
                         </Stack>
-                        {arrowUp && <ReplyCommentPost id={reply} />}
+                        {arrowUp && <ReplyCommentPost idComment={data?._id} />}
                     </>
                 )}
             </Stack>

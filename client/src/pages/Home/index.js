@@ -1,17 +1,25 @@
 import { Grid, Stack } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import AccountItem from '~/layout/components/Home/AccountItem/AccountItem';
-import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
-import Posts from '~/layout/components/Home/Posts/Post';
 import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/SuggestionsUser';
-
-// const Item = styled(Paper)(({ theme }) => ({
-//     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-//     ...theme.typography.body2,
-//     padding: theme.spacing(1),
-//     textAlign: 'center',
-//     color: theme.palette.text.secondary,
-// }));
+import { useEffect, useState } from 'react';
+import ScrollPost from '~/layout/components/Home/Posts/ScrollPost';
+import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
+import { getFirstPost } from '~/features/post/postSlice';
 function Home() {
+    const currentUser = useSelector((state) => state.auth.currentUser);
+    const dispatch = useDispatch();
+    const [paging, setPaging] = useState(1);
+
+    useEffect(() => {
+        // const callApi = async () => {
+        //     await ;
+        // };
+        // callApi();
+        dispatch(getFirstPost());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <>
             <Grid container>
@@ -19,12 +27,13 @@ function Home() {
                 <Grid item xs={4.5} p={'20px 30px'}>
                     <Stack direction="column">
                         <FollowingUser />
-                        <Posts />
+                        <ScrollPost />
+                        {/* <ScrollPost data={dataCurrent} /> */}
                     </Stack>
                 </Grid>
                 <Grid item xs={3.5}>
                     <Stack direction={'column'} paddingTop="40px">
-                        <AccountItem />
+                        <AccountItem currentUser={currentUser?.data} />
                         <SuggestionsUser />
                     </Stack>
                 </Grid>
