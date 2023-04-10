@@ -124,7 +124,6 @@ const showDirectMessage = async (sourceId, targetId, paging) => {
             ],
           },
         },
-
       ])
       .toArray();
     return result;
@@ -132,6 +131,7 @@ const showDirectMessage = async (sourceId, targetId, paging) => {
     throw new Error(error);
   }
 };
+//??
 const findInChat = async (findData, sourceId, targetId) => {
   try {
     const dataChat = await getDB()
