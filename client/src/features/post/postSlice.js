@@ -27,7 +27,7 @@ export const PostSlice = createSlice({
             if (arrTmp[index]) {
                 arrTmp[index].Post.commentCount += 1;
             }
-            action.state = arrTmp;
+            state.data = arrTmp;
         },
     },
     extraReducers: (builder) => {

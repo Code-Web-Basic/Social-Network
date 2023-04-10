@@ -7,7 +7,7 @@ import Tippy from '@tippyjs/react/headless';
 import EmojiPicker from '@emoji-mart/react';
 import dataEmoji from '@emoji-mart/data';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewComment } from '~/features/comment/commentSlide';
+import { addNewComment } from '~/features/comment/commentSlice';
 import { increaseNumberComment } from '~/features/post/postSlice';
 
 function NewCommentPost(props) {
@@ -40,7 +40,7 @@ function NewCommentPost(props) {
         setValueInput(message);
     };
 
-    const sendComment = (event) => {
+    const sendComment = async (event) => {
         event.preventDefault();
         const dataComment = {
             postId: props?.postId,
@@ -56,8 +56,8 @@ function NewCommentPost(props) {
         };
         if (valueInput.length > 0 && props?.postId) {
             // handleSendChatValue(valueFormChat);
-            dispatch(addNewComment(dataComment));
-            dispatch(increaseNumberComment(props?.postId));
+            await dispatch(addNewComment(dataComment));
+            await dispatch(increaseNumberComment(props?.postId));
             setValueInput('');
         }
     };

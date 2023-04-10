@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getFirstComment } from '~/features/comment/commentSlide';
+import { getFirstComment } from '~/features/comment/commentSlice';
 import CommentItemPost from './CommentItemPost';
 
 function ScrollComment({ id }) {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 import { refetchToken, resetStoreAuth } from '~/features/auth/authSlice';
 
 import instance from '~/utils/httpRequest';
@@ -31,6 +32,27 @@ const setUpInterceptor = (store) => {
             return config;
         }
         const user = select(store.getState());
+        let date = new Date();
+        if (user?.data?.accessToken) {
+            const decodedToken = jwtDecode(user?.data?.accessToken);
+            if (decodedToken.exp < date.getTime() / 1000) {
+                const access_token = await refreshAccessToken();
+                console.log('refetch token before', access_token);
+                if (access_token) {
+                    const refreshUser = {
+                        data: { ...user?.data, accessToken: access_token },
+                        status: 'true',
+                        message: 'successfully',
+                    };
+                    store.dispatch(refetchToken(refreshUser));
+                    // config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
+                }
+                // console.log('call refetch user', refreshUser, user);
+                // return config;
+            }
+        }
+
+        // return config;
         if (user?.data?.accessToken) {
             config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
         }
@@ -52,7 +74,8 @@ const setUpInterceptor = (store) => {
             ) {
                 originalRequest._retry = true;
                 const access_token = await refreshAccessToken();
-                // console.log('refetch token', access_token);
+
+                console.log('refetch token after', access_token);
                 if (access_token) {
                     axios.defaults.headers.common['token'] = `Bearer ${access_token}`;
                     const refreshUser = {

@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from '~/features/auth/authSlice';
-import commentReducer from '~/features/comment/commentSlide';
+import commentReducer from '~/features/comment/commentSlice';
 import postReducer from '~/features/post/postSlice';
 const persistConfig = {
     key: 'root',

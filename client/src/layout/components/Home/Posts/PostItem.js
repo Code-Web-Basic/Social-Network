@@ -1,3 +1,6 @@
+import PropTypes from 'prop-types';
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 // ui
 import Tippy from '@tippyjs/react/headless';
 import { Avatar, Box, Stack, styled, Typography, useTheme } from '@mui/material';
@@ -11,7 +14,7 @@ import CommentPost from './CommentPost/CommentPost';
 import SharePost from './SharePost/SharePost';
 import { calculateTimePassed } from '~/utils/utils';
 
-import PropTypes from 'prop-types';
+import { reactionPost } from '~/api/postApi/postApi';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -63,7 +66,43 @@ const MENU_ITEMS = [
     },
 ];
 function PostItem({ data }) {
+    const currentUser = useSelector((state) => state.auth.currentUser.data);
     const theme = useTheme();
+    const heartRef = useRef();
+    const bookmarkRef = useRef();
+
+    const [like, setLike] = useState(data?.Post?.reaction?.includes(currentUser?._id));
+    const [bookmark, setBookmark] = useState(false);
+
+    useEffect(() => {
+        if (data?.Post?.reaction?.includes(currentUser?._id)) {
+            heartRef.current.style.color = 'red';
+        } else {
+            heartRef.current.style.color = theme.palette.grey[500];
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentUser?._id, data?.Post?.reaction, like]);
+
+    const handleLikePost = async () => {
+        if (data?.Post?.reaction?.includes(currentUser?._id)) {
+            heartRef.current.style.color = 'red';
+            setLike(true);
+            // result = await reactionPost({ id: data.Post._id });
+        } else {
+            heartRef.current.style.color = theme.palette.grey[500];
+            setLike(false);
+            // const result = await reactionPost({ id: data.Post._id });
+        }
+    };
+    const handleBookmarkPost = () => {
+        if (!bookmark) {
+            bookmarkRef.current.style.color = 'black';
+            setBookmark(true);
+        } else {
+            bookmarkRef.current.style.color = theme.palette.grey[500];
+            setBookmark(false);
+        }
+    };
     return (
         <Box>
             <Stack direction="column" spacing={1.5} marginTop="10px">
@@ -80,8 +119,9 @@ function PostItem({ data }) {
                             )}
                         >
                             <Avatar
-                                src={data?.User?.avatar ? `${data?.User?.avatar[0].data}` : ''}
-                                sx={{ width: 32, height: 32 }}
+                                src={data ? `${data?.User?.avatar.data}` : ''}
+                                style={{ width: 32, height: 32 }}
+                                alt="user"
                             />
                         </Tippy>
                         <Typography variant="body2" fontWeight="600">
@@ -133,8 +173,8 @@ function PostItem({ data }) {
                     <Stack direction="row" justifyContent="space-between">
                         <Stack direction="row" spacing={1.5}>
                             {/* heart icon */}
-                            <ItemReaction>
-                                <Heart size={24} />
+                            <ItemReaction onClick={handleLikePost}>
+                                <Heart size={24} ref={heartRef} weight={like ? 'fill' : 'regular'} />
                             </ItemReaction>
                             {/* comment icon */}
                             <CommentPost data={data}>
@@ -149,9 +189,9 @@ function PostItem({ data }) {
                                 </ItemReaction>
                             </SharePost>
                         </Stack>
-                        <Stack direction="row">
+                        <Stack direction="row" onClick={handleBookmarkPost}>
                             <ItemReaction>
-                                <BookmarkSimple size={24} />
+                                <BookmarkSimple size={24} ref={bookmarkRef} weight={bookmark ? 'fill' : 'regular'} />
                             </ItemReaction>
                         </Stack>
                     </Stack>

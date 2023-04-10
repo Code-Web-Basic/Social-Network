@@ -2,7 +2,11 @@ import * as httpRequest from '~/utils/httpRequest';
 
 export const getComment = async (params) => {
     try {
-        const res = await httpRequest.get(`comment/showCommentOfPost/${params.id}/${params.paging}`);
+        const res = await httpRequest.get(`comment/showCommentOfPost/${params.id}`, {
+            params: {
+                paging: params.paging,
+            },
+        });
         return res?.result;
         // console.log(params.id);
     } catch (error) {
@@ -11,7 +15,11 @@ export const getComment = async (params) => {
 };
 export const getCommentReply = async (params) => {
     try {
-        const res = await httpRequest.get(`comment/showCommentReply/${params.id}/${params.paging}`);
+        const res = await httpRequest.get(`comment/showCommentReply/${params.id}`, {
+            params: {
+                paging: params.paging,
+            },
+        });
         return res?.result;
     } catch (error) {
         console.log(error);
