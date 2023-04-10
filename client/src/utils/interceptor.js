@@ -37,7 +37,7 @@ const setUpInterceptor = (store) => {
             const decodedToken = jwtDecode(user?.data?.accessToken);
             if (decodedToken.exp < date.getTime() / 1000) {
                 const access_token = await refreshAccessToken();
-                // console.log('refetch token', access_token);
+                console.log('refetch token before', access_token);
                 if (access_token) {
                     const refreshUser = {
                         data: { ...user?.data, accessToken: access_token },
@@ -74,7 +74,8 @@ const setUpInterceptor = (store) => {
             ) {
                 originalRequest._retry = true;
                 const access_token = await refreshAccessToken();
-                // console.log('refetch token', access_token);
+
+                console.log('refetch token after', access_token);
                 if (access_token) {
                     axios.defaults.headers.common['token'] = `Bearer ${access_token}`;
                     const refreshUser = {

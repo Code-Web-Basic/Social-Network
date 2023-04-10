@@ -21,3 +21,16 @@ export const getHistorySearch = async () => {
         console.log(error);
     }
 };
+
+export const getUserFollowing = async (params) => {
+    try {
+        const res = await httpRequest.get(`follow/getFollowing/${params.id}`, {
+            params: {
+                paging: params?.paging,
+            },
+        });
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};

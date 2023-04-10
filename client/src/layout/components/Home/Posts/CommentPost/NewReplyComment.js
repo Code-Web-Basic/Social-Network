@@ -5,7 +5,7 @@ import { Smiley, X } from 'phosphor-react';
 import { useRef, useState } from 'react';
 import TippyHeadless from '@tippyjs/react/headless';
 import { useDispatch, useSelector } from 'react-redux';
-import { replyNewComment } from '~/features/comment/commentSlide';
+import { replyNewComment } from '~/features/comment/commentSlice';
 function NewReplyComment(props) {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.auth.currentUser);

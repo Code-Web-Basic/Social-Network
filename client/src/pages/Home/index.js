@@ -12,11 +12,11 @@ function Home() {
     const [paging, setPaging] = useState(1);
 
     useEffect(() => {
-        // const callApi = async () => {
-        //     await ;
-        // };
-        // callApi();
-        dispatch(getFirstPost());
+        const callApi = async () => {
+            await dispatch(getFirstPost(1));
+        };
+        callApi();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

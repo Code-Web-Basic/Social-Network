@@ -7,7 +7,7 @@ import Tippy from '@tippyjs/react/headless';
 import EmojiPicker from '@emoji-mart/react';
 import dataEmoji from '@emoji-mart/data';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewComment } from '~/features/comment/commentSlide';
+import { addNewComment } from '~/features/comment/commentSlice';
 import { increaseNumberComment } from '~/features/post/postSlice';
 
 function NewCommentPost(props) {

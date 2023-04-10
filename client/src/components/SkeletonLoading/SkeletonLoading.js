@@ -1,4 +1,4 @@
-import { Skeleton, Stack } from '@mui/material';
+import { Avatar, Skeleton, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 
 function SkeletonLoading({ type = 'account', layout = 'row', numberLoading }) {
@@ -62,6 +62,41 @@ function SkeletonLoading({ type = 'account', layout = 'row', numberLoading }) {
             }
         }
         if (type === 'post') {
+            return (
+                <div style={{ width: '100%' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ margin: 1 }}>
+                            <Skeleton variant="circular">
+                                <Avatar />
+                            </Skeleton>
+                        </Box>
+                        <Box sx={{ width: '100%' }}>
+                            <Skeleton width="100%">
+                                <Typography>.</Typography>
+                            </Skeleton>
+                        </Box>
+                    </Box>
+
+                    <Skeleton variant="rectangular" width="100%">
+                        <div style={{ paddingTop: '80%' }} />
+                    </Skeleton>
+                    <Box sx={{ width: '100%' }}>
+                        <Skeleton width="100%">
+                            <Typography>.</Typography>
+                        </Skeleton>
+                    </Box>
+                    <Box sx={{ width: '100%' }}>
+                        <Skeleton width="100%">
+                            <Typography>.</Typography>
+                        </Skeleton>
+                    </Box>
+                    <Box sx={{ width: '100%' }}>
+                        <Skeleton width="100%">
+                            <Typography>.</Typography>
+                        </Skeleton>
+                    </Box>
+                </div>
+            );
         }
     };
     return renderUi();
