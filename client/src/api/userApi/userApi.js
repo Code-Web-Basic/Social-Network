@@ -44,15 +44,19 @@ export const getFriend = async (idfriend) => {
     }
 };
 
-export const getPostOfUser = async (userid) => {
+export const getUserFollowing = async (params) => {
     try {
-        const res = await httpRequest.get(`/user/postOfUser/${userid}`);
-        //console.log(res);
+        const res = await httpRequest.get(`follow/getFollowing/${params.id}`, {
+            params: {
+                paging: params?.paging,
+            },
+        });
         return res?.result;
     } catch (error) {
         console.log(error);
     }
 };
+
 
 export const getNotify = async () => {
     try {
