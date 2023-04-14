@@ -13,9 +13,9 @@ const findUser = async (data) => {
 const update = async (id, data) => {
   try {
     const avatar = {
-      data: data.file.path,
-      type: data.file.mimetype,
-      filename: data.file.filename,
+      data: data.file?.path,
+      type: data.file?.mimetype,
+      filename: data.file?.filename,
     };
     const updateData = { ...data.body, avatar };
     const result = await UserModel.update(id, updateData);
@@ -57,5 +57,4 @@ module.exports = {
   newFeed,
   postOfUser,
   showNotification,
-
 };

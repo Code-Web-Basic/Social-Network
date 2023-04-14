@@ -152,5 +152,5 @@ module.exports = {
   getFollowers,
   getFollowing,
   suggestions,
-
+  deleteFollower,
 };
