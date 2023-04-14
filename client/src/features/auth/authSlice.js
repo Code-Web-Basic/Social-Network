@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import * as authApi from '~/api/authApi/authApi';
+import * as userApi from '~/api/userApi/userApi';
 
 export const signUpPassWord = createAsyncThunk('auth/signUpPassWord', async (params, thunkAPI) => {
     const data = params.data;
@@ -21,6 +22,10 @@ export const signInGithub = createAsyncThunk('auth/signInGithub', async (params,
 });
 export const logout = createAsyncThunk('auth/logout', async (params, thunkAPI) => {
     await authApi.logout();
+});
+export const updateUser = createAsyncThunk('user/update', async (params, thunkAPI) => {
+    const res = await userApi.putUpdateUser(params);
+    return res;
 });
 
 export const authSlice = createSlice({
@@ -52,6 +57,7 @@ export const authSlice = createSlice({
             state.error = action.error;
         });
         builder.addCase(signInPassWord.fulfilled, (state, action) => {
+            console.log(action.payload)
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'password';
@@ -103,6 +109,19 @@ export const authSlice = createSlice({
             state.loading = false;
             state.currentUser = null;
             state.typeLogin = '';
+        });
+        builder.addCase(updateUser.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(updateUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error;
+        });
+        builder.addCase(updateUser.fulfilled, (state, action) => {
+            action.payload.data.accessToken = state.currentUser.data.accessToken
+            state.loading = false;
+            state.currentUser = action.payload;
+            state.typeLogin = 'password';
         });
     },
 });

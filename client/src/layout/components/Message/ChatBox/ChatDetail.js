@@ -79,13 +79,6 @@ function ChatDetail() {
         formData.append('isReply', false);
         formData.append('message', ' ');
         formData.append('files', e.target.files[0]);
-        const data = {
-            targetId: id,
-            isReply: false,
-            message: ' ',
-            files: e.target.files[0]
-        }
-        console.log(data)
         await dispatch(postSendMessage(formData));
         await dispatch(getShowMessage(id))
     }
