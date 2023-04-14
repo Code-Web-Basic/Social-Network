@@ -21,9 +21,9 @@ export const getHistorySearch = async () => {
     }
 };
 
-export const getUserFollowing = async (params) => {
+export const getUserFollower = async (params) => {
     try {
-        const res = await httpRequest.get(`follow/getFollowing/${params.id}`, {
+        const res = await httpRequest.get(`follow/getFollower/${params.id}`, {
             params: {
                 paging: params?.paging,
             },
@@ -57,6 +57,15 @@ export const getUserFollowing = async (params) => {
     }
 };
 
+export const getPostOfUser = async (userid) => {
+    try {
+        const res = await httpRequest.get(`/user/postOfUser/${userid}`);
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 export const getNotify = async () => {
     try {
