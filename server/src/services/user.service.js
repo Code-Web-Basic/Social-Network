@@ -13,9 +13,9 @@ const findUser = async (data) => {
 const update = async (id, data) => {
   try {
     const avatar = {
-      data: data.file.path,
-      type: data.file.mimetype,
-      filename: data.file.filename,
+      data: data.file?.path,
+      type: data.file?.mimetype,
+      filename: data.file?.filename,
     };
     const updateData = { ...data.body, avatar };
     const result = await UserModel.update(id, updateData);
@@ -51,20 +51,10 @@ const showNotification = async (userId, paging) => {
   }
 };
 
-const findOneById = async (id) => {
-  try {
-    const result = await UserModel.findOneById(id);
-    return result;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
 module.exports = {
   findUser,
   update,
   newFeed,
   postOfUser,
   showNotification,
-  findOneById,
 };

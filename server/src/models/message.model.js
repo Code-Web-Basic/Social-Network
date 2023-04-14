@@ -93,7 +93,7 @@ const showChats = async (userId) => {
           },
         },
       ])
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .toArray();
     return result;
   } catch (error) {
@@ -110,7 +110,6 @@ const editMessage = async (updateData, id) => {
     throw new Error(error);
   }
 };
-
 const showDirectMessage = async (sourceId, targetId, paging) => {
   try {
     const result = await getDB()
@@ -157,6 +156,7 @@ const showDirectMessage = async (sourceId, targetId, paging) => {
     throw new Error(error);
   }
 };
+//??
 const findInChat = async (findData, sourceId, targetId) => {
   try {
     const dataChat = await getDB()
