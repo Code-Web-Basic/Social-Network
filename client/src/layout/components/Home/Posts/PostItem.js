@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // ui
 import Tippy from '@tippyjs/react/headless';
 import { Avatar, Box, Stack, styled, Typography, useTheme } from '@mui/material';
@@ -15,11 +15,12 @@ import SharePost from './SharePost/SharePost';
 import { calculateTimePassed } from '~/utils/utils';
 
 import { reactionPost } from '~/api/postApi/postApi';
+import { decreaseNumberLike, increaseNumberLike } from '~/features/post/postSlice';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
     '&:hover': {
-        color: theme.palette.grey[500],
+        color: theme.palette.grey[800],
     },
 }));
 //data menu setting post
@@ -67,31 +68,36 @@ const MENU_ITEMS = [
 ];
 function PostItem({ data }) {
     const currentUser = useSelector((state) => state.auth.currentUser.data);
+    const dispatch = useDispatch();
     const theme = useTheme();
     const heartRef = useRef();
     const bookmarkRef = useRef();
 
     const [like, setLike] = useState(data?.Post?.reaction?.includes(currentUser?._id));
     const [bookmark, setBookmark] = useState(false);
-
     useEffect(() => {
-        if (data?.Post?.reaction?.includes(currentUser?._id)) {
+        if (like) {
             heartRef.current.style.color = 'red';
         } else {
-            heartRef.current.style.color = theme.palette.grey[500];
+            heartRef.current.style.color = theme.palette.grey[800];
+            heartRef.current.style.color = theme.palette.grey[800];
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentUser?._id, data?.Post?.reaction, like]);
+    }, [like]);
 
     const handleLikePost = async () => {
-        if (data?.Post?.reaction?.includes(currentUser?._id)) {
-            heartRef.current.style.color = 'red';
-            setLike(true);
-            // result = await reactionPost({ id: data.Post._id });
-        } else {
-            heartRef.current.style.color = theme.palette.grey[500];
-            setLike(false);
-            // const result = await reactionPost({ id: data.Post._id });
+        try {
+            if (data?.Post?.reaction?.includes(currentUser?._id)) {
+                setLike(false);
+                await reactionPost({ id: data.Post._id });
+                dispatch(decreaseNumberLike({ idPost: data.Post?._id, idUser: currentUser?._id }));
+            } else {
+                setLike(true);
+                await reactionPost({ id: data.Post._id });
+                dispatch(increaseNumberLike({ idPost: data.Post?._id, idUser: currentUser?._id }));
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
     const handleBookmarkPost = () => {
@@ -99,10 +105,11 @@ function PostItem({ data }) {
             bookmarkRef.current.style.color = 'black';
             setBookmark(true);
         } else {
-            bookmarkRef.current.style.color = theme.palette.grey[500];
+            bookmarkRef.current.style.color = theme.palette.grey[800];
             setBookmark(false);
         }
     };
+
     return (
         <Box>
             <Stack direction="column" spacing={1.5} marginTop="10px">
@@ -112,11 +119,13 @@ function PostItem({ data }) {
                         <Tippy
                             interactive
                             placement="bottom-start"
-                            render={(attrs) => (
-                                <div className="box" tabIndex="-1" {...attrs}>
-                                    <MenuUserFollowing id={data?.User?._id} />
-                                </div>
-                            )}
+                            render={(attrs) => {
+                                return (
+                                    <div className="box" tabIndex="-1" {...attrs}>
+                                        <MenuUserFollowing id={data?.User?._id} data={data} />
+                                    </div>
+                                );
+                            }}
                         >
                             <Avatar
                                 src={data ? `${data?.User?.avatar.data}` : ''}
@@ -173,24 +182,53 @@ function PostItem({ data }) {
                     <Stack direction="row" justifyContent="space-between">
                         <Stack direction="row" spacing={1.5}>
                             {/* heart icon */}
-                            <ItemReaction onClick={handleLikePost}>
+                            <ItemReaction
+                                onClick={handleLikePost}
+                                sx={{
+                                    color: theme.palette.grey[800],
+                                    '&:hover': {
+                                        color: theme.palette.grey[600],
+                                    },
+                                }}
+                            >
                                 <Heart size={24} ref={heartRef} weight={like ? 'fill' : 'regular'} />
                             </ItemReaction>
                             {/* comment icon */}
                             <CommentPost data={data}>
-                                <ItemReaction>
+                                <ItemReaction
+                                    sx={{
+                                        color: theme.palette.grey[800],
+                                        '&:hover': {
+                                            color: theme.palette.grey[600],
+                                        },
+                                    }}
+                                >
                                     <ChatCircle size={24} />
                                 </ItemReaction>
                             </CommentPost>
                             {/* share icon */}
                             <SharePost>
-                                <ItemReaction>
+                                <ItemReaction
+                                    sx={{
+                                        color: theme.palette.grey[800],
+                                        '&:hover': {
+                                            color: theme.palette.grey[600],
+                                        },
+                                    }}
+                                >
                                     <PaperPlaneTilt size={24} />
                                 </ItemReaction>
                             </SharePost>
                         </Stack>
                         <Stack direction="row" onClick={handleBookmarkPost}>
-                            <ItemReaction>
+                            <ItemReaction
+                                sx={{
+                                    color: theme.palette.grey[700],
+                                    '&:hover': {
+                                        color: theme.palette.grey[600],
+                                    },
+                                }}
+                            >
                                 <BookmarkSimple size={24} ref={bookmarkRef} weight={bookmark ? 'fill' : 'regular'} />
                             </ItemReaction>
                         </Stack>
@@ -211,7 +249,7 @@ function PostItem({ data }) {
                             direction="row"
                             spacing={0.3}
                             sx={{
-                                color: theme.palette.grey[500],
+                                color: theme.palette.grey[800],
                                 cursor: 'pointer',
                                 '&:active': {
                                     color: theme.palette.grey[400],

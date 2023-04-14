@@ -29,6 +29,23 @@ export const PostSlice = createSlice({
             }
             state.data = arrTmp;
         },
+        increaseNumberLike: (state, action) => {
+            const index = state.data.findIndex((obj) => obj.Post._id === action.payload.idPost);
+            if (state.data[index]) {
+                state.data[index].Post.reaction = [...state.data[index].Post.reaction, action.payload.idUser];
+                state.data[index].reactionCount++;
+            }
+        },
+        decreaseNumberLike: (state, action) => {
+            const index = state.data.findIndex((obj) => obj.Post._id === action.payload.idPost);
+            if (state.data[index]) {
+                const dataReaction = state.data[index].Post.reaction.filter((item) => item !== action.payload.idUser);
+                state.data[index].Post.reaction = dataReaction;
+                if (state.data[index].reactionCount !== 0) {
+                    state.data[index].reactionCount--;
+                }
+            }
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(getFirstPost.pending, (state, action) => {
@@ -72,6 +89,6 @@ export const PostSlice = createSlice({
         });
     },
 });
-export const { increaseNumberComment } = PostSlice.actions;
+export const { increaseNumberComment, increaseNumberLike, decreaseNumberLike } = PostSlice.actions;
 
 export default PostSlice.reducer;

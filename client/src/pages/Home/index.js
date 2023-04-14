@@ -9,14 +9,10 @@ import { getFirstPost } from '~/features/post/postSlice';
 function Home() {
     const currentUser = useSelector((state) => state.auth.currentUser);
     const dispatch = useDispatch();
-    const [paging, setPaging] = useState(1);
+    // const [paging, setPaging] = useState(1);
 
     useEffect(() => {
-        const callApi = async () => {
-            await dispatch(getFirstPost(1));
-        };
-        callApi();
-
+        dispatch(getFirstPost(1));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

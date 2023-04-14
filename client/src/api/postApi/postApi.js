@@ -7,6 +7,15 @@ export const getNewFeed = async (params) => {
                 paging: params?.paging,
             },
         });
+
+        // const data = await res?.result?.User?.map(async (item) => {
+        //     console.log(item);
+        //     const res = await httpRequest.get(`user/postOfUser/${item?._id}`);
+        //     return {
+        //         ...item,
+        //         postOfUser: res?.result,
+        //     };
+        // });
         return res?.result;
     } catch (error) {
         console.log(error);

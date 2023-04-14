@@ -1,18 +1,22 @@
 import { Avatar, Box, Button, Grid, Stack, Typography, useTheme } from '@mui/material';
+import { useEffect, useState } from 'react';
 import images from '~/assets/images';
 import { WrapperPopper } from '~/components/Popper';
+import * as userApi from '~/api/userApi/userApi';
+import { useSelector } from 'react-redux';
 
-function MenuUserFollowing() {
+function MenuUserFollowing({ id, data }) {
     const theme = useTheme();
+
     return (
         <WrapperPopper>
             <Stack direction="column" p={1.5} sx={{ minWidth: 300 }} spacing={2}>
                 <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={2}>
-                    <Avatar src="" alt="user" sx={{ width: 50, height: 50 }} />
+                    <Avatar src={`${data?.User?.avatar.data}`} alt="user" sx={{ width: 50, height: 50 }} />
                     <Stack direction="column">
                         <Stack direction="row">
                             <Typography variant="body2" fontWeight={600} sx={{ color: theme.palette.text.primary }}>
-                                premierleague
+                                {data?.User?.userName}
                             </Typography>
                         </Stack>
                         <Typography
@@ -21,7 +25,7 @@ function MenuUserFollowing() {
                             fontSize="0.8rem"
                             sx={{ color: theme.palette.text.secondary }}
                         >
-                            Premierleague
+                            {data?.User?.Name}
                         </Typography>
                     </Stack>
                 </Stack>
@@ -33,7 +37,7 @@ function MenuUserFollowing() {
                             fontSize="0.8rem"
                             color={theme.palette.text.primary}
                         >
-                            21.8K
+                            {/* tesst */}
                         </Typography>
                         <Typography
                             variant="body2"

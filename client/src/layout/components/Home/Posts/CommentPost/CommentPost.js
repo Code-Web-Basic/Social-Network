@@ -96,7 +96,6 @@ function CommentPost({ data, children }) {
                             <Stack
                                 direction="column"
                                 height="calc(100vh - 116px)"
-                                direction=" row"
                                 minWidth="450px"
                                 overflow="hidden"
                                 alignItems="center"
