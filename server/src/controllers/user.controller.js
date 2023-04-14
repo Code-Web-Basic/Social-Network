@@ -56,12 +56,21 @@ const showNotification = async (req, res) => {
     });
   }
 };
-
+const findById = async (req, res) => {
+  try {
+    const result = await UserService.findById(req.params.id);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   findUser,
   update,
   newFeed,
   postOfUser,
   showNotification,
-
+  findById,
 };
