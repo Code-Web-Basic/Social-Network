@@ -10,11 +10,12 @@ import { Avatar, Button, Modal, Stack, useTheme } from '@mui/material';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Post from '~/layout/components/Profile/Post';
 import Saved from '~/layout/components/Profile/Saved';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as followApi from '~/api/followApi/followApi'
 import * as userApi from '~/api/userApi/userApi'
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { updateUser } from '~/features/auth/authSlice';
 
 const style = {
     position: 'absolute',
@@ -102,7 +103,7 @@ function Profile() {
     };
 
     const handleEdit = () => {
-        user?._id === currentUser?._id ? navigate(`/profile/${id}`) : navigate(`/message/${id}`)
+        navigate(`/message/${id}`)
     }
 
     const getPostOfUser = async () => {
@@ -164,7 +165,7 @@ function Profile() {
                         </Stack>
                     </Link>
                     {user?._id === currentUser?._id ? <Stack direction="coloumn" alignItems="center" justifyContent="center">
-                        <Button style={{ color: 'blue' }} onClick={() => handleUnFollower(e?.User[0]?._id)}>UnFollow</Button>
+                        <button style={{ cursor: 'pointer', fontSize: '15px', fontWeight: '600' }} onClick={() => handleUnFollower(e?.User[0]?._id)}>UnFollow</button>
                     </Stack> : ''}
                 </Stack>))
             }</>
@@ -197,30 +198,57 @@ function Profile() {
                         </Stack>
                     </Link>
                     {user?._id === currentUser?._id ? <Stack direction="coloumn" alignItems="center" justifyContent="center">
-                        <Button style={{ color: 'blue' }} onClick={() => handleUnFollowing(e?.User[0]?._id)}>Xóa</Button>
+                        <button style={{ cursor: 'pointer', fontSize: '15px', fontWeight: '600' }} onClick={() => handleUnFollowing(e?.User[0]?._id)}>Xóa</button>
                     </Stack> : ''}
                 </Stack>))
             }</>
         );
     };
+    const dispatch = useDispatch();
+    const handleChangeAvatar = async (e) => {
+        let formData = new FormData();
+        formData.append('file', e.target.files[0]);
+        console.log(formData.get('file'))
+        await dispatch(updateUser(formData))
+    }
     return (<Grid container height='100vh'>
         <Grid item xs={1.5}></Grid>
         <Grid item xs={9} borderRadius='5px' boxShadow='rgba(0, 0, 0, 0.16) 0px 1px 4px' padding='20px 10px'>
             <div style={{ borderBottom: '1px solid rgb(219, 219, 219)', width: '100%', height: '150px', paddingBottom: '44px', display: 'flex' }}>
-                <div style={{ width: '30%', height: '100%', display: 'flex', objectFit: 'cover', justifyContent: 'center' }}>
-                    <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
-                </div>
+
+                {user?._id === currentUser?._id ?
+                    <div style={{ width: '30%', height: '100%', display: 'flex', justifyContent: 'center' }}>
+                        <input
+                            type="file"
+                            id="file"
+                            style={{ display: "none" }}
+                            onChange={(e) => {
+                                handleChangeAvatar(e)
+                            }}
+                        />
+                        <label htmlFor="file" >
+                            <div style={{ width: '30%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}>
+                                <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
+                            </div>
+                        </label>
+                    </div>
+                    :
+                    <div style={{ width: '30%', height: '100%', display: 'flex', objectFit: 'cover', justifyContent: 'center' }}>
+                        <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
+                    </div>}
                 <div style={{ width: '70%', height: '100%' }}>
                     <div style={{ display: 'flex', padding: '5px' }}>
                         <div>
                             <h4>{user?._id === currentUser?._id ? currentUser?.userName : user?.userName}</h4>
                         </div>
-                        <div style={{ marginLeft: '10px' }}>
-                            <Button variant="text" onClick={handleEdit}><b style={{ color: 'blue', fontSize: '13px' }}>{user?._id === currentUser?._id ? 'Chỉnh sửa thông tin' : 'Nhắn tin'}</b></Button>
+                        <div style={{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            {user?._id !== currentUser?._id ?
+                                <button style={{ padding: '8px 10px', backgroundColor: 'rgb(0, 149, 246)', color: 'white', cursor: 'pointer', fontWeight: '600', borderRadius: '5px' }} onClick={handleEdit}>Nhắn tin</button> :
+                                ''}
                         </div>
                         {
-                            user?._id !== currentUser?._id ? <div style={{ marginLeft: '10px' }}>
-                                {follow ? <Button variant="text" onClick={handleUnFollow}><b style={{ color: 'blue', fontSize: '13px' }}>UnFollow</b></Button> : <Button variant="text" onClick={handleFollow}><b style={{ color: 'blue', fontSize: '13px' }}>Follow</b></Button>}
+                            user?._id !== currentUser?._id ? <div style={{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                {follow ? <button onClick={handleUnFollow}><b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>UnFollow</b></button> : <button onClick={handleFollow}><b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>Follow</b></button>}
                             </div> : ''
                         }
 

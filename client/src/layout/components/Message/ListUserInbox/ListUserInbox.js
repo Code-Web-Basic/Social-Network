@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getShowChats } from '~/features/message/messageSlice';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import * as userApi from '~/api/userApi/userApi'
+import { useState } from 'react';
 
 const style = {
     position: 'absolute',
@@ -21,40 +23,42 @@ const style = {
 
 function ListUserInbox() {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const currentUser = useSelector((state) => state.auth.currentUser);
     const ListUserChat = useSelector((state) => state.message.data);
+    const [listUser, setListUser] = useState([])
     const renderItemSuggested = () => {
         return (
-            <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                p={1}
-                sx={{
-                    '&:hover': {
-                        background: theme.palette.grey[200],
-                    },
-                }}
-            >
-                <Stack direction="row" spacing={2}>
-                    <Avatar src="" alt="user" />
-                    <Stack direction="column">
-                        <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
-                            chithanhduongngoc
-                        </Typography>
-                        <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
-                            Suggested for you
-                        </Typography>
+            <>{
+                listUser?.map((user) => (
+                    <Stack direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        p={1}
+                        sx={{
+                            '&:hover': {
+                                background: theme.palette.grey[200],
+                            },
+                        }}
+                        key={user?._id}>
+                        <Link to={`/message/${user?._id}`} onClick={handleClose}>
+                            <Stack direction="row" spacing={2}>
+                                <Avatar src={user?.avatar?.data} alt="user" />
+                                <Stack direction="column">
+                                    <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
+                                        {user?.userName}
+                                    </Typography>
+                                    <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
+                                        {user?.Name}
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+                        </Link>
                     </Stack>
-                </Stack>
-
-                <Stack direction="row" alignItems="center" justifyContent="center">
-                    <Checkbox />
-                </Stack>
-            </Stack>
+                ))
+            }</>
         );
     };
     const dispatch = useDispatch();
@@ -65,6 +69,12 @@ function ListUserInbox() {
     useEffect(() => {
         showchats();
     }, []);
+    const handleFindUser = async (e) => {
+        console.log(e.target.value)
+        const res = await userApi.searchUser(e.target.value)
+        setListUser(res)
+        console.log(res)
+    }
     return (
         <Stack direction='column' height='100%' width='100%'>
             {/* header */}
@@ -77,7 +87,7 @@ function ListUserInbox() {
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    <Box sx={style} minWidth="500px" maxheight="600px" overflow="hidden">
+                    <Box sx={style} minWidth='400px' maxHeight='400px'>
                         <Stack direction="column">
                             <Stack
                                 direction="row"
@@ -104,14 +114,9 @@ function ListUserInbox() {
                                 <Typography variant="body2" fontWeight="600" fontSize="0.8rem">
                                     Tới:
                                 </Typography>
-                                <input placeholder="Tìm kiếm..." ></input>
+                                <input placeholder="Tìm kiếm..." onChange={e => handleFindUser(e)}></input>
                             </Stack>
-                            <Stack direction="column" width="100%" p="10px 0px">
-                                <Stack direction="row" p={0.5}>
-                                    <Typography variant="body2" fontWeight={600}>
-                                        Gợi ý
-                                    </Typography>
-                                </Stack>
+                            <Stack direction="column" p="10px 0px" style={{ width: '100%', height: '300px', overflow: "auto" }}>
                                 {renderItemSuggested()}
                             </Stack>
                             <Stack

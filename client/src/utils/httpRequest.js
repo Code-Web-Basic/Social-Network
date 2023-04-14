@@ -20,4 +20,12 @@ export const post = async (path, options = {}, header) => {
     });
     return response.data;
 };
+
+export const put = async (path, options = {}, header) => {
+    const response = await instance.put(path, options, {
+        headers: header,
+    });
+    return response.data;
+};
+
 export default instance;
