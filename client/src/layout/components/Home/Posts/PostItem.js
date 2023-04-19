@@ -15,7 +15,9 @@ import SharePost from './SharePost/SharePost';
 import { calculateTimePassed } from '~/utils/utils';
 
 import { reactionPost } from '~/api/postApi/postApi';
+
 import { decreaseNumberLike, increaseNumberLike } from '~/features/post/postSlice';
+import { addNewBookmark, removeNewBookmark } from '~/features/bookmark/bookmarkSlice';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -68,13 +70,16 @@ const MENU_ITEMS = [
 ];
 function PostItem({ data }) {
     const currentUser = useSelector((state) => state.auth.currentUser.data);
+    const dataBookmark = useSelector((state) => state.bookmark.data);
+
+    const [like, setLike] = useState(data?.Post?.reaction?.includes(currentUser?._id));
+    const [bookmark, setBookmark] = useState(dataBookmark.some((e) => e.postId === data?.Post?._id));
+
     const dispatch = useDispatch();
     const theme = useTheme();
     const heartRef = useRef();
     const bookmarkRef = useRef();
 
-    const [like, setLike] = useState(data?.Post?.reaction?.includes(currentUser?._id));
-    const [bookmark, setBookmark] = useState(false);
     useEffect(() => {
         if (like) {
             heartRef.current.style.color = 'red';
@@ -84,6 +89,14 @@ function PostItem({ data }) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [like]);
+    useEffect(() => {
+        if (bookmark || dataBookmark.some((e) => e.postId === data?.Post?._id)) {
+            bookmarkRef.current.style.color = 'black';
+        } else {
+            bookmarkRef.current.style.color = theme.palette.grey[800];
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [bookmark]);
 
     const handleLikePost = async () => {
         try {
@@ -100,13 +113,13 @@ function PostItem({ data }) {
             console.log(error);
         }
     };
-    const handleBookmarkPost = () => {
-        if (!bookmark) {
-            bookmarkRef.current.style.color = 'black';
-            setBookmark(true);
-        } else {
-            bookmarkRef.current.style.color = theme.palette.grey[800];
+    const handleBookmarkPost = async () => {
+        if (bookmark) {
+            await dispatch(removeNewBookmark({ idPost: data?.Post?._id }));
             setBookmark(false);
+        } else {
+            await dispatch(addNewBookmark({ idPost: data?.Post?._id }));
+            setBookmark(true);
         }
     };
 

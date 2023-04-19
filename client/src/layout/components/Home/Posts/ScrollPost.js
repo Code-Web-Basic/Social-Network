@@ -1,9 +1,11 @@
 import { Divider, Stack, styled } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SkeletonLoading from '~/components/SkeletonLoading/SkeletonLoading';
 import SuggestionsUser from '../SuggestionsUser/SuggestionsUser';
 import PostEnd from './PostEnd';
 import PostItem from './PostItem';
+import { useEffect } from 'react';
+import { getBookMarkFirst } from '~/features/bookmark/bookmarkSlice';
 
 const StyleDivider = styled(Divider)(({ theme }) => ({
     width: '100%',
@@ -14,6 +16,11 @@ const StyleDivider = styled(Divider)(({ theme }) => ({
 function ScrollPost() {
     // const [use]
     const { data, loading } = useSelector((state) => state.post);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getBookMarkFirst());
+    }, [dispatch]);
+    // const {}
     // const loading = true;
 
     const renderPost = () => {
