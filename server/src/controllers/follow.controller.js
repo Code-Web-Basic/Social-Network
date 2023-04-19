@@ -79,6 +79,7 @@ const deleteFollower = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   follow,
   unFollow,

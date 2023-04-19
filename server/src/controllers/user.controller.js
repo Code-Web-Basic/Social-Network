@@ -56,10 +56,9 @@ const showNotification = async (req, res) => {
     });
   }
 };
-
-const findOneById = async (req, res) => {
+const findById = async (req, res) => {
   try {
-    const result = await UserService.findOneById(req.params.id);
+    const result = await UserService.findById(req.params.id);
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -73,5 +72,5 @@ module.exports = {
   newFeed,
   postOfUser,
   showNotification,
-  findOneById,
+  findById,
 };
