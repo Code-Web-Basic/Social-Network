@@ -25,6 +25,6 @@ const privateRoutes = [
     { path: routerConfig.register, component: Register, layout: null },
     { path: routerConfig.chatdetail, component: Message },
     { path: routerConfig.roomcall, component: VideoCall, layout: null },
-    { path: routerConfig.roomvoice, component: VoiceCall, layout: null }
+    { path: routerConfig.roomvoice, component: VoiceCall, layout: null },
 ];
 export { publicRoutes, privateRoutes };

@@ -7,7 +7,7 @@ function FollowingUserItem({ data }) {
     return (
         <Stack
             component={Link}
-            to={router.profile + `${data.User[0]?._id}`}
+            to={router.profile.slice(0, -3) + `${data.User[0]?._id}`}
             direction={'column'}
             p={1}
             spacing={1}

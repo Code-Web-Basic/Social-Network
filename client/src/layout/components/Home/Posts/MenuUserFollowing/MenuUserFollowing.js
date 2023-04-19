@@ -1,9 +1,6 @@
 import { Avatar, Box, Button, Grid, Stack, Typography, useTheme } from '@mui/material';
-import { useEffect, useState } from 'react';
 import images from '~/assets/images';
 import { WrapperPopper } from '~/components/Popper';
-import * as userApi from '~/api/userApi/userApi';
-import { useSelector } from 'react-redux';
 
 function MenuUserFollowing({ id, data }) {
     const theme = useTheme();
