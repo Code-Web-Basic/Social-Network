@@ -4,7 +4,7 @@ import EditPhoto from '~/layout/components/EditPhoto/EditPhoto';
 function Create() {
     return (
         <>
-            <EditPhoto />
+            <CreatePost />
         </>
     );
 }

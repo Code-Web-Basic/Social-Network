@@ -24,8 +24,8 @@ function UserSearchItem({ data, search = false, handleClickItemRemove = () => {}
                 direction="row"
                 spacing={2}
                 onClick={handleClick}
-                // component={Link}
-                // to={router.profile.slice(0, -3) + data?._id}
+                component={Link}
+                to={router.profile.slice(0, -3) + data?._id}
             >
                 <Avatar src={data?.avatar ? `${data.avatar}` : ''} alt="user" />
                 <Stack direction="column">
@@ -52,4 +52,7 @@ function UserSearchItem({ data, search = false, handleClickItemRemove = () => {}
 export default UserSearchItem;
 UserSearchItem.prototype = {
     data: PropTypes.object,
+    search: PropTypes.bool,
+    handleClickItemRemove: PropTypes.func,
+    handleClick: PropTypes.func,
 };

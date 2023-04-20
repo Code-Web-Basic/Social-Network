@@ -1,3 +1,9 @@
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+// swipper
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper';
+// mui
 import {
     Avatar,
     Box,
@@ -11,18 +17,20 @@ import {
     Typography,
     useTheme,
 } from '@mui/material';
-import { CaretLeft, CaretRight, Smiley } from 'phosphor-react';
-import images from '~/assets/images';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
+// icon
+import { CaretLeft, CaretRight, Smiley } from 'phosphor-react';
+
 // tippy
 import Tippy from '@tippyjs/react/headless';
 // different import path!
+// emoij
 import EmojiPicker from '@emoji-mart/react';
 import dataEmoji from '@emoji-mart/data';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+// api
+import * as postApi from '~/api/postApi/postApi';
 
 const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
     border: `1px solid ${theme.palette.divider}`,
@@ -93,7 +101,7 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-function ShareCreatePost() {
+function ShareCreatePost({ handleBack = () => {}, selectedFile, setSelectedFile = () => {} }) {
     // mui ui
     const theme = useTheme();
     const currentUser = useSelector((state) => state.auth.currentUser);
@@ -111,28 +119,29 @@ function ShareCreatePost() {
         setValueInput(message);
     };
 
-    const sendComment = (event) => {
+    const sendSharePost = async (event) => {
         event.preventDefault();
-        // const dataComment = {
-        //     displayName: currentUser?.user?.displayName,
-        //     userAvatar: currentUser?.user?.photoURL,
-        //     body: valueInput,
-        //     likeNumber: 0,
-        //     unlikeNumber: 0,
-        //     parentId: '',
-        //     replyNumber: 0,
-        //     userId: currentUser?.user?.uid,
-        //     mediaId: props?.mediaId,
-        //     createAt: Date.now(),
-        // };
+        let formData = new FormData();
+        formData.append('caption', valueInput);
+        formData.append('isVideo', false);
+        formData.append('files', selectedFile[0]);
+
         if (valueInput.length > 0) {
             // handleSendChatValue(valueFormChat);
             // dispatch(addNewComment(dataComment));
+            try {
+                const res = await postApi.createPostImages({ data: formData });
+                console.log(res);
+            } catch (error) {
+                console.log(error);
+            }
             setValueInput('');
+            setSelectedFile([]);
         }
     };
     return (
-        <Stack direction="column" width="100%" height="100%">
+        <Stack direction="column" width="100%" height={800}>
+            {/* header */}
             <Stack
                 direction="row"
                 p={1}
@@ -148,7 +157,7 @@ function ShareCreatePost() {
                 }}
             >
                 <Stack direction={'row'}>
-                    <IconButton size="small">
+                    <IconButton size="small" onClick={handleBack}>
                         <CaretLeft size={24} />
                     </IconButton>
                 </Stack>
@@ -157,19 +166,17 @@ function ShareCreatePost() {
                         Create new post
                     </Typography>
                 </Stack>
-                <Stack direction={'row'}>
+                <Stack direction={'row'} onClick={sendSharePost}>
                     <Button size="small" variant="text" sx={{ fontSize: '0.8rem' }}>
                         Share
                     </Button>
                 </Stack>
             </Stack>
+            {/* container */}
             <Box
                 sx={{
-                    minHeight: 500,
-                    maxHeight: 800,
+                    height: '100%',
                     width: '100%',
-                    minWidth: 1000,
-                    maxWidth: 1200,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -177,11 +184,48 @@ function ShareCreatePost() {
             >
                 <Grid container width="100%" height="100%">
                     <Grid item xs={7}>
-                        <img
-                            src={images.facebookIcon}
-                            alt="post"
-                            style={{ height: '100%', width: '100%', objectFit: 'cover' }}
-                        />
+                        <Swiper
+                            pagination={true}
+                            modules={[Pagination]}
+                            style={{ width: '100%', height: '100%', position: 'relative' }}
+                            spaceBetween={10}
+                            slidesPerView={1}
+                            onSlideChange={() => console.log('slide change')}
+                            onSwiper={(swiper) => console.log(swiper)}
+                        >
+                            {selectedFile.map((i) => {
+                                return (
+                                    <SwiperSlide
+                                        key={i?.lastModified}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <Stack
+                                            direction="column"
+                                            minWidth="450px"
+                                            maxHeight="600px"
+                                            overflow="hidden"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            sx={{
+                                                aspectRatio: '1 / 1',
+                                                flexBasis: '888px',
+                                                background: 'black',
+                                            }}
+                                        >
+                                            <img
+                                                src={URL.createObjectURL(i)}
+                                                alt="post"
+                                                style={{ objectFit: 'cover', maxHeight: '100%', maxWidth: '100%' }}
+                                            />
+                                        </Stack>
+                                    </SwiperSlide>
+                                );
+                            })}
+                        </Swiper>
                     </Grid>
                     <Grid item xs={5}>
                         <Stack
@@ -189,16 +233,18 @@ function ShareCreatePost() {
                             width="100%"
                             height="100%"
                             p={'0px 10px'}
+                            paddingBottom={'10px'}
                             sx={{ borderLeft: '1px solid', borderColor: theme.palette.grey[300] }}
+                            overflow={'auto'}
                         >
                             {/* avatar */}
                             <Stack direction="row" p={2} alignItems="center" justifyContent="flex-start" spacing={2}>
-                                <Avatar src="" />
+                                <Avatar src={currentUser?.data?.avatar?.data} />
                                 <Typography variant="body1" fontWeight={600} fontSize={'0.8rem'}>
                                     {currentUser.data.userName}
                                 </Typography>
                             </Stack>
-                            {/*  */}
+                            {/*text description */}
                             <Stack direction={'column'} width="100%" p={2} spacing={2}>
                                 {/* input */}
                                 <Stack direction={'column'} width="100%" minHeight="100px">
@@ -215,6 +261,8 @@ function ShareCreatePost() {
                                             fontSize: '1.1rem',
                                             resize: 'none',
                                         }}
+                                        value={valueInput}
+                                        onChange={(e) => setValueInput(e.target.value)}
                                     />
                                 </Stack>
                                 {/* navigate input */}

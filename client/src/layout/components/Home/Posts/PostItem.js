@@ -18,6 +18,7 @@ import { reactionPost } from '~/api/postApi/postApi';
 
 import { decreaseNumberLike, increaseNumberLike } from '~/features/post/postSlice';
 import { addNewBookmark, removeNewBookmark } from '~/features/bookmark/bookmarkSlice';
+import MediaPost from '~/components/MediaPost/MediaPost';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -160,36 +161,7 @@ function PostItem({ data }) {
                     </Stack>
                 </Stack>
                 {/* media */}
-                <Box
-                    sx={{
-                        position: 'relative',
-                        overflow: 'hidden',
-                        borderRadius: 1,
-                        maxHeight: '600px',
-                        // minHeight: '550px',
-                        // height: '550px',
-
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <img
-                        alt={data?.Post.source[0].filename}
-                        src={`${data?.Post.source[0].data}`}
-                        style={{
-                            // position: 'absolute',
-                            // top: 0,
-                            // left: 0,
-                            // bottom: 0,
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            minHeight: '150px',
-                        }}
-                    />
-                </Box>
+                <MediaPost data={data?.Post?.source} isImages={!data?.Post?.isVideo} />
                 {/* navigate */}
                 <Stack direction="column" spacing={0.5}>
                     <Stack direction="row" justifyContent="space-between">
@@ -207,7 +179,13 @@ function PostItem({ data }) {
                                 <Heart size={24} ref={heartRef} weight={like ? 'fill' : 'regular'} />
                             </ItemReaction>
                             {/* comment icon */}
-                            <CommentPost data={data}>
+                            <CommentPost
+                                data={data}
+                                like={like}
+                                bookmark={bookmark}
+                                handleLikePost={handleLikePost}
+                                handleBookmarkPost={handleBookmarkPost}
+                            >
                                 <ItemReaction
                                     sx={{
                                         color: theme.palette.grey[800],
@@ -257,7 +235,13 @@ function PostItem({ data }) {
                         <Typography variant="body2">{data?.Post?.caption}</Typography>
                     </Stack>
                     {/* comment */}
-                    <CommentPost data={data}>
+                    <CommentPost
+                        data={data}
+                        like={like}
+                        bookmark={bookmark}
+                        handleLikePost={() => handleLikePost}
+                        handleBookmarkPost={() => handleBookmarkPost}
+                    >
                         <Stack
                             direction="row"
                             spacing={0.3}

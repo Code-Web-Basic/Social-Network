@@ -2,7 +2,7 @@ import { Stack, Typography, useTheme } from '@mui/material';
 import UserSearchItem from './UserSearchItem';
 import * as userApi from '~/api/userApi/userApi';
 import SkeletonLoading from '~/components/SkeletonLoading/SkeletonLoading';
-
+import PropTypes from 'prop-types';
 function HistorySearch({ historySearch = [], loading = false, setHistorySearch }) {
     const theme = useTheme();
 
@@ -10,7 +10,6 @@ function HistorySearch({ historySearch = [], loading = false, setHistorySearch }
     const handleClickRemoveHistory = async (id) => {
         await userApi.removeSearchHistory({ historyId: id });
         setHistorySearch((prev) => prev.filter((i) => i._id !== id));
-        console.log('onclick remove history');
     };
     // render Item History
     const renderItemHistory = () => {
@@ -28,7 +27,6 @@ function HistorySearch({ historySearch = [], loading = false, setHistorySearch }
 
     // clearHistoryAll
     const handleClickRemoveAll = async () => {
-        console.log('click remove all');
         await userApi.removeSearchHistoryAll();
         setHistorySearch([]);
     };
@@ -63,3 +61,9 @@ function HistorySearch({ historySearch = [], loading = false, setHistorySearch }
 }
 
 export default HistorySearch;
+
+HistorySearch.prototype = {
+    historySearch: PropTypes.array,
+    loading: PropTypes.bool,
+    setHistorySearch: PropTypes.func,
+};

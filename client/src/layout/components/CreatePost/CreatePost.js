@@ -1,20 +1,40 @@
-import { Avatar, Button, Container, Modal, Stack, Typography, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState } from 'react';
 import ShareCreatePost from './ShareCreatePost';
 import UploadCreatePost from './UploadCreatePost';
 
-// stylessss
-
 function CreatePost({ children }) {
     const theme = useTheme();
-    // handle close open  modal
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [selectedFile, setSelectedFile] = useState([]);
+    const [historyComponent, setHistoryComponent] = useState(0);
+    // const Current = historyComponent[historyComponent.length - 1];
+    const handleNextShare = () => {
+        setHistoryComponent(1);
+    };
+    const handleBack = () => {
+        setHistoryComponent(0);
+    };
+
     //render components
     const renderItemMenuModal = () => {
-        return <ShareCreatePost />;
+        if (historyComponent === 0) {
+            return (
+                <UploadCreatePost
+                    selectedFile={selectedFile}
+                    setSelectedFile={setSelectedFile}
+                    handleNextShare={handleNextShare}
+                />
+            );
+        } else if (historyComponent === 1) {
+            return (
+                <ShareCreatePost
+                    selectedFile={selectedFile}
+                    handleBack={handleBack}
+                    setSelectedFile={setSelectedFile}
+                />
+            );
+        }
     };
 
     return (
@@ -25,8 +45,8 @@ function CreatePost({ children }) {
                 <Box
                     minWidth="650px"
                     minHeight="650px"
-                    maxHeight="1600px"
-                    maxWidth="1600px"
+                    maxHeight="1000px"
+                    maxWidth="1300px"
                     sx={{
                         bgcolor: 'background.paper',
                         background: 'rgb(255, 255, 255)',

@@ -2,16 +2,15 @@
 import PropTypes from 'prop-types';
 
 // mui ui
-import { Avatar, Box, Grid, Modal, Stack, styled, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Modal, Stack, styled, Typography, useTheme } from '@mui/material';
 //icon
 import { BookmarkSimple, DotsThreeCircle, Heart, PaperPlaneTilt } from 'phosphor-react';
 //components
 import ScrollComment from './ScrollComment';
-import images from '~/assets/images';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import NewCommentPost from './NewCommentPost';
 import { calculateTimePassed } from '~/utils/utils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // styles
 const ItemReaction = styled('div')(({ theme }) => ({
@@ -75,12 +74,15 @@ const MENU_ITEMS = [
     },
 ];
 //comment post modal
-function CommentPost({ data, children }) {
+function CommentPost({ data, children, like, bookmark, handleLikePost = () => {}, handleBookmarkPost = () => {} }) {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
+    // const heartRef = useRef(null);
+    // const bookmarkRef = useRef(null);
     // const [dataCurrent, setDataCurrent] = useState(data);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
     return (
         <>
             <div onClick={handleOpen}>{children}</div>
@@ -230,18 +232,49 @@ function CommentPost({ data, children }) {
                                             <Stack direction="row" width="100%" justifyContent="space-between">
                                                 <Stack direction="row" spacing={1.5}>
                                                     {/* like */}
-                                                    <ItemReaction>
-                                                        <Heart size={24} />
+                                                    <ItemReaction
+                                                        onClick={handleLikePost}
+                                                        sx={{
+                                                            color: theme.palette.grey[800],
+                                                            '&:hover': {
+                                                                color: theme.palette.grey[600],
+                                                            },
+                                                        }}
+                                                    >
+                                                        <Heart
+                                                            size={24}
+                                                            color={like ? 'red' : theme.palette.grey[800]}
+                                                            weight={like ? 'fill' : 'regular'}
+                                                        />
                                                     </ItemReaction>
 
                                                     {/* unlike */}
-                                                    <ItemReaction>
+                                                    <ItemReaction
+                                                        sx={{
+                                                            color: theme.palette.grey[800],
+                                                            '&:hover': {
+                                                                color: theme.palette.grey[600],
+                                                            },
+                                                        }}
+                                                    >
                                                         <PaperPlaneTilt size={24} />
                                                     </ItemReaction>
                                                 </Stack>
                                                 <Stack direction="row">
-                                                    <ItemReaction>
-                                                        <BookmarkSimple size={24} />
+                                                    <ItemReaction
+                                                        onClick={handleBookmarkPost}
+                                                        sx={{
+                                                            color: theme.palette.grey[800],
+                                                            '&:hover': {
+                                                                color: theme.palette.grey[600],
+                                                            },
+                                                        }}
+                                                    >
+                                                        <BookmarkSimple
+                                                            size={24}
+                                                            color={bookmark ? 'black' : theme.palette.grey[800]}
+                                                            weight={bookmark ? 'fill' : 'regular'}
+                                                        />
                                                     </ItemReaction>
                                                 </Stack>
                                             </Stack>
@@ -292,4 +325,8 @@ export default CommentPost;
 CommentPost.prototype = {
     data: PropTypes.object,
     children: PropTypes.func,
+    like: PropTypes.bool,
+    bookmark: PropTypes.bool,
+    handleLikePost: PropTypes.func,
+    handleBookmarkPost: PropTypes.func,
 };
