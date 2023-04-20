@@ -79,13 +79,41 @@ export const getNotify = async () => {
 
 export const putUpdateUser = async (param) => {
     try {
-        const res = await httpRequest.put('user/update', param,
-            {
-                'Content-Type': 'multipart/form-data',
-            });
-        res.data = res?.result
-        delete res?.result
+        const res = await httpRequest.put('user/update', param, {
+            'Content-Type': 'multipart/form-data',
+        });
+        res.data = res?.result;
+        delete res?.result;
         return res;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const addSearchUser = async (param) => {
+    try {
+        const res = await httpRequest.post('searchHistory/create', {
+            targetId: param.targetId,
+        });
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const removeSearchHistory = async (param) => {
+    try {
+        const res = await httpRequest.post(`searchHistory/delete/${param.historyId}`);
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const removeSearchHistoryAll = async () => {
+    try {
+        const res = await httpRequest.post(`searchHistory/deleteAll`);
+        //console.log(res);
+        return res?.result;
     } catch (error) {
         console.log(error);
     }

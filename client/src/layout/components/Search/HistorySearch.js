@@ -1,27 +1,36 @@
 import { Stack, Typography, useTheme } from '@mui/material';
-import { useEffect, useState } from 'react';
 import UserSearchItem from './UserSearchItem';
 import * as userApi from '~/api/userApi/userApi';
 import SkeletonLoading from '~/components/SkeletonLoading/SkeletonLoading';
 
-function HistorySearch() {
+function HistorySearch({ historySearch = [], loading = false, setHistorySearch }) {
     const theme = useTheme();
-    // const { loading, error, data } = useQuery('searchHistory', userApi.getHistorySearch());
-    const [loading, setLoading] = useState(false);
-    const [historySearch, setHistorySearch] = useState([]);
-    useEffect(() => {
-        const callApi = async () => {
-            setLoading(true);
-            const res = await userApi.getHistorySearch();
-            if (res?.length > 0) {
-                setHistorySearch([...res]);
-            }
-            setLoading(false);
-        };
-        callApi();
-    }, []);
+
+    // clear history item
+    const handleClickRemoveHistory = async (id) => {
+        await userApi.removeSearchHistory({ historyId: id });
+        setHistorySearch((prev) => prev.filter((i) => i._id !== id));
+        console.log('onclick remove history');
+    };
+    // render Item History
     const renderItemHistory = () => {
-        return historySearch.map((item) => <UserSearchItem key={item} />);
+        return historySearch.map((item) => {
+            return (
+                <UserSearchItem
+                    data={item.User[0]}
+                    key={item._id}
+                    search={true}
+                    handleClickItemRemove={() => handleClickRemoveHistory(item._id)}
+                />
+            );
+        });
+    };
+
+    // clearHistoryAll
+    const handleClickRemoveAll = async () => {
+        console.log('click remove all');
+        await userApi.removeSearchHistoryAll();
+        setHistorySearch([]);
     };
     return (
         <>
@@ -35,6 +44,7 @@ function HistorySearch() {
                     fontWeight={500}
                     color={theme.palette.primary.light}
                     sx={{ cursor: 'pointer' }}
+                    onClick={handleClickRemoveAll}
                 >
                     clear all
                 </Typography>
