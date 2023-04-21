@@ -101,7 +101,7 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-function ShareCreatePost({ handleBack = () => {}, selectedFile, setSelectedFile = () => {} }) {
+function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelectedFile = () => {} }) {
     // mui ui
     const theme = useTheme();
     const currentUser = useSelector((state) => state.auth.currentUser);
@@ -124,7 +124,8 @@ function ShareCreatePost({ handleBack = () => {}, selectedFile, setSelectedFile 
         let formData = new FormData();
         formData.append('caption', valueInput);
         formData.append('isVideo', false);
-        formData.append('files', selectedFile[0]);
+
+        selectedFile.forEach((e) => formData.append('files', selectedFile[0]));
 
         if (valueInput.length > 0) {
             // handleSendChatValue(valueFormChat);
