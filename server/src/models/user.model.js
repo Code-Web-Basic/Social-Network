@@ -11,7 +11,7 @@ const userCollectionSchema = Joi.object({
   Name: Joi.string().max(50).default(null),
   userName: Joi.string().default(null),
   password: Joi.string().min(5).max(30).trim().default(null),
-  createdAt: Joi.date().default(Date.now()),
+  createdAt: Joi.string().default(""),
   updatedAt: Joi.date().default(null),
   email: Joi.string().required().email(),
   mobile: Joi.string().default(null),

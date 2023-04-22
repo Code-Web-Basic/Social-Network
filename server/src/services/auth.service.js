@@ -33,7 +33,10 @@ const encodedRefreshToken = (userId) => {
 const register = async (data) => {
   try {
     data.createdAt = Date.now();
-    const newUser = await UserModel.signUp(data);
+    const newUser = await UserModel.signUp({
+      ...data,
+      createdAt: Date.now().toString(),
+    });
     return newUser;
   } catch (error) {
     throw new Error(error);
