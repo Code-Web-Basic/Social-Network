@@ -14,7 +14,7 @@ const messageCollectionSchema = Joi.object({
   isReply: Joi.boolean().required(),
   replyId: Joi.string().default(null),
   isDestroy: Joi.boolean().default(false),
-  createdAt: Joi.date().timestamp().default(Date.now()),
+  createdAt: Joi.string().default(""),
   updatedAt: Joi.date().timestamp().default(null),
 });
 

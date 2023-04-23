@@ -6,7 +6,7 @@ const searchHistoryCollectionName = "SearchHistory";
 const searchHistoryCollectionSchema = Joi.object({
   sourceId: Joi.string().required(),
   targetId: Joi.string().required(),
-  createdAt: Joi.date().timestamp().default(Date.now()),
+  createdAt: Joi.string().default(""),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
 const validateSchemaSearchHistory = async (data) => {

@@ -7,7 +7,7 @@ const bookmarkCollectionName = "Bookmarks";
 const bookmarkCollectionSchema = Joi.object({
   postId: Joi.string().required(),
   userId: Joi.string().required(),
-  createdAt: Joi.date().timestamp().default(Date.now()),
+  createdAt: Joi.string().default(""),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
 

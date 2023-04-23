@@ -5,6 +5,7 @@ const createSearchHistory = async (userId, data) => {
     return await searchHistoryModel.createSearchHistory({
       ...data,
       sourceId: userId,
+      createdAt: Date.now().toString(),
     });
   } catch (error) {
     throw new Error(error);
