@@ -1,27 +1,41 @@
 import { Box, ImageList, ImageListItem, Typography, useTheme, Stack, IconButton } from '@mui/material';
 import { ChatCircle, Heart, Image, VideoCamera } from 'phosphor-react';
+import { useEffect } from 'react';
 import { useState } from 'react';
+import * as postApi from '~/api/postApi/postApi';
+import CommentPost from '../Home/Posts/CommentPost/CommentPost';
 
-function srcset(image, size, rows = 1, cols = 1) {
+function srcset(image) {
     return {
-        src: `${image}?w=${size * cols}&h=${size * rows}&fit=crop&auto=format`,
-        srcSet: `${image}?w=${size * cols}&h=${size * rows}&fit=crop&auto=format&dpr=2 2x`,
+        src: `${image}`,
+        srcSet: `${image}`,
     };
 }
 function ListPost() {
-    const theme = useTheme();
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const callApi = async () => {
+            const res = await postApi.getNewFeed({ paging: 1 });
+            if (res) {
+                setData([...res]);
+            }
+        };
+        callApi();
+    }, []);
+    console.log(data);
     return (
         <ImageList
-            sx={{ width: '100%', height: '100%', padding: '10px 200px' }}
+            sx={{ width: '100%', height: '100%', padding: '10px 250px' }}
             variant="quilted"
             cols={3}
             rowHeight={320}
         >
-            {itemData.map((item, index) => {
+            {data.map((item, index) => {
                 if ((index + 1) % 10 === 3 || (index + 1) % 10 === 6) {
-                    return <ItemListPost item={item} rows={2} key={item.img} />;
+                    return <ItemListPost item={item} rows={2} key={item?.Post?._id} />;
                 } else {
-                    return <ItemListPost item={item} rows={1} key={item.img} />;
+                    return <ItemListPost item={item} rows={1} key={item?.Post?._id} />;
                 }
             })}
         </ImageList>
@@ -43,7 +57,12 @@ export const ItemListPost = ({ item, rows }) => {
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
-            <img style={{ objectFit: 'cover' }} {...srcset(item.img, 121, rows, 1)} alt={item.title} loading="lazy" />
+            <img
+                style={{ objectFit: 'cover' }}
+                src={item?.Post?.source[0].data}
+                alt={item?.Post?.source[0].filename}
+                loading="lazy"
+            />
             {video ? (
                 <IconButton sx={{ position: 'absolute', top: 0, right: 0 }}>
                     <VideoCamera size={20} weight="bold" color={theme.palette.common.white} />
@@ -66,92 +85,48 @@ export const ItemListPost = ({ item, rows }) => {
                         justifyContent: 'center',
                     }}
                 >
-                    <Stack direction="row">
-                        <Stack direction="row" alignItems={'center'}>
-                            <Heart size={20} weight="fill" color={theme.palette.common.white} />
-                            <Typography
-                                variant="h6"
-                                fontSize={'1.2rem'}
-                                color={theme.palette.common.white}
-                                marginLeft="5px"
-                            >
-                                1234
-                            </Typography>
+                    <CommentPost
+                        data={item}
+                        like={false}
+                        bookmark={false}
+                        handleLikePost={() => {}}
+                        handleBookmarkPost={() => {}}
+                        styles={{
+                            position: 'absolute',
+                            height: '100%',
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Stack direction="row">
+                            <Stack direction="row" alignItems={'center'}>
+                                <Heart size={20} weight="fill" color={theme.palette.common.white} />
+                                <Typography
+                                    variant="h6"
+                                    fontSize={'1.2rem'}
+                                    color={theme.palette.common.white}
+                                    marginLeft="5px"
+                                >
+                                    {item?.reactionCount}
+                                </Typography>
+                            </Stack>
+                            <Stack direction="row" alignItems={'center'} marginLeft="30px">
+                                <ChatCircle size={20} weight="fill" color={theme.palette.common.white} />
+                                <Typography
+                                    variant="h6"
+                                    fontSize={'1.2rem'}
+                                    color={theme.palette.common.white}
+                                    marginLeft="5px"
+                                >
+                                    {item?.Post?.commentCount}
+                                </Typography>
+                            </Stack>
                         </Stack>
-                        <Stack direction="row" alignItems={'center'} marginLeft="30px">
-                            <ChatCircle size={20} weight="fill" color={theme.palette.common.white} />
-                            <Typography
-                                variant="h6"
-                                fontSize={'1.2rem'}
-                                color={theme.palette.common.white}
-                                marginLeft="5px"
-                            >
-                                1234
-                            </Typography>
-                        </Stack>
-                    </Stack>
+                    </CommentPost>
                 </Box>
             )}
         </ImageListItem>
     );
 };
-
-const itemData = [
-    {
-        img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-        title: 'Breakfast',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-        title: 'Burger',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-        title: 'Camera',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-        title: 'Coffee',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-        title: 'Hats',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-        title: 'Honey',
-        author: '@arwinneil',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-        title: 'Basketball',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-        title: 'Fern',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-        title: 'Mushrooms',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
-        title: 'Tomato basil',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
-        title: 'Sea star',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-        title: 'Bike',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
-        title: 'Sea star 1',
-    },
-    {
-        img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-        title: 'Bike 2',
-    },
-];

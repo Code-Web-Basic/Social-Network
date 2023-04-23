@@ -138,6 +138,7 @@ function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelected
             }
             setValueInput('');
             setSelectedFile([]);
+            handleBack();
         }
     };
     return (
