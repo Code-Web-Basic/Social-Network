@@ -2,7 +2,10 @@ const followModel = require("../models/follow.model");
 
 const follow = async (data) => {
   try {
-    const result = await followModel.follow(data);
+    const result = await followModel.follow({
+      ...data,
+      createdAt: Date.now().toString(),
+    });
     return result;
   } catch (error) {
     throw new Error(error);

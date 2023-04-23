@@ -13,7 +13,7 @@ const commentCollectionSchema = Joi.object({
   replyId: Joi.string().default(null),
   reaction: Joi.array().items(Joi.string()).default([]),
   replyCount: Joi.number().default(0),
-  createdAt: Joi.date().timestamp().default(Date.now()),
+  createdAt: Joi.string().default(""),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
 const validateSchema = async (data) => {

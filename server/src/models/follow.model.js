@@ -7,7 +7,7 @@ const followCollectionName = "Follows";
 const followCollectionSchema = Joi.object({
   sourceId: Joi.string().required(),
   targetId: Joi.string().required(),
-  createdAt: Joi.date().timestamp().default(Date.now()),
+  createdAt: Joi.string().default(""),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
 
@@ -115,30 +115,21 @@ const getFollowing = async (userId, paging) => {
 };
 const suggestions = async (userId) => {
   try {
-    const result = await getDB()
+    const followOfUser = await getDB()
       .collection("Follows")
       .aggregate([
         { $match: { sourceId: userId } },
-        { $group: { _id: "$sourceId", targetId: { $push: "$$ROOT" } } },
-
-        {
-          $lookup: {
-            from: "Users",
-            let: { ztargetId: "$targetId.targetId" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $not: {
-                      $in: [{ $toString: "$_id" }, "$$ztargetId"],
-                    },
-                  },
-                },
-              },
-            ],
-            as: "User",
-          },
-        },
+        { $group: { _id: "$targetId" } },
+      ])
+      .toArray();
+    const follow = followOfUser.map((data) => {
+      return ObjectId(data._id);
+    });
+    const result = await getDB()
+      .collection("Users")
+      .aggregate([
+        { $match: { _id: { $nin: follow } } },
+        { $sample: { size: 5 } },
       ])
       .toArray();
     return result;

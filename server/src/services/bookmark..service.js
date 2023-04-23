@@ -5,8 +5,8 @@ const create = async (userId, postId) => {
     const data = {
       userId: userId,
       postId: postId,
+      createdAt: Date.now().toString(),
     };
-    console.log(data);
     const result = await bookmarkModel.create(data);
     return result;
   } catch (error) {
