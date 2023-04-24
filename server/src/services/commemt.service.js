@@ -66,7 +66,14 @@ const reaction = async (id, req) => {
     throw new Error(error);
   }
 };
-
+const showReaction = async (id) => {
+  try {
+    const result = await commentModel.showReaction(id);
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   create,
   update,
@@ -74,4 +81,5 @@ module.exports = {
   showCommentReply,
   deleteComment,
   reaction,
+  showReaction,
 };
