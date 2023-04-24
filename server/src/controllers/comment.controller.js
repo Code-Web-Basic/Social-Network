@@ -71,6 +71,16 @@ const reaction = async (req, res) => {
     });
   }
 };
+const showReaction = async (req, res) => {
+  try {
+    const result = await commentService.showReaction(req.params.id);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   create,
   update,
@@ -78,4 +88,5 @@ module.exports = {
   showCommentReply,
   deleteComment,
   reaction,
+  showReaction,
 };
