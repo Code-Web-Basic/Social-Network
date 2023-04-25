@@ -5,7 +5,6 @@ import DefaultLayout from '~/layout/DefaultLayout';
 import { useSelector, useStore } from 'react-redux';
 import setUpInterceptor from './utils/interceptor';
 // import { useCookies } from 'react-cookie';
-import { Cookies } from 'react-cookie';
 
 function App() {
     const currentUser = useSelector((state) => state.auth.currentUser);
@@ -15,7 +14,6 @@ function App() {
     setUpInterceptor(store);
     // check user
     let routerCheck = publicRoutes;
-
     if (currentUser) {
         routerCheck = privateRoutes;
     }

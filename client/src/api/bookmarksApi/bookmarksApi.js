@@ -9,3 +9,26 @@ export const getBookMarks = async () => {
         console.log(error);
     }
 };
+
+export const createBookMarks = async (params) => {
+    try {
+        const res = await httpRequest.post('bookmark/create', {
+            postId: params.postId,
+        });
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const deleteBookMarks = async (params) => {
+    try {
+        const res = await httpRequest.post(`bookmark/delete/${params.postId}`, {
+            postId: params.postId,
+        });
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};

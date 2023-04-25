@@ -32,7 +32,7 @@ function FollowingUser() {
     };
     return (
         <Stack direction={'row'} spacing={2} width="100%" alignItems="center">
-            <Swiper className="mySwiper" slidesPerView={4} style={{ justifyContent: 'start', width: '100%' }}>
+            <Swiper className="mySwiper" slidesPerView={5} style={{ justifyContent: 'start', width: '100%' }}>
                 {renderItemFollowing()}
             </Swiper>
         </Stack>

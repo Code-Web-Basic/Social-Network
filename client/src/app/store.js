@@ -5,18 +5,31 @@ import authReducer from '~/features/auth/authSlice';
 import commentReducer from '~/features/comment/commentSlice';
 import postReducer from '~/features/post/postSlice';
 import messageReducer from '~/features/message/messageSlice';
+import bookmarkReducer from '~/features/bookmark/bookmarkSlice';
 const persistConfig = {
     key: 'root',
     version: 1,
     storage,
-    blacklist: ['comment', 'post', 'message'],
+    blacklist: ['comment', 'post', 'message', 'bookmark'],
 };
 
 export default configureStore({
-    reducer: { auth: authReducer, comment: commentReducer, post: postReducer, message: messageReducer },
+    reducer: {
+        auth: authReducer,
+        comment: commentReducer,
+        post: postReducer,
+        message: messageReducer,
+        bookmark: bookmarkReducer,
+    },
 });
 // auth: authReducer
-const rootReducer = combineReducers({ auth: authReducer, comment: commentReducer, post: postReducer, message: messageReducer });
+const rootReducer = combineReducers({
+    auth: authReducer,
+    comment: commentReducer,
+    post: postReducer,
+    message: messageReducer,
+    bookmark: bookmarkReducer,
+});
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
     reducer: persistedReducer,

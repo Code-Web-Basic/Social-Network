@@ -11,5 +11,5 @@ export const router = {
     register: '/register',
     chatdetail: '/message/:id',
     roomcall: '/roomcall/:id',
-    roomvoice: '/roomvoice/:id'
+    roomvoice: '/roomvoice/:id',
 };
