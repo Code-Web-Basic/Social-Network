@@ -3,7 +3,7 @@ const { getDB } = require("../config/mongodb");
 const { ObjectId } = require("mongodb");
 const bcryptjs = require("bcryptjs");
 const { cloneDeep } = require("lodash");
-const { follow } = require("./follow.model");
+const follow = require("./follow.model");
 
 const userCollectionName = "Users";
 
@@ -84,6 +84,11 @@ const signUp = async (data) => {
     const result = await getDB()
       .collection(userCollectionName)
       .insertOne(insertValue);
+    await follow.follow({
+      targetId: result.insertedId.toString(),
+      sourceId: result.insertedId.toString(),
+      createdAt: Date.now().toString(),
+    });
     //find and return added data
     const GetNewUser = await findOneById(result.insertedId.toString());
     return GetNewUser;
