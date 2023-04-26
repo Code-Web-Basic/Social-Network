@@ -2,12 +2,15 @@ import { useRef, useState } from 'react';
 // mui ui
 import { Avatar, Box, Button, IconButton, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 //icon
-import { CaretDown, CaretUp, DotsThree, ThumbsDown, ThumbsUp } from 'phosphor-react';
+import { CaretDown, CaretUp, DotsThree, ThumbsUp } from 'phosphor-react';
 //components
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import { calculateTimePassed } from '~/utils/utils';
 import NewReplyComment from './NewReplyComment';
 import ReplyCommentPost from './ReplyCommentPost';
+import { useDispatch, useSelector } from 'react-redux';
+import * as commentApi from '~/api/CommentApi/CommentApi';
+import { decreaseReactionComment, increaseReactionComment } from '~/features/comment/commentSlice';
 
 const MENU_REPORT = [
     {
@@ -18,8 +21,10 @@ const MENU_REPORT = [
 ];
 function CommentItemPost({ data, replyId }) {
     const theme = useTheme();
+    const dispatch = useDispatch();
+    const currentUser = useSelector((state) => state.auth.currentUser.data);
     const likeRef = useRef(null);
-    const unLikeRef = useRef(null);
+    const [likeComment, setLikeComment] = useState(data?.reaction.some((i) => i === currentUser?._id));
     const [arrowUp, setArrowUp] = useState(false);
     const [showReplyComment, setShowReplyComment] = useState(false);
 
@@ -32,13 +37,16 @@ function CommentItemPost({ data, replyId }) {
         arrow = <CaretUp size={15} />;
     }
 
-    const likeComment = () => {
-        // if(data.true){
-
-        // }
-        return;
-    };
-    const unlikeComment = () => {
+    const clickLikeComment = async () => {
+        if (likeComment === true) {
+            await commentApi.likeComment({ id: data?._id });
+            dispatch(decreaseReactionComment({ idComment: data?._id, idUser: currentUser?._id }));
+            setLikeComment(false);
+        } else {
+            await commentApi.likeComment({ id: currentUser?._id });
+            dispatch(increaseReactionComment({ idComment: data?._id, idUser: currentUser?._id }));
+            setLikeComment(true);
+        }
         return;
     };
 
@@ -69,8 +77,13 @@ function CommentItemPost({ data, replyId }) {
                     <Stack direction={'row'} alignItems="center" spacing={2}>
                         <Box sx={{ display: 'flex', alignItems: 'center', padding: '5px', gap: '5px' }}>
                             <Tooltip title="Like">
-                                <IconButton size="small" onClick={likeComment}>
-                                    <ThumbsUp size={15} ref={likeRef} />
+                                <IconButton size="small" onClick={clickLikeComment}>
+                                    <ThumbsUp
+                                        size={15}
+                                        color={likeComment ? 'red' : theme.palette.grey[800]}
+                                        weight={likeComment ? 'fill' : 'regular'}
+                                        ref={likeRef}
+                                    />
                                 </IconButton>
                             </Tooltip>
                             {/* number like */}
@@ -78,20 +91,20 @@ function CommentItemPost({ data, replyId }) {
                                 {data?.reaction?.length}
                             </Typography>
                         </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                             <Tooltip title="UnLike">
                                 <IconButton size="small" onClick={unlikeComment}>
                                     <ThumbsDown size={15} ref={unLikeRef} />
                                 </IconButton>
-                            </Tooltip>
-                            {/* number unlike */}
-                            <Typography variant="body2" fontWeight={600}>
+                            </Tooltip> */}
+                        {/* number unlike */}
+                        {/* <Typography variant="body2" fontWeight={600}>
                                 5
                             </Typography>
-                        </Box>
+                        </Box> */}
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                             <MenuModal data={MENU_REPORT}>
-                                <IconButton size="small" onClick={unlikeComment}>
+                                <IconButton size="small">
                                     <DotsThree size={15} />
                                 </IconButton>
                             </MenuModal>

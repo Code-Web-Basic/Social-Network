@@ -36,17 +36,17 @@ const setUpInterceptor = (store) => {
         if (user?.data?.accessToken) {
             const decodedToken = jwtDecode(user?.data?.accessToken);
             if (decodedToken.exp < date.getTime() / 1000) {
-                const access_token = await refreshAccessToken();
-                console.log('refetch token before', access_token);
-                if (access_token) {
-                    const refreshUser = {
-                        data: { ...user?.data, accessToken: access_token },
-                        status: 'true',
-                        message: 'successfully',
-                    };
-                    store.dispatch(refetchToken(refreshUser));
-                    // config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
-                }
+                // const access_token = await refreshAccessToken();
+                console.log('refetch token before');
+                // if (access_token) {
+                //     const refreshUser = {
+                //         data: { ...user?.data, accessToken: access_token },
+                //         status: 'true',
+                //         message: 'successfully',
+                //     };
+                //     store.dispatch(refetchToken(refreshUser));
+                //     // config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
+                // }
                 // console.log('call refetch user', refreshUser, user);
                 // return config;
             }
