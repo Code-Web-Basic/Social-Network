@@ -136,6 +136,15 @@ const explore = async () => {
       .aggregate([
         { $sample: { size: 20 } },
         { $addFields: { reactionCount: { $size: "$reaction" } } },
+        { $addFields: { _ownerId: { $toObjectId: "$ownerId" } } },
+        {
+          $lookup: {
+            from: "Users",
+            localField: "_ownerId",
+            foreignField: "_id",
+            as: "User",
+          },
+        },
         // { $group: { _id: "$_id" } }
       ])
       .toArray();
