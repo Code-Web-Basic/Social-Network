@@ -14,7 +14,7 @@ const postCollectionSchema = Joi.object({
   isVideo: Joi.boolean().required(),
   reaction: Joi.array().items(Joi.string()).default([]),
   commentCount: Joi.number().default(0),
-  createdAt: Joi.date().timestamp().default(Date.now()),
+  createdAt: Joi.string().default(""),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
 const validateSchema = async (data) => {
@@ -134,8 +134,17 @@ const explore = async () => {
     const result = await getDB()
       .collection(postCollectionName)
       .aggregate([
-        { $sample: { size: 5 } },
+        { $sample: { size: 20 } },
         { $addFields: { reactionCount: { $size: "$reaction" } } },
+        { $addFields: { _ownerId: { $toObjectId: "$ownerId" } } },
+        {
+          $lookup: {
+            from: "Users",
+            localField: "_ownerId",
+            foreignField: "_id",
+            as: "User",
+          },
+        },
         // { $group: { _id: "$_id" } }
       ])
       .toArray();

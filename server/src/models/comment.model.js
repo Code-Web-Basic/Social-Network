@@ -13,7 +13,7 @@ const commentCollectionSchema = Joi.object({
   replyId: Joi.string().default(null),
   reaction: Joi.array().items(Joi.string()).default([]),
   replyCount: Joi.number().default(0),
-  createdAt: Joi.date().timestamp().default(Date.now()),
+  createdAt: Joi.string().default(""),
   updatedAt: Joi.date().timestamp().default(Date.now()),
 });
 const validateSchema = async (data) => {
@@ -151,8 +151,32 @@ const reaction = async (id, userId) => {
   try {
     await getDB()
       .collection(commentCollectionName)
-      .findOneAndUpdate({ _id: id }, { $push: { reaction: userId } });
+      .findOneAndUpdate({ _id: ObjectId(id) }, { $push: { reaction: userId } });
     return await findOneById(id);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+const showReaction = async (id) => {
+  try {
+    const result = await getDB()
+      .collection(commentCollectionName)
+      .aggregate([
+        { $match: { _id: ObjectId(id) } },
+        { $unwind: "$reaction" },
+        { $addFields: { _reaction: { $toObjectId: "$reaction" } } },
+        {
+          $lookup: {
+            from: "Users",
+            localField: "_reaction",
+            foreignField: "_id",
+            as: "User",
+          },
+        },
+        { $group: { _id: "$_id", User: { $push: "$User" } } },
+      ])
+      .toArray();
+    return result;
   } catch (error) {
     throw new Error(error);
   }
@@ -165,4 +189,5 @@ module.exports = {
   showCommentReply,
   deleteComment,
   reaction,
+  showReaction,
 };

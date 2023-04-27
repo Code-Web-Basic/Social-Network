@@ -102,7 +102,12 @@ function AccountItem({ currentUser }) {
 
     return (
         <Stack direction="row" alignItems="center" justifyContent="space-between" p={1}>
-            <Stack direction="row" spacing={2} component={Link} to={`${configRouter.router.profile}`}>
+            <Stack
+                direction="row"
+                spacing={2}
+                component={Link}
+                to={`${configRouter.router.profile.slice(0, -3) + currentUser?._id}`}
+            >
                 <Avatar src={currentUser?.avatar ? `${currentUser?.avatar?.data}` : ''} alt="user" />
                 <Stack direction="column">
                     <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>

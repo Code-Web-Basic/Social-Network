@@ -17,4 +17,7 @@ router
   .route("/showCommentReply/:id")
   .get(verifyToken, commentController.showCommentReply);
 router.route("/reaction/:id").put(verifyToken, commentController.reaction);
+router
+  .route("/showReaction/:id")
+  .get(verifyToken, commentController.showReaction);
 module.exports = router;

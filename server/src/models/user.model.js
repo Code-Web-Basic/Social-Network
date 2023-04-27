@@ -3,7 +3,7 @@ const { getDB } = require("../config/mongodb");
 const { ObjectId } = require("mongodb");
 const bcryptjs = require("bcryptjs");
 const { cloneDeep } = require("lodash");
-const { follow } = require("./follow.model");
+const follow = require("./follow.model");
 
 const userCollectionName = "Users";
 
@@ -11,7 +11,7 @@ const userCollectionSchema = Joi.object({
   Name: Joi.string().max(50).default(null),
   userName: Joi.string().default(null),
   password: Joi.string().min(5).max(30).trim().default(null),
-  createdAt: Joi.date().default(Date.now()),
+  createdAt: Joi.string().default(""),
   updatedAt: Joi.date().default(null),
   email: Joi.string().required().email(),
   mobile: Joi.string().default(null),
@@ -84,6 +84,11 @@ const signUp = async (data) => {
     const result = await getDB()
       .collection(userCollectionName)
       .insertOne(insertValue);
+    await follow.follow({
+      targetId: result.insertedId.toString(),
+      sourceId: result.insertedId.toString(),
+      createdAt: Date.now().toString(),
+    });
     //find and return added data
     const GetNewUser = await findOneById(result.insertedId.toString());
     return GetNewUser;

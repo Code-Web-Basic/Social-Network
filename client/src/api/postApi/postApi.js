@@ -14,11 +14,8 @@ export const getNewFeed = async (params) => {
 };
 export const createPostImages = async (params) => {
     try {
-        const res = await httpRequest.post('post/uploadImage', {
-            caption: '',
-            ownerId: '',
-            isVideo: true,
-            array: [],
+        const res = await httpRequest.post('post/uploadImage', params.data, {
+            'Content-Type': 'multipart/form-data',
         });
         return res;
     } catch (error) {
@@ -27,11 +24,8 @@ export const createPostImages = async (params) => {
 };
 export const createPostVideo = async (params) => {
     try {
-        const res = await httpRequest.post('post/uploadImage', {
-            caption: '',
-            ownerId: '',
-            isVideo: true,
-            file: '',
+        const res = await httpRequest.post('post/uploadImage', params.data, {
+            'Content-Type': 'multipart/form-data',
         });
         return res;
     } catch (error) {
