@@ -56,7 +56,7 @@ const showReactionOfPost = async (req, res) => {
 
 const explore = async (req, res) => {
   try {
-    const result = await postService.explore();
+    const result = await postService.explore(req.user.sub, req.query.paging);
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
