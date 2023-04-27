@@ -7,10 +7,15 @@ export const signUpPassWord = createAsyncThunk('auth/signUpPassWord', async (par
     const res = await authApi.registerPassword(data);
     return res;
 });
-export const signInPassWord = createAsyncThunk('auth/signInPassWord', async (params, thunkAPI) => {
+export const signInPassWord = createAsyncThunk('auth/signInPassWord', async (params, { rejectWithValue }) => {
     const data = params.data;
-    const res = await authApi.loginPass({ data });
-    return res;
+    try {
+        const res = await authApi.loginPass({ data });
+        return res;
+    } catch (error) {
+        return rejectWithValue(error.response.data.result);
+    }
+    // return res;
 });
 export const signInGoogle = createAsyncThunk('auth/signInGoogle', async (params, thunkAPI) => {
     const res = await authApi.getUserInfo();
@@ -35,6 +40,7 @@ export const authSlice = createSlice({
         loading: false,
         error: '',
         typeLogin: '',
+        isError: false,
     },
     reducers: {
         refetchToken: (state, action) => {
@@ -54,10 +60,10 @@ export const authSlice = createSlice({
         });
         builder.addCase(signInPassWord.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.error;
+            state.error = action.payload.msg;
+            state.isError = true;
         });
         builder.addCase(signInPassWord.fulfilled, (state, action) => {
-            console.log(action.payload)
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'password';
@@ -118,7 +124,7 @@ export const authSlice = createSlice({
             state.error = action.error;
         });
         builder.addCase(updateUser.fulfilled, (state, action) => {
-            action.payload.data.accessToken = state.currentUser.data.accessToken
+            action.payload.data.accessToken = state.currentUser.data.accessToken;
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'password';

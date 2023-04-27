@@ -10,7 +10,6 @@ const instance = axios.create({
 
 export const get = async (path, options = {}) => {
     const response = await instance.get(path, options);
-
     return response.data;
 };
 

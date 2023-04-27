@@ -51,3 +51,12 @@ export const deleteComment = async (params) => {
         console.log(error);
     }
 };
+
+export const likeComment = async (params) => {
+    try {
+        const res = await httpRequest.put(`/comment/reaction/${params.id}`);
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};

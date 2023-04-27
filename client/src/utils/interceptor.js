@@ -36,17 +36,17 @@ const setUpInterceptor = (store) => {
         if (user?.data?.accessToken) {
             const decodedToken = jwtDecode(user?.data?.accessToken);
             if (decodedToken.exp < date.getTime() / 1000) {
-                const access_token = await refreshAccessToken();
-                console.log('refetch token before', access_token);
-                if (access_token) {
-                    const refreshUser = {
-                        data: { ...user?.data, accessToken: access_token },
-                        status: 'true',
-                        message: 'successfully',
-                    };
-                    store.dispatch(refetchToken(refreshUser));
-                    // config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
-                }
+                // const access_token = await refreshAccessToken();
+                console.log('refetch token before');
+                // if (access_token) {
+                //     const refreshUser = {
+                //         data: { ...user?.data, accessToken: access_token },
+                //         status: 'true',
+                //         message: 'successfully',
+                //     };
+                //     store.dispatch(refetchToken(refreshUser));
+                //     // config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
+                // }
                 // console.log('call refetch user', refreshUser, user);
                 // return config;
             }
@@ -69,13 +69,16 @@ const setUpInterceptor = (store) => {
             if (
                 (error?.response?.status === 403 &&
                     !originalRequest?._retry &&
-                    !error.request.responseURL.includes('auth/refresh')) ||
-                (error?.response?.status === 401 && !error.request.responseURL.includes('auth/refresh'))
+                    !error.request.responseURL.includes('auth/refresh') &&
+                    !error.request.responseURL.includes('auth/login')) ||
+                (error?.response?.status === 401 &&
+                    !error.request.responseURL.includes('auth/refresh') &&
+                    !error.request.responseURL.includes('auth/login'))
             ) {
                 originalRequest._retry = true;
                 const access_token = await refreshAccessToken();
 
-                console.log('refetch token after', access_token);
+                console.log('access token after', access_token);
                 if (access_token) {
                     axios.defaults.headers.common['token'] = `Bearer ${access_token}`;
                     const refreshUser = {
@@ -91,12 +94,13 @@ const setUpInterceptor = (store) => {
                 (error?.response?.status === 403 && error.request.responseURL.includes('auth/refresh')) ||
                 (error?.response?.status === 401 && error.request.responseURL.includes('auth/refresh'))
             ) {
+                console.log(error.request.responseURL.includes('auth/refresh'));
                 localStorage.removeItem('persist:root');
                 store.dispatch(resetStoreAuth());
                 console.log('refetch token het han');
                 // return ;
             }
-            return error;
+            return Promise.reject(error);
         },
     );
 };

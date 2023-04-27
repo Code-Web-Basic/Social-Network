@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
@@ -31,10 +31,16 @@ function FollowingUser() {
         ));
     };
     return (
-        <Stack direction={'row'} spacing={2} width="100%" alignItems="center">
-            <Swiper className="mySwiper" slidesPerView={5} style={{ justifyContent: 'start', width: '100%' }}>
-                {renderItemFollowing()}
-            </Swiper>
+        <Stack direction={'row'} spacing={2} width="100%" alignItems="center" justifyContent="center">
+            {dataCurrent.length > 0 ? (
+                <Swiper className="mySwiper" slidesPerView={5} style={{ justifyContent: 'start', width: '100%' }}>
+                    {renderItemFollowing()}
+                </Swiper>
+            ) : (
+                <Typography variant="h6" fontSize="1.2rem">
+                    No one is following
+                </Typography>
+            )}
         </Stack>
     );
 }

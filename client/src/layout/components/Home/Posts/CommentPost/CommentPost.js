@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 
 // mui ui
-import { Avatar, Box, Grid, Modal, Stack, styled, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Modal, Stack, styled, Typography, useTheme } from '@mui/material';
 //icon
 import { BookmarkSimple, DotsThreeCircle, Heart, PaperPlaneTilt } from 'phosphor-react';
 //components
@@ -104,16 +104,6 @@ function CommentPost({
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    {/* <Stack
-                            sx={style}
-                            position="relative"
-                            direction="row"
-                            maxHeight="calc(100vh - 100px)"
-                            minHeight="calc(100vh - 200px)"
-                            maxWidth="calc(100% - 100px)"
-                            minWidth="calc(100% - 200px)"
-                            overflow="hidden"
-                        ></Stack> */}
                     <Box sx={style}>
                         <Grid2
                             container
