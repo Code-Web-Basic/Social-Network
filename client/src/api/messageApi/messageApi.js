@@ -1,7 +1,7 @@
 import * as httpRequest from '~/utils/httpRequest';
-export const getShowMessage = async (idfriend) => {
+export const getShowMessage = async (idfriend, paging) => {
     try {
-        const res = await httpRequest.get(`/message/showMessage/${idfriend}`);
+        const res = await httpRequest.get(`/message/showMessage/${idfriend}?paging=${paging}`);
         //console.log(res);
         return res?.result;
     } catch (error) {
@@ -20,9 +20,11 @@ export const getShowChats = async () => {
 
 export const postSendMessage = async (data) => {
     try {
-        const res = await httpRequest.post(`message/sendMessage`, data, {
-            'Content-Type': 'multipart/form-data',
-        });
+        const res = await httpRequest.post(`message/sendMessage`, data,
+            {
+                'Content-Type': 'multipart/form-data',
+            }
+        );
 
         return res?.result;
     } catch (error) {

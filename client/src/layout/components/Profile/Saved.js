@@ -22,13 +22,13 @@ function Saved() {
     const handleClose = () => setOpen(false);
     const theme = useTheme();
     // const currentUser = useSelector((state) => state.auth.currentUser.data);
-    const [post, setPost] = useState([])
-    const getBookMarks = async () => {
+    const [bookMarks, getBookMarks] = useState([])
+    const getBookMark = async () => {
         const res = await bookmarksApi.getBookMarks()
-        setPost(res)
+        getBookMarks(res)
     }
     useEffect(() => {
-        getBookMarks()
+        getBookMark()
     }, [])
     const renderCollections = () => {
         return (
@@ -45,20 +45,20 @@ function Saved() {
             >
                 <Stack direction='column' spacing={2}>
                     <Stack direction="column">
-                        <input placeholder="Bộ sưu tập mới" ></input>
+                        <input placeholder="New collection" ></input>
                     </Stack>
                 </Stack>
                 <Stack direction='column' alignItems="center" justifyContent="center">
-                    <Button style={{ color: 'black' }}>Tiếp</Button>
+                    <Button style={{ color: 'black' }}>Next</Button>
                 </Stack>
             </Stack>
         );
     };
     return (<div>
-        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <div>Chỉ mình bạn có thể xem mục mình đã lưu</div>
+        {/* <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <div>Only you can see your saved items</div>
             <div>
-                <Button onClick={handleOpen}><p style={{ fontSize: '8px' }}>Bộ sưu tập mới</p></Button>
+                <Button onClick={handleOpen}><p style={{ fontSize: '8px' }}>New collection</p></Button>
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -77,7 +77,7 @@ function Saved() {
                                 borderBottom='1px solid rgb(219, 219, 219)'
                             >
                                 <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
-                                    <h3>Thêm bộ sưu tập mới</h3>
+                                    <h3>New collection</h3>
                                 </Typography>
                                 <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleClose}>
                                     <X size={20} />
@@ -88,8 +88,8 @@ function Saved() {
                     </Box>
                 </Modal>
             </div>
-        </div>
-        <div>
+        </div> */}
+        {/* <div>
             <ImageList sx={{ width: '100%', overflow: 'hidden' }} cols={3} rowHeight={250}>
                 {post.map((item) => (
                     <ImageListItem key={item.img} className='post' sx={{ border: '1px solid black', width: '100%', height: '100%', overflow: 'hidden' }}>
@@ -105,6 +105,9 @@ function Saved() {
                 ))
                 }
             </ImageList >
+        </div> */}
+        <div>
+            saved
         </div>
     </div>);
 }

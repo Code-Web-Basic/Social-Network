@@ -1,7 +1,15 @@
 import Grid from '@mui/material/Grid';
 import ListUserInbox from './ListUserInbox/ListUserInbox';
 import ChatBox from './ChatBox/ChatBox';
+import io from 'socket.io-client';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+const socket = io("http://localhost:3240");
 function Message() {
+    const currentUser = useSelector((state) => state.auth.currentUser)
+    useEffect(() => {
+        socket.emit('add-user', currentUser?.data?._id);
+    }, [currentUser]);
     return (
         <Grid container height='100vh' padding='20px 0px'>
             <Grid item xs={1.5}></Grid>

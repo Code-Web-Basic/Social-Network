@@ -8,7 +8,8 @@ import * as configRouter from '~/config/config';
 import { logout } from '~/features/auth/authSlice';
 import { clearMessage } from '~/features/message/messageSlice';
 // components
-
+import io from 'socket.io-client';
+const socket = io("http://localhost:3240");
 const style = {
     position: 'absolute',
     top: '50%',
@@ -28,7 +29,8 @@ export function MenuModalUser({ children }) {
     const handleClose = () => setOpen(false);
     const logoutAccount = async () => {
         console.log('call');
-        await dispatch(clearMessage());
+        socket.disconnect()
+        await dispatch(clearMessage())
         await dispatch(logout());
     };
     return (
