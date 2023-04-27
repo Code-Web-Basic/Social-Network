@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import ScrollPost from '~/layout/components/Home/Posts/ScrollPost';
 import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
 import { getFirstPost } from '~/features/post/postSlice';
+import io from 'socket.io-client';
+const socket = io("http://localhost:3240");
 function Home() {
     const currentUser = useSelector((state) => state.auth.currentUser);
     const dispatch = useDispatch();
@@ -15,7 +17,9 @@ function Home() {
         dispatch(getFirstPost(1));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
+    useEffect(() => {
+        socket.emit('add-user', currentUser?.data?._id);
+    }, [currentUser]);
     return (
         <>
             <Grid container>

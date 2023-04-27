@@ -198,7 +198,7 @@ function Profile() {
                         </Stack>
                     </Link>
                     {user?._id === currentUser?._id ? <Stack direction="coloumn" alignItems="center" justifyContent="center">
-                        <button style={{ cursor: 'pointer', fontSize: '15px', fontWeight: '600' }} onClick={() => handleUnFollowing(e?.User[0]?._id)}>Xóa</button>
+                        <button style={{ cursor: 'pointer', fontSize: '15px', fontWeight: '600' }} onClick={() => handleUnFollowing(e?.User[0]?._id)}>Remove</button>
                     </Stack> : ''}
                 </Stack>))
             }</>
@@ -211,138 +211,139 @@ function Profile() {
         console.log(formData.get('file'))
         await dispatch(updateUser(formData))
     }
-    return (<Grid container height='100vh'>
-        <Grid item xs={1.5}></Grid>
-        <Grid item xs={9} borderRadius='5px' boxShadow='rgba(0, 0, 0, 0.16) 0px 1px 4px' padding='20px 10px'>
-            <div style={{ borderBottom: '1px solid rgb(219, 219, 219)', width: '100%', height: '150px', paddingBottom: '44px', display: 'flex' }}>
+    return (
+        <Grid container height='100vh' sx={{ overflow: 'auto' }}>
+            <Grid item xs={1.5}></Grid>
+            <Grid item xs={9} borderRadius='5px' boxShadow='rgba(0, 0, 0, 0.16) 0px 1px 4px' padding='20px 10px' sx={{ height: '100%' }}>
+                <div style={{ borderBottom: '1px solid rgb(219, 219, 219)', width: '100%', height: '150px', paddingBottom: '44px', display: 'flex' }}>
 
-                {user?._id === currentUser?._id ?
-                    <div style={{ width: '30%', height: '100%', display: 'flex', justifyContent: 'center' }}>
-                        <input
-                            type="file"
-                            id="file"
-                            style={{ display: "none" }}
-                            onChange={(e) => {
-                                handleChangeAvatar(e)
-                            }}
-                        />
-                        <label htmlFor="file" >
-                            <div style={{ width: '30%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}>
-                                <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
+                    {user?._id === currentUser?._id ?
+                        <div style={{ width: '30%', height: '100%', display: 'flex', justifyContent: 'center' }}>
+                            <input
+                                type="file"
+                                id="file"
+                                style={{ display: "none" }}
+                                onChange={(e) => {
+                                    handleChangeAvatar(e)
+                                }}
+                            />
+                            <label htmlFor="file" >
+                                <div style={{ width: '30%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}>
+                                    <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
+                                </div>
+                            </label>
+                        </div>
+                        :
+                        <div style={{ width: '30%', height: '100%', display: 'flex', objectFit: 'cover', justifyContent: 'center' }}>
+                            <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
+                        </div>}
+                    <div style={{ width: '70%', height: '100%' }}>
+                        <div style={{ display: 'flex', padding: '5px' }}>
+                            <div>
+                                <h4>{user?._id === currentUser?._id ? currentUser?.userName : user?.userName}</h4>
                             </div>
-                        </label>
-                    </div>
-                    :
-                    <div style={{ width: '30%', height: '100%', display: 'flex', objectFit: 'cover', justifyContent: 'center' }}>
-                        <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
-                    </div>}
-                <div style={{ width: '70%', height: '100%' }}>
-                    <div style={{ display: 'flex', padding: '5px' }}>
-                        <div>
-                            <h4>{user?._id === currentUser?._id ? currentUser?.userName : user?.userName}</h4>
-                        </div>
-                        <div style={{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            {user?._id !== currentUser?._id ?
-                                <button style={{ padding: '8px 10px', backgroundColor: 'rgb(0, 149, 246)', color: 'white', cursor: 'pointer', fontWeight: '600', borderRadius: '5px' }} onClick={handleEdit}>Nhắn tin</button> :
-                                ''}
-                        </div>
-                        {
-                            user?._id !== currentUser?._id ? <div style={{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                {follow ? <button onClick={handleUnFollow}><b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>UnFollow</b></button> : <button onClick={handleFollow}><b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>Follow</b></button>}
-                            </div> : ''
-                        }
+                            <div style={{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                {user?._id !== currentUser?._id ?
+                                    <button style={{ padding: '8px 10px', backgroundColor: 'rgb(0, 149, 246)', color: 'white', cursor: 'pointer', fontWeight: '600', borderRadius: '5px' }} onClick={handleEdit}>Message</button> :
+                                    ''}
+                            </div>
+                            {
+                                user?._id !== currentUser?._id ? <div style={{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    {follow ? <button onClick={handleUnFollow}><b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>UnFollow</b></button> : <button onClick={handleFollow}><b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>Follow</b></button>}
+                                </div> : ''
+                            }
 
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px', position: 'relative' }}>
-                        <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                            <p ><b>{post?.length}</b> bài viết</p>
                         </div>
-                        <div style={{ cursor: 'pointer' }}>
-                            <button onClick={handleOpenFollowing} style={{ cursor: 'pointer', fontSize: '16px' }}><b>{following?.length}</b> người theo dõi</button>
-                            <Modal
-                                open={openfollowing}
-                                onClose={handleCloseFollowing}
-                                aria-labelledby="modal-modal-title"
-                                aria-describedby="modal-modal-description"
-                            >
-                                <Box sx={style} minWidth="400px" maxheight="400px" overflow="auto">
-                                    <Stack direction="column">
-                                        <Stack
-                                            direction="row"
-                                            width="100%"
-                                            alignItems="center"
-                                            justifyContent={'center'}
-                                            p={1}
-                                            position="relative"
-                                            borderBottom='1px solid rgb(219, 219, 219)'
-                                        >
-                                            <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
-                                                <h3>Người theo dõi</h3>
-                                            </Typography>
-                                            <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleCloseFollowing}>
-                                                <X size={20} />
-                                            </Box>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px', position: 'relative' }}>
+                            <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                                <p ><b>{post?.length}</b> Posts</p>
+                            </div>
+                            <div style={{ cursor: 'pointer' }}>
+                                <button onClick={handleOpenFollowing} style={{ cursor: 'pointer', fontSize: '16px' }}><b>{following?.length}</b> Followers</button>
+                                <Modal
+                                    open={openfollowing}
+                                    onClose={handleCloseFollowing}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={style} minWidth="400px" maxheight="400px" overflow="auto">
+                                        <Stack direction="column">
+                                            <Stack
+                                                direction="row"
+                                                width="100%"
+                                                alignItems="center"
+                                                justifyContent={'center'}
+                                                p={1}
+                                                position="relative"
+                                                borderBottom='1px solid rgb(219, 219, 219)'
+                                            >
+                                                <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
+                                                    <h3>Follower</h3>
+                                                </Typography>
+                                                <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleCloseFollowing}>
+                                                    <X size={20} />
+                                                </Box>
+                                            </Stack>
                                         </Stack>
-                                    </Stack>
-                                    {following.length === 0 ? <p>No following</p> : renderFollowing()}
-                                </Box>
-                            </Modal>
-                        </div>
-                        <div style={{ cursor: 'pointer' }}>
-                            <button onClick={handleOpenFollower} style={{ cursor: 'pointer', fontSize: '16px' }} >Đang theo dõi <b>{follower?.length}</b> người dùng</button>
-                            <Modal
-                                open={openfollower}
-                                onClose={handleCloseFollower}
-                                aria-labelledby="modal-modal-title"
-                                aria-describedby="modal-modal-description"
-                            >
-                                <Box sx={style} minWidth="400px" maxheight="400px" overflow="auto">
-                                    <Stack direction="column">
-                                        <Stack
-                                            direction="row"
-                                            width="100%"
-                                            alignItems="center"
-                                            justifyContent={'center'}
-                                            p={1}
-                                            position="relative"
-                                            borderBottom='1px solid rgb(219, 219, 219)'
-                                        >
-                                            <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
-                                                <h3>Người đang theo dõi</h3>
-                                            </Typography>
-                                            <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleCloseFollower}>
-                                                <X size={20} />
-                                            </Box>
+                                        {following.length === 0 ? <p style={{ fontSize: '15px' }}>No follower</p> : renderFollowing()}
+                                    </Box>
+                                </Modal>
+                            </div>
+                            <div style={{ cursor: 'pointer' }}>
+                                <button onClick={handleOpenFollower} style={{ cursor: 'pointer', fontSize: '16px' }} ><b>{follower?.length}</b> Following</button>
+                                <Modal
+                                    open={openfollower}
+                                    onClose={handleCloseFollower}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={style} minWidth="400px" maxheight="400px" overflow="auto">
+                                        <Stack direction="column">
+                                            <Stack
+                                                direction="row"
+                                                width="100%"
+                                                alignItems="center"
+                                                justifyContent={'center'}
+                                                p={1}
+                                                position="relative"
+                                                borderBottom='1px solid rgb(219, 219, 219)'
+                                            >
+                                                <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
+                                                    <h3>Following</h3>
+                                                </Typography>
+                                                <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleCloseFollower}>
+                                                    <X size={20} />
+                                                </Box>
+                                            </Stack>
                                         </Stack>
-                                    </Stack>
-                                    {follower.length === 0 ? <p>No follower</p> : renderFollower()}
-                                </Box>
-                            </Modal>
+                                        {follower.length === 0 ? <p style={{ fontSize: '15px' }}>No following</p> : renderFollower()}
+                                    </Box>
+                                </Modal>
+                            </div>
                         </div>
-                    </div>
-                    <div style={{ padding: '5px' }}>
-                        <p>...</p>
+                        <div style={{ padding: '5px' }}>
+                            <p>...</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div style={{ width: '100%', height: '78px' }}>
-                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
-                    <Box sx={{ borderColor: 'divider' }}>
-                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                            <Tab icon={<GridFour />} iconPosition="start" label="BÀI VIẾT" {...a11yProps(0)} />
-                            {user?._id === currentUser?._id ? <Tab icon={<BookmarkSimple />} iconPosition="start" label="ĐÃ LƯU" {...a11yProps(1)} /> : ''}
-                        </Tabs>
+                <div style={{ width: '100%', height: '78px' }}>
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
+                        <Box sx={{ borderColor: 'divider' }}>
+                            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                                <Tab icon={<GridFour />} iconPosition="start" label="POSTS" {...a11yProps(0)} />
+                                {user?._id === currentUser?._id ? <Tab icon={<BookmarkSimple />} iconPosition="start" label="SAVED" {...a11yProps(1)} /> : ''}
+                            </Tabs>
+                        </Box>
                     </Box>
-                </Box>
-            </div>
-            <TabPanel value={value} index={0}>
-                <Post post={post} />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <Saved />
-            </TabPanel>
-        </Grid>
-        <Grid item xs={1.5}></Grid>
-    </Grid>);
+                </div>
+                <TabPanel value={value} index={0}>
+                    <Post post={post} />
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <Saved />
+                </TabPanel>
+            </Grid>
+            <Grid item xs={1.5}></Grid>
+        </Grid>);
 }
 export default Profile;

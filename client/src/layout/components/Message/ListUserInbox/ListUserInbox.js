@@ -9,7 +9,8 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import * as userApi from '~/api/userApi/userApi'
 import { useState } from 'react';
-
+import io from 'socket.io-client';
+const socket = io("http://localhost:3240");
 const style = {
     position: 'absolute',
     top: '40%',
@@ -27,6 +28,7 @@ function ListUserInbox() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const currentUser = useSelector((state) => state.auth.currentUser);
+    const loading = useSelector((state) => state.message.loading)
     const ListUserChat = useSelector((state) => state.message.data);
     const [listUser, setListUser] = useState([])
     const renderItemSuggested = () => {
@@ -75,6 +77,18 @@ function ListUserInbox() {
         setListUser(res)
         console.log(res)
     }
+    const [usersOnline, setUsersOnline] = useState([])
+    useEffect(() => {
+        socket.on('get-online-user', data => {
+            setUsersOnline(data)
+        })
+    }, [socket])
+    const checkUserOnline = (id) => {
+        if (usersOnline.find(u => u?.userId === id)) {
+            return true;
+        }
+        return false;
+    }
     return (
         <Stack direction='column' height='100%' width='100%'>
             {/* header */}
@@ -99,7 +113,7 @@ function ListUserInbox() {
                                 borderBottom='1px solid rgb(219, 219, 219)'
                             >
                                 <Typography variant="body1 " fontWeight={5600} fontSize="0.8rem">
-                                    <h3>Tin nhắn mới</h3>
+                                    <h3>New Message</h3>
                                 </Typography>
                                 <Box sx={{ position: 'absolute', right: '10px' }} onClick={handleClose}>
                                     <X size={20} />
@@ -112,9 +126,9 @@ function ListUserInbox() {
                                 p={1}
                             >
                                 <Typography variant="body2" fontWeight="600" fontSize="0.8rem">
-                                    Tới:
+                                    To:
                                 </Typography>
-                                <input placeholder="Tìm kiếm..." onChange={e => handleFindUser(e)}></input>
+                                <input placeholder="Search..." onChange={e => handleFindUser(e)}></input>
                             </Stack>
                             <Stack direction="column" p="10px 0px" style={{ width: '100%', height: '300px', overflow: "auto" }}>
                                 {renderItemSuggested()}
@@ -135,7 +149,7 @@ function ListUserInbox() {
                 </Modal>
             </Stack>
             {/* list user chat */}
-            <Stack direction='column' height='calc(100% - 50px)' overflow='auto' sx={{
+            < Stack direction='column' height='calc(100% - 50px)' overflow='auto' sx={{
                 '&::-webkit-scrollbar': {
                     width: 5,
                     backgroundColor: 'transparent',
@@ -146,10 +160,10 @@ function ListUserInbox() {
                 },
             }}>
                 {ListUserChat?.map((e) => (
-                    <button key={e?._id[0]} style={{ cursor: 'pointer' }} ><Link to={`/message/${e?._id[0]}`}><ItemUserInbox user={e?.User} /></Link></button>
+                    <button key={e?._id[0]} style={{ cursor: 'pointer' }} ><Link to={`/message/${e?._id[0]}`}><ItemUserInbox user={e?.User} online={checkUserOnline(e?.User[0]?._id)} /></Link></button>
                 ))}
             </Stack>
-        </Stack>
+        </Stack >
     );
 }
 
