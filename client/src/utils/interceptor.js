@@ -69,13 +69,16 @@ const setUpInterceptor = (store) => {
             if (
                 (error?.response?.status === 403 &&
                     !originalRequest?._retry &&
-                    !error.request.responseURL.includes('auth/refresh')) ||
-                (error?.response?.status === 401 && !error.request.responseURL.includes('auth/refresh'))
+                    !error.request.responseURL.includes('auth/refresh') &&
+                    !error.request.responseURL.includes('auth/login')) ||
+                (error?.response?.status === 401 &&
+                    !error.request.responseURL.includes('auth/refresh') &&
+                    !error.request.responseURL.includes('auth/login'))
             ) {
                 originalRequest._retry = true;
                 const access_token = await refreshAccessToken();
 
-                console.log('refetch token after', access_token);
+                console.log('access token after', access_token);
                 if (access_token) {
                     axios.defaults.headers.common['token'] = `Bearer ${access_token}`;
                     const refreshUser = {
@@ -91,12 +94,13 @@ const setUpInterceptor = (store) => {
                 (error?.response?.status === 403 && error.request.responseURL.includes('auth/refresh')) ||
                 (error?.response?.status === 401 && error.request.responseURL.includes('auth/refresh'))
             ) {
+                console.log(error.request.responseURL.includes('auth/refresh'));
                 localStorage.removeItem('persist:root');
                 store.dispatch(resetStoreAuth());
                 console.log('refetch token het han');
                 // return ;
             }
-            return error;
+            return Promise.reject(error);
         },
     );
 };

@@ -8,7 +8,7 @@ export const loginPass = async (params) => {
         });
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const getUserInfo = async () => {
@@ -39,7 +39,7 @@ export const registerPassword = async (params) => {
             mobile: params.phone,
             authType: 'local',
         });
-        console.log(res)
+        console.log(res);
         return res;
     } catch (error) {
         console.log(error);

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // mui
 import { LoadingButton } from '@mui/lab';
 import {
+    Alert,
     Box,
     Button,
     FormControl,
@@ -10,6 +11,7 @@ import {
     InputAdornment,
     InputLabel,
     OutlinedInput,
+    Snackbar,
     Stack,
     styled,
     Switch,
@@ -77,11 +79,15 @@ function Login() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { currentUser, loading, error, typeLogin } = useSelector((state) => state.auth);
+    // data
+    const { currentUser, loading, error, typeLogin, isError } = useSelector((state) => state.auth);
+    // data
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    //
     const [showPassword, setShowPassword] = useState(false);
+    const [showMessage, setShowMessage] = useState(false);
+    const showMessageRef = useRef();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -91,10 +97,10 @@ function Login() {
 
     const handleClickGoogle = async () => {
         try {
-            await window.open('http://localhost:3240/v1/auth/google', '_self');
+            window.open('http://localhost:3240/v1/auth/google', '_self');
             await dispatch(signInGoogle());
         } catch (error) {
-            console.log('failed', error.message);
+            console.log('failed', error);
         }
     };
     const handleClickGithub = async () => {
@@ -118,6 +124,10 @@ function Login() {
         } catch (error) {
             console.log('failed', error.message);
         }
+        if (isError) {
+            handleShowMessage();
+            console.log(error);
+        }
     };
 
     useEffect(() => {
@@ -126,57 +136,204 @@ function Login() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser]);
-
+    const handleShowMessage = () => {
+        setShowMessage(true);
+        if (showMessageRef.current) {
+            clearTimeout(showMessageRef.current);
+        }
+        showMessageRef.current = setTimeout(() => {
+            setShowMessage(false);
+        }, 3000);
+    };
+    const handleCloseMessage = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setShowMessage(false);
+        if (showMessageRef.current) {
+            clearTimeout(showMessageRef.current);
+        }
+    };
     return (
-        <Grid container width="100%" height={'100vh'}>
-            <Grid item xs={6} height="100%" alignItems="center" justifyContent="center">
-                <Stack direction={'column'} p={2} height="100%" width="100%" spacing={2}>
-                    <Stack direction={'row'} alignItems="center" justifyContent={'space-between'}>
-                        <Box height={50} component={Link} to="/">
-                            <img
-                                src={images.logo}
-                                alt=""
-                                width={'100%'}
-                                height={'100%'}
-                                style={{ objectFit: 'cover' }}
-                            ></img>
-                        </Box>
-                        <Box display={'flex'} gap={'10px'}>
-                            <Typography variant="h4" fontSize="1rem">
-                                Don’t have an account?
+        <>
+            <Snackbar open={showMessage} onClose={handleShowMessage}>
+                <Alert onClose={handleCloseMessage} severity="error" sx={{ width: '100%' }}>
+                    {error}
+                </Alert>
+            </Snackbar>
+            <Grid container width="100%" height={'100vh'}>
+                <Grid item xs={6} height="100%" alignItems="center" justifyContent="center">
+                    <Stack direction={'column'} p={2} height="100%" width="100%" spacing={2}>
+                        <Stack direction={'row'} alignItems="center" justifyContent={'space-between'}>
+                            <Box height={50} component={Link} to="/">
+                                <img
+                                    src={images.logo}
+                                    alt=""
+                                    width={'100%'}
+                                    height={'100%'}
+                                    style={{ objectFit: 'cover' }}
+                                ></img>
+                            </Box>
+                            <Box display={'flex'} gap={'10px'}>
+                                <Typography variant="h4" fontSize="1rem">
+                                    Don’t have an account?
+                                </Typography>
+                                <Typography
+                                    fontSize="1rem"
+                                    variant="h4"
+                                    component={Link}
+                                    to={configRouter.register}
+                                    sx={{ color: theme.palette.primary.main }}
+                                >
+                                    Sign up!
+                                </Typography>
+                            </Box>
+                        </Stack>
+                        <Stack direction={'column'} alignItems="center" justifyContent={'center'} spacing={2} flex="1">
+                            {/* title */}
+                            <Typography variant="h4">Welcome Back</Typography>
+                            <Typography variant="h5" sx={{ fontSize: '1rem', fontWeight: 500 }}>
+                                Login into your account
                             </Typography>
-                            <Typography
-                                fontSize="1rem"
-                                variant="h4"
-                                component={Link}
-                                to={configRouter.register}
-                                sx={{ color: theme.palette.primary.main }}
+                            {/* button login */}
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: 2,
+                                    paddingTop: '30px',
+                                }}
                             >
-                                Sign up!
-                            </Typography>
-                        </Box>
-                    </Stack>
-                    <Stack direction={'column'} alignItems="center" justifyContent={'center'} spacing={2} flex="1">
-                        {/* title */}
-                        <Typography variant="h4">Welcome Back</Typography>
-                        <Typography variant="h5" sx={{ fontSize: '1rem', fontWeight: 500 }}>
-                            Login into your account
-                        </Typography>
-                        {/* button login */}
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                gap: 2,
-                                paddingTop: '30px',
-                            }}
-                        >
-                            <Button
+                                <Button
+                                    variant="outlined"
+                                    sx={{
+                                        height: 44,
+                                        width: 126,
+                                        borderRadius: 2,
+                                        color: theme.palette.text.secondary,
+                                        borderColor: theme.palette.text.secondary,
+                                        '&:hover': {
+                                            color: theme.palette.text.secondary,
+                                        },
+                                    }}
+                                    startIcon={<img src={images.googleIcon} alt="google"></img>}
+                                    onClick={handleClickGoogle}
+                                >
+                                    Google
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    sx={{
+                                        height: 44,
+                                        width: 126,
+                                        borderRadius: 2,
+                                        color: theme.palette.text.secondary,
+                                        borderColor: theme.palette.text.secondary,
+                                        '&:hover': {
+                                            color: theme.palette.text.secondary,
+                                        },
+                                    }}
+                                    startIcon={<GithubLogo size={20} />}
+                                    onClick={handleClickGithub}
+                                >
+                                    Github
+                                </Button>
+                            </Box>
+                            {/* div */}
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    padding: '20px 10px',
+                                    gap: '10px',
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        width: '130px',
+                                        height: '0.5px',
+                                        backgroundColor: theme.palette.text.disabled,
+                                        opacity: 0.5,
+                                    }}
+                                ></Box>
+                                <Typography variant="h6" fontSize={'1rem'}>
+                                    Or continue with
+                                </Typography>
+                                <Box
+                                    sx={{
+                                        width: '130px',
+                                        height: '0.5px',
+                                        backgroundColor: theme.palette.text.disabled,
+                                        opacity: 0.5,
+                                    }}
+                                ></Box>
+                            </Box>
+                            {/* input login */}
+                            <Stack direction={'column'} spacing={3} alignItems="center">
+                                <FormControl sx={{ m: 1, width: '400px' }} variant="outlined">
+                                    <InputLabel htmlFor="outlined-adornment-email">email</InputLabel>
+                                    <OutlinedInput
+                                        id="outlined-adornment-email"
+                                        type="email"
+                                        label="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </FormControl>
+                                <FormControl sx={{ m: 1, width: '400px' }} variant="outlined">
+                                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                                    <OutlinedInput
+                                        id="outlined-adornment-password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? (
+                                                        <Eye size={20} weight="light" />
+                                                    ) : (
+                                                        <EyeSlash size={20} weight="light" />
+                                                    )}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        label="Password"
+                                    />
+                                </FormControl>
+                            </Stack>
+                            {/* recover password */}
+                            <Stack
+                                direction={'row'}
+                                alignItems="center"
+                                justifyContent={'space-between'}
+                                padding="10px 0px"
+                                width={400}
+                            >
+                                <Stack direction={'row'} alignItems="center" spacing={2}>
+                                    <IOSSwitch />
+                                    <Typography variant="body1">Remember me</Typography>
+                                </Stack>
+                                <Stack direction={'row'} alignItems="center" fontSize="0.8rem">
+                                    Recover Password
+                                </Stack>
+                            </Stack>
+                            {/* button login */}
+                            <LoadingButton
+                                onClick={handleClickButtonSignIn}
+                                loading={loading}
+                                loadingPosition="center"
                                 variant="outlined"
                                 sx={{
-                                    height: 44,
-                                    width: 126,
+                                    height: 55,
+                                    width: 400,
                                     borderRadius: 2,
                                     color: theme.palette.text.secondary,
                                     borderColor: theme.palette.text.secondary,
@@ -184,134 +341,10 @@ function Login() {
                                         color: theme.palette.text.secondary,
                                     },
                                 }}
-                                startIcon={<img src={images.googleIcon} alt="google"></img>}
-                                onClick={handleClickGoogle}
                             >
-                                Google
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                sx={{
-                                    height: 44,
-                                    width: 126,
-                                    borderRadius: 2,
-                                    color: theme.palette.text.secondary,
-                                    borderColor: theme.palette.text.secondary,
-                                    '&:hover': {
-                                        color: theme.palette.text.secondary,
-                                    },
-                                }}
-                                startIcon={<GithubLogo size={20} />}
-                                onClick={handleClickGithub}
-                            >
-                                Github
-                            </Button>
-                        </Box>
-                        {/* div */}
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                padding: '20px 10px',
-                                gap: '10px',
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    width: '130px',
-                                    height: '0.5px',
-                                    backgroundColor: theme.palette.text.disabled,
-                                    opacity: 0.5,
-                                }}
-                            ></Box>
-                            <Typography variant="h6" fontSize={'1rem'}>
-                                Or continue with
-                            </Typography>
-                            <Box
-                                sx={{
-                                    width: '130px',
-                                    height: '0.5px',
-                                    backgroundColor: theme.palette.text.disabled,
-                                    opacity: 0.5,
-                                }}
-                            ></Box>
-                        </Box>
-                        {/* input login */}
-                        <Stack direction={'column'} spacing={3} alignItems="center">
-                            <FormControl sx={{ m: 1, width: '400px' }} variant="outlined">
-                                <InputLabel htmlFor="outlined-adornment-email">email</InputLabel>
-                                <OutlinedInput
-                                    id="outlined-adornment-email"
-                                    type="email"
-                                    label="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </FormControl>
-                            <FormControl sx={{ m: 1, width: '400px' }} variant="outlined">
-                                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                                <OutlinedInput
-                                    id="outlined-adornment-password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
-                                                edge="end"
-                                            >
-                                                {showPassword ? (
-                                                    <Eye size={20} weight="light" />
-                                                ) : (
-                                                    <EyeSlash size={20} weight="light" />
-                                                )}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                    label="Password"
-                                />
-                            </FormControl>
-                        </Stack>
-                        {/* recover password */}
-                        <Stack
-                            direction={'row'}
-                            alignItems="center"
-                            justifyContent={'space-between'}
-                            padding="10px 0px"
-                            width={400}
-                        >
-                            <Stack direction={'row'} alignItems="center" spacing={2}>
-                                <IOSSwitch />
-                                <Typography variant="body1">Remember me</Typography>
-                            </Stack>
-                            <Stack direction={'row'} alignItems="center" fontSize="0.8rem">
-                                Recover Password
-                            </Stack>
-                        </Stack>
-                        {/* button login */}
-                        <LoadingButton
-                            onClick={handleClickButtonSignIn}
-                            loading={loading}
-                            loadingPosition="center"
-                            variant="outlined"
-                            sx={{
-                                height: 55,
-                                width: 400,
-                                borderRadius: 2,
-                                color: theme.palette.text.secondary,
-                                borderColor: theme.palette.text.secondary,
-                                '&:hover': {
-                                    color: theme.palette.text.secondary,
-                                },
-                            }}
-                        >
-                            Log In
-                        </LoadingButton>
-                        {/* <Button
+                                Log In
+                            </LoadingButton>
+                            {/* <Button
                             variant="outlined"
                             sx={{
                                 height: 55,
@@ -327,41 +360,42 @@ function Login() {
                         >
                             Log In
                         </Button> */}
+                        </Stack>
                     </Stack>
-                </Stack>
-            </Grid>
-            <Grid item xs={6}>
-                <Stack
-                    direction={'column'}
-                    p={2}
-                    width="100%"
-                    height="100%"
-                    alignItems="center"
-                    justifyContent="center"
-                >
+                </Grid>
+                <Grid item xs={6}>
                     <Stack
-                        direction={'row'}
-                        alignItems="center"
-                        justifyContent={'center'}
-                        position="relative"
+                        direction={'column'}
+                        p={2}
                         width="100%"
                         height="100%"
+                        alignItems="center"
+                        justifyContent="center"
                     >
-                        <img
-                            src={images.loginBackground}
-                            alt="background"
-                            style={{
-                                position: 'absolute',
-                                height: '100%',
-                                width: '100%',
-                                objectFit: 'cover',
-                                transform: 'translateX(-10%)',
-                            }}
-                        />
+                        <Stack
+                            direction={'row'}
+                            alignItems="center"
+                            justifyContent={'center'}
+                            position="relative"
+                            width="100%"
+                            height="100%"
+                        >
+                            <img
+                                src={images.loginBackground}
+                                alt="background"
+                                style={{
+                                    position: 'absolute',
+                                    height: '100%',
+                                    width: '100%',
+                                    objectFit: 'cover',
+                                    transform: 'translateX(-10%)',
+                                }}
+                            />
+                        </Stack>
                     </Stack>
-                </Stack>
+                </Grid>
             </Grid>
-        </Grid>
+        </>
     );
 }
 
