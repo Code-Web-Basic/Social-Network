@@ -40,9 +40,40 @@ const bootServer = () => {
   );
   // use api
   app.use("/v1", ApiV1);
-  app.listen(env.APP_PORT, () =>
+  const server = app.listen(env.APP_PORT, () =>
     console.log(
       `Example app listening on port http://${env.APP_HOST}:${env.APP_PORT}`
     )
   );
+  const io = require("socket.io")(server, {
+    pingTimeout: 60000,
+    cors: {
+      origin: "http://localhost:3050",
+    },
+  });
+  let users = [];
+  const addUser = (userId, socketId) => {
+    !users.some((user) => user.userId == userId) &&
+      users.push({ userId, socketId });
+  };
+  const removeUser = (socketId) => {
+    users = users.filter((user) => user.socketId !== socketId);
+  };
+  io.on('connection', (socket) => {
+    console.log("connect")
+    socket.on('send_message', data => {
+      socket.broadcast.emit('receive_message', data)
+    });
+    socket.on("add-user", (userId) => {
+      if (userId) {
+        addUser(userId, socket.id);
+        socket.broadcast.emit("get-online-user", users);
+      }
+    });
+    socket.on("disconnecting", () => {
+      console.log("disconect")
+      removeUser(socket.id);
+      io.emit("get-online-user", users);
+    });
+  })
 };

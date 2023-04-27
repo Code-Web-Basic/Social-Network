@@ -4,10 +4,13 @@ import SuggestionsUserItem from '../Home/SuggestionsUser/SuggestionsUserItem';
 import * as userApi from '~/api/userApi/userApi'
 import * as postApi from '~/api/postApi/postApi'
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import RenderComment from './RenderComment';
 
 function Notifications() {
     const theme = useTheme();
     const [notifys, setNotifys] = useState([])
+    const [post, setPost] = useState([])
     const getNotify = async () => {
         const res = await userApi.getNotify()
         console.log(res)
@@ -16,6 +19,27 @@ function Notifications() {
     useEffect(() => {
         getNotify()
     }, [])
+    const getPostById = async (id) => {
+        const res = await postApi.getPostById(id)
+        console.log(res)
+        setPost(res)
+    }
+    const renderFollow = (notify) => {
+        return (<div>
+            <p><Link to={`/profile/${notify?.User[0]?._id}`} style={{ fontWeight: '600' }}>{notify?.User[0]?.Name}</Link> Started following you</p>
+        </div>)
+    }
+    // const renderComment = (notify) => {
+    //     getPostById(notify?.type?.id)
+    //     return (
+    //         <div style={{ display: 'flex', alignItems: 'center' }} >
+    //             <p><Link to={`/profile/${notify?.User[0]?._id}`} style={{ fontWeight: '600' }}>{notify?.User[0]?.Name}</Link> commented on this post</p>
+    //             <div style={{ width: '30px', height: '50px', border: '1px solid black' }}>
+    //                 <img src={post?.source?.data} alt={post?.source?.filename} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    //             </div>
+    //         </div>
+    //     )
+    // }
     return (
         < Box
             sx={{
@@ -27,12 +51,13 @@ function Notifications() {
                 zIndex: 100,
                 height: '100vh',
                 width: '300px',
-                overflow: 'auto'
+                overflowX: 'hidden',
+                overflowY: 'auto'
             }
             }
         >
             <Stack>
-                <h3>Thông báo</h3>
+                <h3>Notifications</h3>
                 {
                     notifys.length !== 0 ? (notifys.map(notify => {
                         return (<div key={notify?._id}>
@@ -43,7 +68,8 @@ function Notifications() {
                                     <Avatar alt="Avatar" src={notify?.User[0]?.avatar?.data} />
                                 </div>
                                 <div style={{ fontSize: '14px', maxWidth: '200px' }}>
-                                    {notify?.type?.typeName === 'follow' ? (<div><p><span style={{ fontWeight: '600' }}>{notify?.User[0]?.Name}</span> đã follow bạn</p></div>) : (<p><span style={{ fontWeight: '600' }}>test</span> đã comment bài viết </p>)}
+                                    {notify?.type?.typeName === 'follow' && renderFollow(notify)}
+                                    {notify?.type?.typeName === 'Comment' && <RenderComment notify={notify} />}
                                 </div>
                             </Stack >
                         </div>)
@@ -52,10 +78,10 @@ function Notifications() {
                             <HeartStraight size={50} />
                         </div>
                         <div style={{ fontSize: '10px', padding: '10px 0 0 0' }}>
-                            <p>Hoạt động trên bài đăng của bạn</p>
+                            <p>Activity on your posts</p>
                         </div>
                         <div style={{ fontSize: '10px', maxWidth: '250px', textAlign: 'center', padding: '10px 0 0 0' }}>
-                            <p>Khi ai đó thích hoặc nhận xét về một trong các bài đăng của bạn, bạn sẽ thấy nó ở đây.</p>
+                            <p>When someone likes or comments on one of your posts, you'll see it here.</p>
                         </div>
                     </div>)
                 }
