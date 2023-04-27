@@ -96,21 +96,35 @@ function Login() {
     };
 
     const handleClickGoogle = async () => {
-        try {
-            window.open('http://localhost:3240/v1/auth/google', '_self');
-            await dispatch(signInGoogle());
-        } catch (error) {
-            console.log('failed', error);
-        }
+        const url = 'http://localhost:3240/v1/auth/google';
+        window.open(url, '_self');
+        console.log('click login google');
+        // window.addEventListener('message', async (event) => {
+        //     console.log('click login after close window google');
+        //     if (event.origin === window.location.origin) {
+        //         popup.close();
+
+        //         // Get the authorization code from the event data
+        //         const code = event.data.code;
+
+        //         // Call your API with the authorization code
+        //         console.log(code);
+        //         try {
+        //             // window.open('http://localhost:3240/v1/auth/google', '_self');
+        //             await dispatch(signInGoogle());
+        //         } catch (error) {
+        //             console.log('failed', error);
+        //         }
+        //     }
+        // });
     };
-    const handleClickGithub = async () => {
-        try {
-            await window.open('http://localhost:3240/v1/auth/github', '_self');
-            await dispatch(signInGithub());
-        } catch (error) {
-            console.log('failed', error.message);
-        }
-    };
+    // const handleClickGithub = async () => {
+    //     try {
+    //         window.open('http://localhost:3240/v1/auth/github', '_self');
+    //     } catch (error) {
+    //         console.log('failed', error.message);
+    //     }
+    // };
     const handleClickButtonSignIn = async () => {
         const dataUser = {
             password: password,
@@ -131,6 +145,10 @@ function Login() {
     };
 
     useEffect(() => {
+        if (typeLogin === '') {
+            dispatch(signInGoogle());
+            // dispatch(signInGithub());
+        }
         if (currentUser) {
             navigate('/');
         }
@@ -222,7 +240,7 @@ function Login() {
                                 >
                                     Google
                                 </Button>
-                                <Button
+                                {/* <Button
                                     variant="outlined"
                                     sx={{
                                         height: 44,
@@ -238,7 +256,7 @@ function Login() {
                                     onClick={handleClickGithub}
                                 >
                                     Github
-                                </Button>
+                                </Button> */}
                             </Box>
                             {/* div */}
                             <Box

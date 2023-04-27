@@ -74,10 +74,14 @@ export const authSlice = createSlice({
         builder.addCase(signUpPassWord.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
+            state.isError = false;
+            state.currentUser = null;
         });
         builder.addCase(signUpPassWord.fulfilled, (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
+            state.error = '';
+            state.isError = false;
             state.typeLogin = 'password';
         });
         builder.addCase(signInGoogle.pending, (state, action) => {
@@ -88,9 +92,18 @@ export const authSlice = createSlice({
             state.error = action.error;
         });
         builder.addCase(signInGoogle.fulfilled, (state, action) => {
-            state.loading = false;
-            state.currentUser = action.payload;
-            state.typeLogin = 'google';
+            if (action.payload) {
+                state.loading = false;
+                state.currentUser = action.payload;
+                state.error = '';
+                state.isError = false;
+                state.typeLogin = 'google';
+            } else {
+                state.currentUser = null;
+                state.loading = false;
+                state.error = '';
+                state.typeLogin = '';
+            }
         });
         builder.addCase(signInGithub.pending, (state, action) => {
             state.loading = true;
@@ -100,9 +113,18 @@ export const authSlice = createSlice({
             state.error = action.error;
         });
         builder.addCase(signInGithub.fulfilled, (state, action) => {
-            state.loading = false;
-            state.currentUser = action.payload;
-            state.typeLogin = 'facebook';
+            if (action.payload) {
+                state.loading = false;
+                state.currentUser = action.payload;
+                state.error = '';
+                state.isError = false;
+                state.typeLogin = 'github';
+            } else {
+                state.currentUser = null;
+                state.loading = false;
+                state.error = '';
+                state.typeLogin = '';
+            }
         });
         builder.addCase(logout.pending, (state, action) => {
             state.loading = true;
