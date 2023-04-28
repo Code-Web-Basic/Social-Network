@@ -34,7 +34,10 @@ const update = async (req, res) => {
 };
 const postOfUser = async (req, res) => {
   try {
-    const result = await UserService.postOfUser(req.params.id);
+    const result = await UserService.postOfUser(
+      req.params.id,
+      req.query.paging
+    );
     res.status(HttpStatusCode.OK).json({ result: result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
