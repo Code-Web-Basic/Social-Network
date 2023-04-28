@@ -183,7 +183,7 @@ function CommentPost({
                                             }}
                                         >
                                             <Stack direction="row" spacing={2}>
-                                                <Avatar />
+                                                <Avatar src={`${data?.User?.avatar?.data}`} alt="user" />
                                                 <Stack direction="column">
                                                     <Typography
                                                         variant="body2"
@@ -198,7 +198,7 @@ function CommentPost({
                                                         fontSize="0.7rem"
                                                         color={theme.palette.text.secondary}
                                                     >
-                                                        {data?.User?.name}
+                                                        {data?.User?.Name}
                                                     </Typography>
                                                 </Stack>
                                             </Stack>
