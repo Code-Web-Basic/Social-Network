@@ -79,7 +79,23 @@ const deleteFollower = async (req, res) => {
     });
   }
 };
-
+const checkFollow = async (req, res) => {
+  try {
+    const result = await followService.checkFollow(
+      req.user.sub,
+      req.params.targetId
+    );
+    if (result !== null) {
+      res.status(HttpStatusCode.OK).json({ result: { isFollow: true } });
+    } else {
+      res.status(HttpStatusCode.OK).json({ result: { isFollow: false } });
+    }
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 module.exports = {
   follow,
   unFollow,
@@ -87,4 +103,5 @@ module.exports = {
   getFollowing,
   suggestions,
   deleteFollower,
+  checkFollow,
 };

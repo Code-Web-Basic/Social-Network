@@ -17,5 +17,8 @@ router.route("/suggestions").get(verifyToken, followController.suggestions);
 router
   .route("/deleteFollower")
   .post(verifyToken, followController.deleteFollower);
+router
+  .route("/checkFollow/:targetId")
+  .get(verifyToken, followController.checkFollow);
 router.route("/:targetId").post(verifyToken, followController.follow);
 module.exports = router;
