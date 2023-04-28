@@ -129,12 +129,22 @@ const showReactionOfPost = async (id) => {
   }
 };
 
-const explore = async () => {
+const explore = async (userId, paging) => {
   try {
+    const followOfUser = await getDB()
+      .collection("Follows")
+      .aggregate([
+        { $match: { sourceId: userId } },
+        { $group: { _id: "$targetId" } },
+      ])
+      .toArray();
+    const follow = followOfUser.map((data) => {
+      return data._id;
+    });
     const result = await getDB()
       .collection(postCollectionName)
       .aggregate([
-        { $sample: { size: 20 } },
+        { $match: { ownerId: { $nin: follow } } },
         { $addFields: { reactionCount: { $size: "$reaction" } } },
         { $addFields: { _ownerId: { $toObjectId: "$ownerId" } } },
         {
@@ -147,6 +157,9 @@ const explore = async () => {
         },
         // { $group: { _id: "$_id" } }
       ])
+      .sort({ "Post.createdAt": -1 })
+      .skip((paging - 1) * 15)
+      .limit(15)
       .toArray();
     return result;
   } catch (error) {
