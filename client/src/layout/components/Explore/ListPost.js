@@ -89,8 +89,8 @@ export const ItemListPost = ({ item, rows }) => {
                         data={item}
                         like={false}
                         bookmark={false}
-                        handleLikePost={() => {}}
-                        handleBookmarkPost={() => {}}
+                        handleLikePost={() => { }}
+                        handleBookmarkPost={() => { }}
                         styles={{
                             position: 'absolute',
                             height: '100%',
