@@ -6,7 +6,8 @@ export const getFirstPost = createAsyncThunk('post/getFirstPost', async (params,
     return res;
 });
 export const getSkipPost = createAsyncThunk('post/getSkipPost', async (params, thinAPI) => {
-    const res = await postApi.getNewFeed({ paging: 1 });
+    console.log(params.paging);
+    const res = await postApi.getNewFeed({ paging: params.paging });
     return res;
 });
 export const addNewPost = createAsyncThunk('post/addNewPost', async (params, thunkAPI) => {

@@ -7,10 +7,15 @@ export const signUpPassWord = createAsyncThunk('auth/signUpPassWord', async (par
     const res = await authApi.registerPassword(data);
     return res;
 });
-export const signInPassWord = createAsyncThunk('auth/signInPassWord', async (params, thunkAPI) => {
+export const signInPassWord = createAsyncThunk('auth/signInPassWord', async (params, { rejectWithValue }) => {
     const data = params.data;
-    const res = await authApi.loginPass({ data });
-    return res;
+    try {
+        const res = await authApi.loginPass({ data });
+        return res;
+    } catch (error) {
+        return rejectWithValue(error.response.data.result);
+    }
+    // return res;
 });
 export const signInGoogle = createAsyncThunk('auth/signInGoogle', async (params, thunkAPI) => {
     const res = await authApi.getUserInfo();
@@ -35,6 +40,7 @@ export const authSlice = createSlice({
         loading: false,
         error: '',
         typeLogin: '',
+        isError: false,
     },
     reducers: {
         refetchToken: (state, action) => {
@@ -54,10 +60,10 @@ export const authSlice = createSlice({
         });
         builder.addCase(signInPassWord.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.error;
+            state.error = action.payload.msg;
+            state.isError = true;
         });
         builder.addCase(signInPassWord.fulfilled, (state, action) => {
-            console.log(action.payload)
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'password';
@@ -68,10 +74,14 @@ export const authSlice = createSlice({
         builder.addCase(signUpPassWord.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error;
+            state.isError = false;
+            state.currentUser = null;
         });
         builder.addCase(signUpPassWord.fulfilled, (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
+            state.error = '';
+            state.isError = false;
             state.typeLogin = 'password';
         });
         builder.addCase(signInGoogle.pending, (state, action) => {
@@ -82,9 +92,18 @@ export const authSlice = createSlice({
             state.error = action.error;
         });
         builder.addCase(signInGoogle.fulfilled, (state, action) => {
-            state.loading = false;
-            state.currentUser = action.payload;
-            state.typeLogin = 'google';
+            if (action.payload) {
+                state.loading = false;
+                state.currentUser = action.payload;
+                state.error = '';
+                state.isError = false;
+                state.typeLogin = 'google';
+            } else {
+                state.currentUser = null;
+                state.loading = false;
+                state.error = '';
+                state.typeLogin = '';
+            }
         });
         builder.addCase(signInGithub.pending, (state, action) => {
             state.loading = true;
@@ -94,9 +113,18 @@ export const authSlice = createSlice({
             state.error = action.error;
         });
         builder.addCase(signInGithub.fulfilled, (state, action) => {
-            state.loading = false;
-            state.currentUser = action.payload;
-            state.typeLogin = 'facebook';
+            if (action.payload) {
+                state.loading = false;
+                state.currentUser = action.payload;
+                state.error = '';
+                state.isError = false;
+                state.typeLogin = 'github';
+            } else {
+                state.currentUser = null;
+                state.loading = false;
+                state.error = '';
+                state.typeLogin = '';
+            }
         });
         builder.addCase(logout.pending, (state, action) => {
             state.loading = true;
@@ -118,7 +146,7 @@ export const authSlice = createSlice({
             state.error = action.error;
         });
         builder.addCase(updateUser.fulfilled, (state, action) => {
-            action.payload.data.accessToken = state.currentUser.data.accessToken
+            action.payload.data.accessToken = state.currentUser.data.accessToken;
             state.loading = false;
             state.currentUser = action.payload;
             state.typeLogin = 'password';

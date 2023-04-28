@@ -149,10 +149,34 @@ const deleteComment = async (id) => {
 
 const reaction = async (id, userId) => {
   try {
-    await getDB()
+    const checkExists = await getDB()
       .collection(commentCollectionName)
-      .findOneAndUpdate({ _id: ObjectId(id) }, { $push: { reaction: userId } });
-    return await findOneById(id);
+      .find({ _id: ObjectId(id), reaction: { $in: [userId] } })
+      .toArray();
+    if (checkExists.length === 0) {
+      await getDB()
+        .collection(commentCollectionName)
+        .findOneAndUpdate(
+          { _id: ObjectId(id) },
+          { $push: { reaction: userId } }
+        );
+      const result = await findOneById(id);
+      const notificationData = {
+        sourceId: userId,
+        targetId: result.ownerId,
+        type: { typeName: "post", id: id },
+      };
+      await notification.createNotification(notificationData);
+      return result;
+    } else {
+      await getDB()
+        .collection(postCollectionName)
+        .findOneAndUpdate(
+          { _id: ObjectId(id) },
+          { $pull: { reaction: userId } }
+        );
+      return await findOneById(id);
+    }
   } catch (error) {
     throw new Error(error);
   }

@@ -17,7 +17,7 @@ function PostEnd() {
                 You're all caught up
             </Typography>
             <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
-                You've seen all new posts from the past 3 days.
+                You've seen all new posts.
             </Typography>
         </Stack>
     );

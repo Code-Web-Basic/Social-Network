@@ -137,6 +137,17 @@ const suggestions = async (userId) => {
     throw new Error(error);
   }
 };
+const checkFollow = async (sourceId, targetId) => {
+  try {
+    console.log(sourceId, targetId);
+    const result = await getDB()
+      .collection(followCollectionName)
+      .findOne({ sourceId: sourceId, targetId: targetId });
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   follow,
   unFollow,
@@ -144,4 +155,5 @@ module.exports = {
   getFollowing,
   suggestions,
   deleteFollower,
+  checkFollow,
 };

@@ -30,12 +30,31 @@ export const replyNewComment = createAsyncThunk('comment/replyNewComment', async
     const res = await commentApi.createComment(data);
     return { ...res?.result, User: params?.User };
 });
+
 export const CommentSlice = createSlice({
     name: 'comment',
     initialState: {
         loading: false,
         error: '',
         data: [],
+    },
+    reducers: {
+        increaseReactionComment: (state, action) => {
+            state.loading = false;
+            state.error = '';
+            let arrTmp = [...state.data];
+            const index = arrTmp.findIndex((obj) => obj._id === action.payload.idComment);
+            arrTmp[index].reaction = [...arrTmp[index].reaction, action.payload.idUser];
+            state.data = JSON.parse(JSON.stringify(arrTmp));
+        },
+        decreaseReactionComment: (state, action) => {
+            state.loading = false;
+            state.error = '';
+            let arrTmp = [...state.data];
+            const index = arrTmp.findIndex((obj) => obj._id === action.payload.idComment);
+            arrTmp[index].reaction = arrTmp[index].reaction.filter((i) => i !== action.payload.idUser);
+            state.data = JSON.parse(JSON.stringify(arrTmp));
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(getFirstComment.pending, (state, action) => {
@@ -92,9 +111,8 @@ export const CommentSlice = createSlice({
             const index = arrTmp.findIndex((obj) => obj._id === action.payload.replyId);
             arrTmp[index].replyCount += 1;
             state.data = JSON.parse(JSON.stringify(arrTmp));
-            state.data[index].replyCount++;
         });
     },
 });
-
+export const { increaseReactionComment, decreaseReactionComment } = CommentSlice.actions;
 export default CommentSlice.reducer;
