@@ -33,9 +33,9 @@ const newFeed = async (id, paging) => {
     throw new Error(error);
   }
 };
-const postOfUser = async (id) => {
+const postOfUser = async (id, paging) => {
   try {
-    const result = await UserModel.postOfUser(id);
+    const result = await UserModel.postOfUser(id, paging);
     return result;
   } catch (error) {
     throw new Error(error);
