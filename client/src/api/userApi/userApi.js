@@ -23,7 +23,7 @@ export const getHistorySearch = async () => {
 
 export const getUserFollower = async (params) => {
     try {
-        const res = await httpRequest.get(`follow/getFollower/${params.id}`, {
+        const res = await httpRequest.get(`follow/getFollowers/${params.id}`, {
             params: {
                 paging: params?.paging,
             },
