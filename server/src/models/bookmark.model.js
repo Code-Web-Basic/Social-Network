@@ -66,6 +66,14 @@ const getBookmarks = async (id, paging) => {
       .aggregate([
         { $match: { userId: id } },
         { $addFields: { _postId: { $toObjectId: "$postId" } } },
+        {
+          $lookup: {
+            from: "Posts",
+            localField: "_postId",
+            foreignField: "_id",
+            as: "Post",
+          },
+        },
       ])
       .limit(15)
       .skip((paging - 1) * 15)

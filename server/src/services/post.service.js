@@ -75,9 +75,9 @@ const showReactionOfPost = async (id) => {
   }
 };
 
-const explore = async () => {
+const explore = async (userId, paging) => {
   try {
-    return await postModel.explore();
+    return await postModel.explore(userId, paging);
   } catch (error) {
     throw new Error(error);
   }
