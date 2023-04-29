@@ -1,27 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 
-function useElementOnScreen(option) {
-    const containerRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(false);
-    const callbackFunction = (entries) => {
-        const [entry] = entries;
-        setIsVisible(entry.isIntersecting);
-    };
-    const observer = useRef(new IntersectionObserver(callbackFunction, option));
+function useElementOnScreen(ref, option) {
+    const [isIntersecting, setIntersecting] = useState(false);
     useEffect(() => {
-        // const observer = new IntersectionObserver(callbackFunction, option);
-        const currentBottomBar = containerRef.current;
-        const currentObserver = observer.current;
-        if (currentBottomBar) {
-            currentObserver.observe(currentBottomBar);
+        const observer = new IntersectionObserver(([entry]) => {
+            // Update our state when observer callback fires
+            setIntersecting(entry.isIntersecting);
+        }, option);
+        if (ref.current) {
+            observer.observe(ref.current);
         }
         return () => {
-            if (currentBottomBar) {
-                currentObserver.unobserve(currentBottomBar);
-            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            observer.unobserve(ref.current);
         };
-    }, [containerRef, option]);
-    return [containerRef, isVisible];
+    }, [option, ref]); // Empty array ensures that effect is only run on mount and unmount
+    return isIntersecting;
 }
 
 export default useElementOnScreen;

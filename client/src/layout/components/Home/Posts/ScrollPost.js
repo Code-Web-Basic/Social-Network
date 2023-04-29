@@ -5,9 +5,9 @@ import SuggestionsUser from '../SuggestionsUser/SuggestionsUser';
 import PostEnd from './PostEnd';
 import PostItem from './PostItem';
 //
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getBookMarkFirst } from '~/features/bookmark/bookmarkSlice';
-import { getSkipPost } from '~/features/post/postSlice';
+import { getFirstPost, getSkipPost } from '~/features/post/postSlice';
 import useElementOnScreen from '~/hook/useElementOnScreen';
 
 const StyleDivider = styled(Divider)(({ theme }) => ({
@@ -18,23 +18,23 @@ const StyleDivider = styled(Divider)(({ theme }) => ({
 
 function ScrollPost() {
     const dispatch = useDispatch();
-
+    const refBottomBar = useRef();
     const { data } = useSelector((state) => state.post);
-    const [containerRef, isVisible] = useElementOnScreen({ root: null, threshold: 1 });
+    const isIntersecting = useElementOnScreen(refBottomBar, { threshold: 1.0 });
 
     const [showBottomBar, setShowBottomBar] = useState(true);
     const [pagingPost, setPagingPost] = useState(1);
 
     useEffect(() => {
         dispatch(getBookMarkFirst());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
-        if (isVisible && showBottomBar) {
+        if (isIntersecting && showBottomBar) {
             const fetchMorePost = async () => {
                 try {
                     const originalPromiseResult = await dispatch(getSkipPost({ paging: pagingPost })).unwrap();
+                    console.log(originalPromiseResult);
                     if (originalPromiseResult.length === 0) {
                         setShowBottomBar(false);
                     } else {
@@ -46,7 +46,8 @@ function ScrollPost() {
             };
             fetchMorePost();
         }
-    }, [dispatch, isVisible, pagingPost, showBottomBar]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isIntersecting, pagingPost, showBottomBar]);
 
     const renderPost = () => {
         return data?.map((item, index) =>
@@ -67,25 +68,23 @@ function ScrollPost() {
         );
     };
     return (
-        <div>
-            <Stack direction="column" spacing={2} p="30px 10px" justifyContent="center">
-                {renderPost()}
-                {data?.length === 0 && !showBottomBar ? (
-                    <Typography variant="h6" fontSize="1.2rem" width="100%" textAlign="center">
-                        No Posts
-                    </Typography>
-                ) : null}
-
-                {showBottomBar ? (
-                    <Stack direction={'column'} width="100%" spacing={2} ref={containerRef}>
-                        <SkeletonLoading type="post" />
-                        <SkeletonLoading type="post" />
-                    </Stack>
-                ) : (
-                    <PostEnd />
-                )}
-            </Stack>
-        </div>
+        <Stack direction="column" spacing={2} p="30px 10px" justifyContent="center">
+            {renderPost()}
+            {data?.length === 0 && !showBottomBar ? (
+                <Typography variant="h6" fontSize="1.2rem" width="100%" textAlign="center">
+                    No Posts
+                </Typography>
+            ) : null}
+            <div ref={refBottomBar} width="100%" style={{ height: '10xp' }}></div>
+            {showBottomBar ? (
+                <Stack direction={'column'} width="100%" spacing={2}>
+                    <SkeletonLoading type="post" />
+                    <SkeletonLoading type="post" />
+                </Stack>
+            ) : (
+                <PostEnd />
+            )}
+        </Stack>
     );
 }
 

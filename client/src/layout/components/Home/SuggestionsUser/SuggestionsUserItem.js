@@ -5,12 +5,32 @@ import { Avatar, Button, IconButton, Stack, Typography, useTheme } from '@mui/ma
 import TippyHeadless from '@tippyjs/react/headless';
 import MenuUserFollowing from '../Posts/MenuUserFollowing/MenuUserFollowing';
 import { X } from 'phosphor-react';
-
-function SuggestionsUserItem({ data = [], typeLayout = 'row' }) {
+import { useState } from 'react';
+import * as followerApi from '~/api/followApi/followApi';
+function SuggestionsUserItem({ data = {}, typeLayout = 'row' }) {
     const theme = useTheme();
-
+    // const [hover, setHover] = useState();
+    const [isFollower, setIsFollower] = useState(false);
     const clickCloseItem = () => {
         return;
+    };
+    const handleClickFollowing = async () => {
+        try {
+            const res = await followerApi.follow(data?._id);
+            console.log(res);
+            setIsFollower(true);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const handleClickUnFollowing = async () => {
+        try {
+            const res = await followerApi.unFollower(data?._id);
+            console.log(res);
+            setIsFollower(false);
+        } catch (error) {
+            console.log(error);
+        }
     };
     return typeLayout === 'row' ? (
         <Stack direction="row" alignItems="center" justifyContent="space-between" p={1}>
@@ -19,15 +39,15 @@ function SuggestionsUserItem({ data = [], typeLayout = 'row' }) {
                 placement="bottom-start"
                 render={(attrs) => (
                     <div className="box" tabIndex="-1" {...attrs}>
-                        <MenuUserFollowing />
+                        <MenuUserFollowing data={data} />
                     </div>
                 )}
             >
                 <Stack direction="row" spacing={2}>
-                    <Avatar src="" alt="user" />
+                    <Avatar src={`${data?.avatar?.data ? data?.avatar.data : ''}`} alt="user" />
                     <Stack direction="column">
                         <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
-                            chithanhduongngoc
+                            {data?.userName}
                         </Typography>
                         <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
                             Suggested for you
@@ -37,16 +57,49 @@ function SuggestionsUserItem({ data = [], typeLayout = 'row' }) {
             </TippyHeadless>
 
             <Stack direction="row">
-                <Button variant="text" sx={{ fontSize: '0.6rem', fontWeight: 600 }}>
-                    Following
-                </Button>
-                {/* {data?.following ? (
-                    <Button variant="text">Following</Button>
+                {!isFollower ? (
+                    <Button
+                        variant="text"
+                        sx={{
+                            width: '100%',
+                            fontSize: '0.7rem',
+                            boxShadow: 'none',
+                            borderRadius: '10px',
+                            '&:hover': {
+                                color: theme.palette.primary.dark,
+                                boxShadow: 'none',
+                            },
+                            '&:active': {
+                                color: theme.palette.primary.dark,
+                                boxShadow: 'none',
+                            },
+                        }}
+                        onClick={handleClickFollowing}
+                    >
+                        Following
+                    </Button>
                 ) : (
-                    <Button variant="text" color={theme.palette.text.secondary}>
+                    <Button
+                        variant="contained"
+                        sx={{
+                            width: '100%',
+                            fontSize: '0.7rem',
+                            boxShadow: 'none',
+                            borderRadius: '10px',
+                            '&:hover': {
+                                color: theme.palette.primary.dark,
+                                boxShadow: 'none',
+                            },
+                            '&:active': {
+                                color: theme.palette.primary.dark,
+                                boxShadow: 'none',
+                            },
+                        }}
+                        onClick={handleClickFollowing}
+                    >
                         unFollowing
                     </Button>
-                )} */}
+                )}
             </Stack>
         </Stack>
     ) : (
@@ -73,7 +126,7 @@ function SuggestionsUserItem({ data = [], typeLayout = 'row' }) {
                         </div>
                     )}
                 > */}
-                <Avatar src="" alt="user" />
+                <Avatar src={`${data?.avatar?.data ? data?.avatar.data : ''}`} alt="user" />
                 {/* </TippyHeadless> */}
                 <Stack direction="column" width="100%" justifyContent="center" alignItems="center">
                     <Typography
@@ -83,7 +136,7 @@ function SuggestionsUserItem({ data = [], typeLayout = 'row' }) {
                         noWrap
                         textOverflow={'ellipsis'}
                     >
-                        chithanhduongngoc
+                        {data?.userName}
                     </Typography>
                     <Typography
                         variant="body2"
@@ -97,26 +150,51 @@ function SuggestionsUserItem({ data = [], typeLayout = 'row' }) {
                 </Stack>
             </Stack>
             <Stack direction="row" justifyContent="center" alignItems="center">
-                <Button
-                    variant="contained"
-                    sx={{
-                        width: '100%',
-                        fontSize: '0.7rem',
-                        background: theme.palette.primary.light,
-                        boxShadow: 'none',
-                        borderRadius: '10px',
-                        '&:hover': {
-                            background: theme.palette.primary.dark,
+                {!isFollower ? (
+                    <Button
+                        variant="contained"
+                        sx={{
+                            width: '100%',
+                            fontSize: '0.7rem',
+                            background: theme.palette.primary.light,
                             boxShadow: 'none',
-                        },
-                        '&:active': {
-                            background: theme.palette.primary.dark,
+                            borderRadius: '10px',
+                            '&:hover': {
+                                background: theme.palette.primary.dark,
+                                boxShadow: 'none',
+                            },
+                            '&:active': {
+                                background: theme.palette.primary.dark,
+                                boxShadow: 'none',
+                            },
+                        }}
+                        onClick={handleClickFollowing}
+                    >
+                        Following
+                    </Button>
+                ) : (
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            width: '100%',
+                            fontSize: '0.7rem',
+                            color: theme.palette.primary.light,
                             boxShadow: 'none',
-                        },
-                    }}
-                >
-                    Following
-                </Button>
+                            borderRadius: '10px',
+                            '&:hover': {
+                                color: theme.palette.primary.dark,
+                                boxShadow: 'none',
+                            },
+                            '&:active': {
+                                color: theme.palette.primary.dark,
+                                boxShadow: 'none',
+                            },
+                        }}
+                        onClick={handleClickUnFollowing}
+                    >
+                        unFollowing
+                    </Button>
+                )}
             </Stack>
         </Stack>
     );
