@@ -7,7 +7,7 @@ import PostItem from './PostItem';
 //
 import { useEffect, useRef, useState } from 'react';
 import { getBookMarkFirst } from '~/features/bookmark/bookmarkSlice';
-import { getFirstPost, getSkipPost } from '~/features/post/postSlice';
+import { getSkipPost } from '~/features/post/postSlice';
 import useElementOnScreen from '~/hook/useElementOnScreen';
 
 const StyleDivider = styled(Divider)(({ theme }) => ({
@@ -18,9 +18,8 @@ const StyleDivider = styled(Divider)(({ theme }) => ({
 
 function ScrollPost() {
     const dispatch = useDispatch();
-    const refBottomBar = useRef();
     const { data } = useSelector((state) => state.post);
-    const isIntersecting = useElementOnScreen(refBottomBar, { threshold: 1.0 });
+    const [containerRef, isVisible] = useElementOnScreen({ root: null, rootMargin: '10px', threshold: 1.0 });
 
     const [showBottomBar, setShowBottomBar] = useState(true);
     const [pagingPost, setPagingPost] = useState(1);
@@ -30,7 +29,7 @@ function ScrollPost() {
     }, [dispatch]);
 
     useEffect(() => {
-        if (isIntersecting && showBottomBar) {
+        if (isVisible && showBottomBar) {
             const fetchMorePost = async () => {
                 try {
                     const originalPromiseResult = await dispatch(getSkipPost({ paging: pagingPost })).unwrap();
@@ -47,7 +46,7 @@ function ScrollPost() {
             fetchMorePost();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isIntersecting, pagingPost, showBottomBar]);
+    }, [isVisible, pagingPost, showBottomBar]);
 
     const renderPost = () => {
         return data?.map((item, index) =>
@@ -55,8 +54,8 @@ function ScrollPost() {
                 <Stack direction={'column'} key={item?.Post?._id}>
                     {/* <StyleDivider /> */}
                     <PostItem data={item} />
-                    <StyleDivider />
-                    <SuggestionsUser typeLayout="row" />
+                    {/* <StyleDivider /> */}
+                    {/* <SuggestionsUser typeLayout="row" /> */}
                     {/* <StyleDivider /> */}
                 </Stack>
             ) : (
@@ -75,7 +74,7 @@ function ScrollPost() {
                     No Posts
                 </Typography>
             ) : null}
-            <div ref={refBottomBar} width="100%" style={{ height: '10xp' }}></div>
+            <div ref={containerRef} width="100%" style={{ height: '10xp' }}></div>
             {showBottomBar ? (
                 <Stack direction={'column'} width="100%" spacing={2}>
                     <SkeletonLoading type="post" />
