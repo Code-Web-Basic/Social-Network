@@ -9,7 +9,7 @@ export const getNewFeed = async (params) => {
         });
         return res?.result;
     } catch (error) {
-        console.log(error);
+        Promise.reject(error);
     }
 };
 export const createPostImages = async (params) => {

@@ -7,11 +7,12 @@ function useElementOnScreen(option) {
         const [entry] = entries;
         setIsVisible(entry.isIntersecting);
     };
-    const observer = useRef(new IntersectionObserver(callbackFunction, option));
+    // const observer = useRef(new IntersectionObserver(callbackFunction, option));
     useEffect(() => {
         // const observer = new IntersectionObserver(callbackFunction, option);
+        const currentObserver = new IntersectionObserver(callbackFunction, option);
         const currentBottomBar = containerRef.current;
-        const currentObserver = observer.current;
+        // const currentObserver = observer.current;
         if (currentBottomBar) {
             currentObserver.observe(currentBottomBar);
         }
