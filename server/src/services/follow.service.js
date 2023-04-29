@@ -55,6 +55,14 @@ const deleteFollower = async (userId, followerId) => {
     throw new Error(error);
   }
 };
+const checkFollow = async (sourceId, targetId) => {
+  try {
+    const result = await followModel.checkFollow(sourceId, targetId);
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   follow,
   unFollow,
@@ -62,4 +70,5 @@ module.exports = {
   getFollowing,
   suggestions,
   deleteFollower,
+  checkFollow,
 };
