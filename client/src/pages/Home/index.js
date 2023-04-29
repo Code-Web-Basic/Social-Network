@@ -1,22 +1,14 @@
 import { Grid, Stack } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import AccountItem from '~/layout/components/Home/AccountItem/AccountItem';
 import SuggestionsUser from '~/layout/components/Home/SuggestionsUser/SuggestionsUser';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import ScrollPost from '~/layout/components/Home/Posts/ScrollPost';
 import FollowingUser from '~/layout/components/Home/FollowingUser/FollowingUser';
-import { getFirstPost } from '~/features/post/postSlice';
 import io from 'socket.io-client';
 const socket = io('http://localhost:3240');
 function Home() {
     const currentUser = useSelector((state) => state.auth.currentUser);
-    const dispatch = useDispatch();
-    // const [paging, setPaging] = useState(1);
-
-    // useEffect(() => {
-    //     dispatch(getFirstPost(1));
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
     useEffect(() => {
         socket.emit('add-user', currentUser?.data?._id);
     }, [currentUser]);
