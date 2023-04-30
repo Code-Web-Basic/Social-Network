@@ -7,14 +7,16 @@ import CommentPost from "../Home/Posts/CommentPost/CommentPost"
 function RenderComment(props) {
     const { notify } = props
     const [post, setPost] = useState([])
+
+    // get post
     const getPostById = async (id) => {
         const res = await postApi.getPostById(id)
-        console.log(res)
         setPost(res)
     }
     useEffect(() => {
         getPostById(notify?.type?.id)
     }, [notify?.type?.id])
+
     const createRandom = () => {
         var randomstring = '';
         var characters = 'QWERTYUIOPASDFGHJKLZXCVBNM123456789qwertyuiopasdfghjklzxcvbnm';
@@ -32,10 +34,9 @@ function RenderComment(props) {
         commentPaging: 1
     }
     return (
-
+        // display notify for comment
         <div style={{ display: 'flex', alignItems: 'center' }} >
             <p><Link to={`/profile/${notify?.User[0]?._id}`} style={{ fontWeight: '600' }}>{notify?.User[0]?.Name}</Link> commented on this post</p>
-
             <CommentPost
                 data={itemPost}
                 like={false}
@@ -43,8 +44,10 @@ function RenderComment(props) {
                 handleLikePost={() => { }}
                 handleBookmarkPost={() => { }}
             >
-                <div style={{ width: '30px', height: '50px', border: '1px solid black' }}>
-                    {post?.isVideo ? (<video src={post?.caption && post?.source[0]?.data} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />) : (<img src={post?.caption && post?.source[0]?.data} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />)}
+                <div style={{ width: '30px', height: '50px', border: '1px solid black', cursor: 'pointer' }}>
+                    {post?.isVideo ? (<video src={post?.caption && post?.source[0]?.data} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />)
+                        :
+                        (<img src={post?.caption && post?.source[0]?.data} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />)}
                 </div>
             </CommentPost>
         </div>

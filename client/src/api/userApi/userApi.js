@@ -67,9 +67,9 @@ export const getPostOfUser = async (userid) => {
     }
 };
 
-export const getNotify = async () => {
+export const getNotify = async (paging) => {
     try {
-        const res = await httpRequest.get('user/showNotification?paging=1');
+        const res = await httpRequest.get(`user/showNotification?paging=${paging}`);
         //console.log(res);
         return res?.result;
     } catch (error) {

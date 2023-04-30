@@ -1,45 +1,47 @@
-import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, CircularProgress, Stack, Typography, useTheme } from '@mui/material';
 import { HeartStraight } from 'phosphor-react';
-import SuggestionsUserItem from '../Home/SuggestionsUser/SuggestionsUserItem';
 import * as userApi from '~/api/userApi/userApi'
-import * as postApi from '~/api/postApi/postApi'
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import RenderComment from './RenderComment';
+import useElementOnScreen from '~/hook/useElementOnScreen';
 
 function Notifications() {
     const theme = useTheme();
     const [notifys, setNotifys] = useState([])
-    const [post, setPost] = useState([])
-    const getNotify = async () => {
-        const res = await userApi.getNotify()
-        console.log(res)
-        setNotifys(res)
-    }
-    useEffect(() => {
-        getNotify()
-    }, [])
-    const getPostById = async (id) => {
-        const res = await postApi.getPostById(id)
-        console.log(res)
-        setPost(res)
-    }
+
+    // reder notify user follow
     const renderFollow = (notify) => {
         return (<div>
             <p><Link to={`/profile/${notify?.User[0]?._id}`} style={{ fontWeight: '600' }}>{notify?.User[0]?.Name}</Link> Started following you</p>
         </div>)
     }
-    // const renderComment = (notify) => {
-    //     getPostById(notify?.type?.id)
-    //     return (
-    //         <div style={{ display: 'flex', alignItems: 'center' }} >
-    //             <p><Link to={`/profile/${notify?.User[0]?._id}`} style={{ fontWeight: '600' }}>{notify?.User[0]?.Name}</Link> commented on this post</p>
-    //             <div style={{ width: '30px', height: '50px', border: '1px solid black' }}>
-    //                 <img src={post?.source?.data} alt={post?.source?.filename} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-    //             </div>
-    //         </div>
-    //     )
-    // }
+
+    const [containerRef, isVisible] = useElementOnScreen({ root: null, threshold: 1 });
+    // load het paging
+    const [showBottomBar, setShowBottomBar] = useState(true);
+    const [pagingPost, setPagingPost] = useState(1);
+
+    useEffect(() => {
+        if (isVisible && showBottomBar) {
+            const callApi = async () => {
+                const resExplore = await userApi.getNotify(pagingPost)
+                if (resExplore.length > 0) {
+                    console.log('call')
+                    console.log(resExplore)
+                    setNotifys((prev) => [...prev, ...resExplore])
+                    setShowBottomBar(true);
+                    setPagingPost((prev) => prev + 1);
+                } else {
+                    setShowBottomBar(false);
+                }
+            };
+            callApi();
+        }
+        console.log(isVisible);
+        console.log(pagingPost)
+    }, [isVisible, pagingPost, showBottomBar]);
+
     return (
         < Box
             sx={{
@@ -57,7 +59,7 @@ function Notifications() {
             }
         >
             <Stack>
-                <h3>Notifications</h3>
+                <h3 style={{ margin: '10px 10px' }}>Notifications</h3>
                 {
                     notifys.length !== 0 ? (notifys.map(notify => {
                         return (<div key={notify?._id}>
@@ -70,6 +72,7 @@ function Notifications() {
                                 <div style={{ fontSize: '14px', maxWidth: '200px' }}>
                                     {notify?.type?.typeName === 'follow' && renderFollow(notify)}
                                     {notify?.type?.typeName === 'Comment' && <RenderComment notify={notify} />}
+                                    {notify?.type?.typeName === 'post' && <RenderComment notify={notify} />}
                                 </div>
                             </Stack >
                         </div>)
@@ -85,19 +88,9 @@ function Notifications() {
                         </div>
                     </div>)
                 }
+                <div ref={containerRef} style={{ width: '100%', height: '10px' }}></div>
+                {showBottomBar && <CircularProgress />}
             </Stack>
-            {/* <Stack direction="column" width="100%" p={1} spacing={2}>
-                <Stack direction="row" justifyContent="space-between" width="100%">
-                    <Typography variant="body1" fontSize="0.8rem" fontWeight={500} color={theme.palette.text.secondary}>
-                        Đề xuất cho bạn
-                    </Typography>
-                </Stack>
-                <Stack direction="column" width="100%">
-                    <SuggestionsUserItem />
-                    <SuggestionsUserItem />
-                    <SuggestionsUserItem />
-                </Stack>
-            </Stack> */}
         </Box >
     );
 }

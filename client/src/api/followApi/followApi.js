@@ -49,3 +49,12 @@ export const unFollowing = async (data) => {
         console.log(error);
     }
 };
+
+export const checkUserFollow = async (userId) => {
+    try {
+        const res = await httpRequest.get(`follow/checkFollow/${userId}`);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};

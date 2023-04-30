@@ -11,7 +11,7 @@ function Post(props) {
     return (
         <ImageList sx={{ width: '100%', overflow: 'hidden' }} cols={3} rowHeight={250} variant="quilted">
             {post.map((item) => {
-                return <ItemListPost item={item} />;
+                return <ItemListPost key={item?._id} item={item} />;
             })
             }
         </ImageList >
@@ -48,7 +48,7 @@ export const ItemListPost = ({ item }) => {
         commentPaging: 1
     }
     return (
-        <ImageListItem key={item?._id}
+        <ImageListItem
             sx={{
                 position: 'relative', display: 'flex',
                 alignItems: 'center', justifyContent: 'center', cursor: 'pointer'

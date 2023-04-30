@@ -65,6 +65,7 @@ function ChatDetail(props) {
     // info friend
     const getfriend = async () => {
         const res = await userApi.getFriend(id)
+        console.log(res)
         setUserfriend(res)
     }
     useEffect(() => {
@@ -156,11 +157,10 @@ function ChatDetail(props) {
 
     // convert timestamp to date time
     const convertTime = (e) => {
-        const date = new Date(e);
-        const hours = ("0" + date.getHours()).slice(-2);
-        const minutes = ("0" + date.getMinutes()).slice(-2);
-        const formattedDateTime = `${hours}:${minutes}`;
-        return formattedDateTime
+        const dateObj = new Date(e * 1000);
+        const dateString = dateObj.toLocaleString();
+        const time = dateString.slice(0, 5)
+        return time
     }
 
     const checkType = (mess) => {
@@ -343,9 +343,10 @@ function ChatDetail(props) {
                             {currentUser?._id === mess?.sourceId ? <div className='iconReply'>
                                 <button onClick={() => handleReplyMessage(mess)}><ArrowBendUpLeft style={{ cursor: 'pointer' }} size={20} /></button>
                             </div> : ''}
-                            <div className='avatar' style={{ width: '30px', height: '30px' }}>
-                                <img src={userfriend?.avatar?.data} alt="avatar"></img>
-                            </div>
+                            {/* <div className='avatar' style={{ width: '30px', height: '30px', border: '1px solid black' }}>
+                                <Avatar src={userfriend?.avatar?.data} alt="avatar" sx={{ objectFit: 'cover' }} />
+                            </div> */}
+                            <Avatar className='avatar' src={userfriend?.avatar?.data} alt="avatar" sx={{ width: '30px', height: '30px', objectFit: 'cover' }} />
                             <div className='mess-detail'>
                                 <p className='timeSend'>{convertTime(mess?.createdAt)}</p>
                                 {renderMessage(mess)}
