@@ -12,7 +12,9 @@ import NewCommentPost from './NewCommentPost';
 import { calculateTimePassed } from '~/utils/utils';
 import { useState } from 'react';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-
+// swipper
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper';
 // styles
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -91,7 +93,35 @@ function CommentPost({
     // const [dataCurrent, setDataCurrent] = useState(data);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    const renderItemImages = () => {
+        return data?.Post.source.map((i) => (
+            <SwiperSlide
+                key={i?.filename}
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                {/* <Box
+                                    sx={{
+                                        position: 'relative',
+                                        width: '100%',
+                                        maxHeight: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        overflow: 'hidden',
+                                    }}
+                                ></Box> */}
+                <img
+                    src={`${data?.Post.source[0].data}`}
+                    alt="post"
+                    style={{ objectFit: 'cover', maxHeight: '100%', width: '100%' }}
+                />
+            </SwiperSlide>
+        ));
+    };
     return (
         <>
             <div onClick={handleOpen} style={styles}>
@@ -120,7 +150,7 @@ function CommentPost({
                                 borderRadius: '10px',
                             }}
                         >
-                            <Grid2 xs="8">
+                            <Grid2 xs="8" position="relative">
                                 <Stack
                                     direction="column"
                                     alignItems="center"
@@ -134,22 +164,17 @@ function CommentPost({
                                         background: 'black',
                                     }}
                                 >
-                                    {/* <Box
-                                    sx={{
-                                        position: 'relative',
-                                        width: '100%',
-                                        maxHeight: '100%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        overflow: 'hidden',
-                                    }}
-                                ></Box> */}
-                                    <img
-                                        src={`${data?.Post.source[0].data}`}
-                                        alt="post"
-                                        style={{ objectFit: 'cover', maxHeight: '100%', width: '100%' }}
-                                    />
+                                    <Swiper
+                                        pagination={true}
+                                        modules={[Pagination]}
+                                        style={{ width: '100%', height: '100%', position: 'relative' }}
+                                        spaceBetween={10}
+                                        slidesPerView={1}
+                                        // onSlideChange={() => console.log('slide change')}
+                                        // onSwiper={(swiper) => console.log(swiper)}
+                                    >
+                                        {renderItemImages()}
+                                    </Swiper>
                                 </Stack>
                             </Grid2>
                             <Grid2 xs={'auto'}>
@@ -315,7 +340,7 @@ function CommentPost({
                                                         fontWeight="600"
                                                         color={theme.palette.text.primary}
                                                     >
-                                                        {data?.reactionCount} likes
+                                                        {data?.Post?.reaction?.length} likes
                                                     </Typography>
                                                 </Stack>
                                                 {/* time */}

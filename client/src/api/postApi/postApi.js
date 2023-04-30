@@ -64,3 +64,16 @@ export const getPostById = async (id) => {
         console.log(error);
     }
 };
+
+export const getExplore = async (params) => {
+    try {
+        const res = await httpRequest.get(`post/explore`, {
+            params: {
+                paging: params?.paging,
+            },
+        });
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
