@@ -52,7 +52,7 @@ function MediaPost({ data = [], isImages = false }) {
                     position: 'relative',
                     overflow: 'hidden',
                     borderRadius: 1,
-                    maxHeight: '600px',
+                    maxHeight: '700px',
                     // minHeight: '550px',
                     // height: '550px',
 

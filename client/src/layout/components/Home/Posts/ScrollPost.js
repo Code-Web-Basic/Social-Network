@@ -21,7 +21,7 @@ function ScrollPost() {
     const { data } = useSelector((state) => state.post);
     const [containerRef, isVisible] = useElementOnScreen({ root: null, rootMargin: '10px', threshold: 1.0 });
 
-    const [showBottomBar, setShowBottomBar] = useState(true);
+    const [showBottomBar, setShowBottomBar] = useState(data.length === 0 ? true : false);
     const [pagingPost, setPagingPost] = useState(1);
 
     useEffect(() => {
@@ -33,11 +33,11 @@ function ScrollPost() {
             const fetchMorePost = async () => {
                 try {
                     const originalPromiseResult = await dispatch(getSkipPost({ paging: pagingPost })).unwrap();
-                    console.log(originalPromiseResult);
                     if (originalPromiseResult.length === 0) {
                         setShowBottomBar(false);
                     } else {
                         setPagingPost((prev) => prev + 1);
+                        setShowBottomBar(true);
                     }
                 } catch (error) {
                     console.log(error);
