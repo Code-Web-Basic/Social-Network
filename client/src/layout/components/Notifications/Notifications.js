@@ -25,11 +25,11 @@ function Notifications() {
     useEffect(() => {
         if (isVisible && showBottomBar) {
             const callApi = async () => {
-                const resExplore = await userApi.getNotify(pagingPost)
-                if (resExplore.length > 0) {
+                const resNotifys = await userApi.getNotify(pagingPost)
+                if (resNotifys.length > 0) {
                     console.log('call')
-                    console.log(resExplore)
-                    setNotifys((prev) => [...prev, ...resExplore])
+                    console.log(resNotifys)
+                    setNotifys((prev) => [...prev, ...resNotifys])
                     setShowBottomBar(true);
                     setPagingPost((prev) => prev + 1);
                 } else {

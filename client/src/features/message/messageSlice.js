@@ -18,7 +18,6 @@ export const getShowMessage = createAsyncThunk('/message/showMessage', async (pa
     // const getMessages = await messageApi.getShowMessage(params);
     // res.messages = getMessages
     // return res;
-    console.log(params)
     const res = await messageApi.getShowMessage(params?.id, params?.paging);
     console.log(res)
     return res;
@@ -69,7 +68,9 @@ export const messageSlice = createSlice({
             state.loading = false;
             state.error = '';
             // state.messages
-            //state.data = action.payload;
+            console.log(action.payload)
+            // console.log(state.messages)
+            state.messages = state.messages.concat(action.payload);
         });
         builder.addCase(getShowMessage.pending, (state, action) => {
             state.loading = true;
@@ -82,14 +83,14 @@ export const messageSlice = createSlice({
             // console.log(state.messages)
             // console.log(action.payload)
             let newData = []
-            const isChildArray = action.payload.every(parentItem => {
-                return state.messages.some(childItem => {
-                    return JSON.stringify(childItem) === JSON.stringify(parentItem);
-                });
-            });
-            // console.log(isChildArray)
-            if (!isChildArray)
-                newData = [...action.payload, ...state.messages]
+            // const isChildArray = action.payload.every(parentItem => {
+            //     return state.messages.some(childItem => {
+            //         return JSON.stringify(childItem) === JSON.stringify(parentItem);
+            //     });
+            // });
+            // // console.log(isChildArray)
+            // if (!isChildArray)
+            //     newData = [...action.payload, ...state.messages]
 
             newData = action.payload?.concat(state.messages)
             // clear mess

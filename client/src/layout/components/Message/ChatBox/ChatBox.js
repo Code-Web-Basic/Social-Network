@@ -73,15 +73,17 @@ function ChatBox() {
             id: id,
             paging: 1
         }
-        if (id !== undefined)
+        if (id !== undefined) {
             dispatch(getShowMessage(data))
+            setPaging(2)
+        }
     }, [id])
 
     // check online
     const [usersOnline, setUsersOnline] = useState([])
     useEffect(() => {
         socket.on('get-online-user', data => {
-            console.log(data)
+            // console.log(data)
             setUsersOnline(data)
         })
     }, [socket])
