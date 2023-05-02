@@ -34,11 +34,11 @@ function ListPost() {
         if (isVisible && showBottomBar) {
             const callApi = async () => {
                 const resExplore = await postApi.getExplore({ paging: pagingPost });
-                if (resExplore.length > 0) {
+                if (resExplore.length >= 15) {
                     setData((prev) => [...prev, ...resExplore]);
-                    setShowBottomBar(true);
                     setPagingPost((prev) => prev + 1);
                 } else {
+                    setData((prev) => [...prev, ...resExplore]);
                     setShowBottomBar(false);
                 }
             };

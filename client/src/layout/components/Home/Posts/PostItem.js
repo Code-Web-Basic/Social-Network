@@ -12,7 +12,7 @@ import MenuUserFollowing from './MenuUserFollowing/MenuUserFollowing';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import CommentPost from './CommentPost/CommentPost';
 import SharePost from './SharePost/SharePost';
-import { calculateTimePassed } from '~/utils/utils';
+import { calculateTimePassed, timeAgo } from '~/utils/utils';
 
 import { reactionPost } from '~/api/postApi/postApi';
 
@@ -198,7 +198,7 @@ function PostItem({ data }) {
                                 </ItemReaction>
                             </CommentPost>
                             {/* share icon */}
-                            <SharePost>
+                            <SharePost idPost={data?.Post?._id}>
                                 <ItemReaction
                                     sx={{
                                         color: theme.palette.grey[800],

@@ -15,6 +15,7 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 // swipper
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper';
+import SharePost from '../SharePost/SharePost';
 // styles
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -114,11 +115,7 @@ function CommentPost({
                                         overflow: 'hidden',
                                     }}
                                 ></Box> */}
-                <img
-                    src={`${data?.Post.source[0].data}`}
-                    alt="post"
-                    style={{ objectFit: 'cover', maxHeight: '100%', width: '100%' }}
-                />
+                <img src={`${i?.data}`} alt="post" style={{ objectFit: 'cover', maxHeight: '100%', width: '100%' }} />
             </SwiperSlide>
         ));
     };
@@ -303,17 +300,19 @@ function CommentPost({
                                                             />
                                                         </ItemReaction>
 
-                                                        {/* unlike */}
-                                                        <ItemReaction
-                                                            sx={{
-                                                                color: theme.palette.grey[800],
-                                                                '&:hover': {
-                                                                    color: theme.palette.grey[600],
-                                                                },
-                                                            }}
-                                                        >
-                                                            <PaperPlaneTilt size={24} />
-                                                        </ItemReaction>
+                                                        {/* share */}
+                                                        <SharePost idPost={data?.Post?._id}>
+                                                            <ItemReaction
+                                                                sx={{
+                                                                    color: theme.palette.grey[800],
+                                                                    '&:hover': {
+                                                                        color: theme.palette.grey[600],
+                                                                    },
+                                                                }}
+                                                            >
+                                                                <PaperPlaneTilt size={24} />
+                                                            </ItemReaction>
+                                                        </SharePost>
                                                     </Stack>
                                                     <Stack direction="row">
                                                         <ItemReaction

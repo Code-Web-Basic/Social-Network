@@ -22,7 +22,6 @@ function FollowingUser() {
             if (res) {
                 setLoading(false);
                 setDataCurrent(res);
-                console.log(res);
             }
         };
         callApi();
