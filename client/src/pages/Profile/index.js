@@ -403,7 +403,7 @@ function Profile() {
                 </div>
                 {/* child in tab pen */}
                 <TabPanel value={value} index={0}>
-                    <Post post={post} />
+                    <Post post={post} setPost={setPost} />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <Saved />

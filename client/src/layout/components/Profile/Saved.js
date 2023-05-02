@@ -8,9 +8,12 @@ import * as postApi from '~/api/postApi/postApi'
 import * as userApi from '~/api/userApi/userApi'
 import CommentPost from '../Home/Posts/CommentPost/CommentPost';
 import { ChatCircle, Heart } from 'phosphor-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addNewBookmark, removeNewBookmark } from '~/features/bookmark/bookmarkSlice';
 function Saved() {
     const [bookMarks, getBookMarks] = useState([])
 
+    // get all bookmark
     const getBookMark = async () => {
         const res = await bookmarksApi.getBookMarks()
         getBookMarks(res)
@@ -31,16 +34,28 @@ function Saved() {
 export default Saved;
 
 export const ItemListSaved = ({ bookMark }) => {
-    const [post, getPost] = useState([])
+    const [post, setPost] = useState([])
     const [user, getUser] = useState([])
+    const [hover, setHover] = useState(false);
+    const [like, setLike] = useState(null);
+    const [bookmark, setBookmark] = useState(null);
+
+    const dispatch = useDispatch();
+    const theme = useTheme();
+    const currentUser = useSelector((state) => state.auth.currentUser.data);
+    const dataBookmark = useSelector((state) => state.bookmark.data);
+
+    // get post by id
     const getPostById = async (postId) => {
         const res = await postApi.getPostById(postId)
-        getPost(res)
+        setPost(res)
     }
     const getUserById = async (userId) => {
         const res = await userApi.getFriend(userId)
         getUser(res)
     }
+
+    // get post in bookmark
     useEffect(() => {
         getPostById(bookMark?.postId)
     }, [])
@@ -48,6 +63,8 @@ export const ItemListSaved = ({ bookMark }) => {
         if (post?.ownerId)
             getUserById(post?.ownerId)
     }, [post])
+
+    // custom data post
     const createRandom = () => {
         var randomstring = '';
         var characters = 'QWERTYUIOPASDFGHJKLZXCVBNM123456789qwertyuiopasdfghjklzxcvbnm';
@@ -63,8 +80,56 @@ export const ItemListSaved = ({ bookMark }) => {
         reactionCount: post?.reaction?.length,
         commentPaging: 1
     }
-    const theme = useTheme();
-    const [hover, setHover] = useState(false);
+
+    // check like and bookmark
+    useEffect(() => {
+        setLike(itemPost?.Post?.reaction?.includes(currentUser?._id))
+        setBookmark(dataBookmark.some((e) => e.postId === itemPost?.Post?._id))
+    }, [post])
+
+    // handle like and unlike
+    const increaseNumberLike = () => {
+        itemPost.Post.reaction = [...itemPost.Post.reaction, currentUser?._id];
+        itemPost.reactionCount++;
+        setPost(itemPost.Post)
+    };
+
+    const decreaseNumberLike = () => {
+        const dataReaction = post.reaction.filter((item) => item !== currentUser?._id);
+        itemPost.Post.reaction = dataReaction;
+        if (itemPost.reactionCount !== 0) {
+            itemPost.reactionCount--;
+        }
+        setPost(itemPost.Post)
+    };
+
+    const handleLikePost = async () => {
+        try {
+            if (itemPost?.Post?.reaction?.includes(currentUser?._id) & like) {
+                await postApi.reactionPost({ id: itemPost?.Post?._id });
+                setLike(false);
+                decreaseNumberLike();
+            } else {
+                await postApi.reactionPost({ id: itemPost?.Post?._id });
+                setLike(true);
+                increaseNumberLike();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // handle bookmark
+    const handleBookmarkPost = async () => {
+        if (bookmark) {
+            await dispatch(removeNewBookmark({ idPost: itemPost?.Post?._id }));
+            setBookmark(false);
+        } else {
+            await dispatch(addNewBookmark({ idPost: itemPost?.Post?._id }));
+            setBookmark(true);
+        }
+    };
+
     return (
         <ImageListItem
             sx={{
@@ -96,10 +161,10 @@ export const ItemListSaved = ({ bookMark }) => {
                 >
                     <CommentPost
                         data={itemPost}
-                        like={false}
-                        bookmark={false}
-                        handleLikePost={() => { }}
-                        handleBookmarkPost={() => { }}
+                        like={like}
+                        handleLikePost={handleLikePost}
+                        bookmark={bookmark}
+                        handleBookmarkPost={handleBookmarkPost}
                         styles={{
                             position: 'absolute',
                             height: '100%',
