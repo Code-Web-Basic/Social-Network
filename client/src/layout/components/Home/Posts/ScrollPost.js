@@ -39,15 +39,6 @@ function ScrollPost() {
                         setShowBottomBar(false);
                     } else {
                         setPagingPost((prev) => prev + 1);
-                        // setShowBottomBar(true);
-                        // console.log(
-                        //     'paging: ',
-                        //     pagingPost,
-                        //     ' ,data: ',
-                        //     originalPromiseResult,
-                        //     ' ,isVisible ',
-                        //     isVisible,
-                        // );
                     }
                 } catch (error) {
                     console.log(error);
@@ -55,7 +46,6 @@ function ScrollPost() {
             };
             fetchMorePost();
         }
-        // console.log('paging: ', pagingPost, ' ,data: ', data, ' ,isVisible ', isVisible);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isVisible, pagingPost, showBottomBar]);
 

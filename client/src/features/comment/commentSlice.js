@@ -6,7 +6,8 @@ export const getFirstComment = createAsyncThunk('comment/getFirstComment', async
     return res;
 });
 export const getSkipComment = createAsyncThunk('comment/getSkipComment', async (params, thinAPI) => {
-    return;
+    const res = await commentApi.getComment({ id: params?.id, paging: params?.paging });
+    return res;
 });
 export const addNewComment = createAsyncThunk('comment/addNewComment', async (params, thunkAPI) => {
     const data = {
@@ -81,7 +82,7 @@ export const CommentSlice = createSlice({
         builder.addCase(getSkipComment.fulfilled, (state, action) => {
             state.loading = false;
             state.error = '';
-            state.data = [...state.data, action.payload];
+            state.data = [...state.data, ...action.payload];
         });
         builder.addCase(addNewComment.pending, (state, action) => {
             state.loading = true;
