@@ -1,7 +1,7 @@
 // mui ui
 import { Avatar, Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import * as configRouter from '~/config/config';
@@ -27,8 +27,11 @@ export function MenuModalUser({ children }) {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const currentUser = useSelector((state) => state.auth.currentUser.data);
     const logoutAccount = async () => {
         console.log('call');
+        console.log(currentUser?._id)
+        socket.emit('remove-user', currentUser?._id)
         socket.disconnect()
         await dispatch(clearMessage())
         await dispatch(logout());

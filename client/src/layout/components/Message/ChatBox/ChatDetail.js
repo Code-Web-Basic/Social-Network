@@ -1,6 +1,6 @@
 import * as React from 'react';
 // mui ui
-import { Avatar, FormControl, Input, InputAdornment, Stack } from '@mui/material';
+import { Avatar, CircularProgress, FormControl, Input, InputAdornment, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import { ArrowBendUpLeft, Heart, Image, Phone, Smiley, VideoCamera, X } from 'phosphor-react';
@@ -9,14 +9,14 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearMessage, getShowMessage, postSendMessage } from '~/features/message/messageSlice';
+import { clearMess, clearMessage, getShowMessage, postSendMessage } from '~/features/message/messageSlice';
 import * as messageApi from '~/api/messageApi/messageApi';
 import './ChatDetail.css'
 import { Link, useParams } from 'react-router-dom';
 import * as userApi from '~/api/userApi/userApi'
 import { useRef } from 'react';
 import io from 'socket.io-client';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import useElementOnScreen from '~/hook/useElementOnScreen';
 const socket = io("http://localhost:3240");
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -53,18 +53,25 @@ function ChatDetail(props) {
     const [replyValue, setReplyValue] = useState('')
     const [messageReceive, setMessageReceive] = useState({})
 
+    const [containerRef, isVisible] = useElementOnScreen({ root: null, threshold: 1 });
+    // load het paging
+
+    const [loading, setLoading] = useState(false)
+
     const messagesEndRef = useRef(null)
     const { id } = useParams()
     const dispatch = useDispatch();
-    const { online, paging, setPaging } = props
+    const { online, paging, setPaging, showBottomBar, setShowBottomBar } = props
 
     // get info
     const messageData = useSelector((state) => state.message.messages);
+    const loadingMessage = useSelector((state) => state.message.loading);
     const currentUser = useSelector((state) => state.auth.currentUser.data);
 
     // info friend
     const getfriend = async () => {
         const res = await userApi.getFriend(id)
+        // console.log(res)
         setUserfriend(res)
     }
     useEffect(() => {
@@ -86,7 +93,6 @@ function ChatDetail(props) {
             isReply: false
         }
         await dispatch(postSendMessage(data));
-        await dispatch(getShowMessage({ id: id, paging: 1 }))
         socket.emit('send_message', {
             message: data
         })
@@ -101,7 +107,6 @@ function ChatDetail(props) {
         formData.append('message', ' ');
         formData.append('files', e.target.files[0]);
         await dispatch(postSendMessage(formData));
-        await dispatch(getShowMessage({ id: id, paging: 1 }))
         const res = await messageApi.postSendMessage(formData)
         socket.emit('send_message', {
             message: {
@@ -124,7 +129,6 @@ function ChatDetail(props) {
         }
         if (event.key === 'Enter' && currentChat !== '') {
             await dispatch(postSendMessage(data));
-            await dispatch(getShowMessage({ id: id, paging: 1 }))
             socket.emit('send_message', {
                 message: data
             })
@@ -156,24 +160,12 @@ function ChatDetail(props) {
 
     // convert timestamp to date time
     const convertTime = (e) => {
-        const date = new Date(e);
-        const hours = ("0" + date.getHours()).slice(-2);
-        const minutes = ("0" + date.getMinutes()).slice(-2);
-        const formattedDateTime = `${hours}:${minutes}`;
-        return formattedDateTime
+        const dateObj = new Date(e * 1000);
+        const dateString = dateObj.toLocaleString();
+        const time = dateString.slice(0, 5)
+        return time
     }
 
-    const checkType = (mess) => {
-        if (mess === ' ') {
-            return ('image')
-        }
-        else if (mess === '❤') {
-            return ('tym')
-        }
-        else {
-            return ('mess')
-        }
-    }
     // render message
     const renderMessage = (mess) => {
         if (mess.message === ' ') {
@@ -194,7 +186,7 @@ function ChatDetail(props) {
         }
         else {
             return (<div>
-                {mess.replyId ? (
+                {(mess.replyId && ('messReply' in mess)) ? (
                     <div>
                         {
                             mess?.messReply[0]?.message === '❤' &&
@@ -286,14 +278,32 @@ function ChatDetail(props) {
                 {mess.message}</p>)
         }
     }
-    const fetchMoreData = async () => {
-        setPaging((prevPaging) => prevPaging + 1);
-        const params = {
-            id: id,
-            paging: paging + 1
+
+    useEffect(() => {
+        if (isVisible && showBottomBar && messageData?.length >= 15) {
+            const fetchMorePost = async () => {
+                if (id !== undefined) {
+                    setLoading(true)
+                    const originalPromiseResult = await dispatch(getShowMessage({
+                        id: id,
+                        paging: paging
+                    }))
+                    if (originalPromiseResult?.payload?.length < 15) {
+                        setShowBottomBar(false);
+                    }
+                    else {
+                        setPaging((prev) => prev + 1);
+                        // setShowBottomBar(true);
+
+                    }
+                    setLoading(false)
+                }
+            };
+            fetchMorePost();
+            // console.log(paging);
         }
-        await dispatch(getShowMessage(params))
-    }
+    }, [dispatch, isVisible, paging, showBottomBar]);
+
     return (<Stack direction='column' height='100%' width='100%'>
         {/* header */}
         <Stack direction='row' borderBottom='1px solid rgb(219, 219, 219)' height='50px' marginLeft='15px' justifyContent='space-between'>
@@ -325,51 +335,37 @@ function ChatDetail(props) {
         </Stack>
         {/* char detail*/}
         <Stack style={{ width: '100%', height: 'calc(100% - 50px)', position: 'relative' }}>
-            <div id="scrollableDiv" style={{
-                height: 'calc(100% - 75px)', overflowX: 'hidden', overflowY: 'auto', display: "flex",
-                flexDirection: "column-reverse"
-            }}>
-                <InfiniteScroll
-                    dataLength={15 && messageData?.length}
-                    next={() => fetchMoreData()}
-                    style={{ display: "flex", flexDirection: "column-reverse", overflow: 'hidden' }} //To put endMessage and loader to the top.
-                    inverse={true}
-                    hasMore={true}
-                    scrollableTarget="scrollableDiv"
-                >
-                    {/* display messages */}
-                    {messageData?.length > 0 ? messageData?.map((mess) => (
-                        <div key={mess._id} className={currentUser?._id === mess?.sourceId ? 'item-mess mychat' : 'item-mess'}>
-                            {currentUser?._id === mess?.sourceId ? <div className='iconReply'>
-                                <button onClick={() => handleReplyMessage(mess)}><ArrowBendUpLeft style={{ cursor: 'pointer' }} size={20} /></button>
-                            </div> : ''}
-                            <div className='avatar' style={{ width: '30px', height: '30px' }}>
-                                <img src={userfriend?.avatar?.data} alt="avatar"></img>
-                            </div>
-                            <div className='mess-detail'>
-                                <p className='timeSend'>{convertTime(mess?.createdAt)}</p>
-                                {renderMessage(mess)}
+            <ScrollToBottom >
+                {<div id='loading' ref={containerRef} style={{ width: '100%', height: '10px' }}></div>}
+                {showBottomBar && <CircularProgress />}
+                {messageData?.map((mess) => (
+                    <div key={mess._id} className={currentUser?._id === mess?.sourceId ? 'item-mess mychat' : 'item-mess'}>
+                        {currentUser?._id === mess?.sourceId ? <div className='iconReply'>
+                            <button onClick={() => handleReplyMessage(mess)}><ArrowBendUpLeft style={{ cursor: 'pointer' }} size={20} /></button>
+                        </div> : ''}
+                        <Avatar className='avatar' src={userfriend?.avatar?.data} alt="avatar" sx={{ width: '30px', height: '30px', objectFit: 'cover' }} />
+                        <div className='mess-detail'>
+                            <p className='timeSend'>{convertTime(mess?.createdAt)}</p>
+                            {renderMessage(mess)}
+                        </div>
+                        {currentUser?._id !== mess?.sourceId ? <div className='iconReply'>
+                            <button onClick={() => handleReplyMessage(mess)}><ArrowBendUpLeft style={{ cursor: 'pointer' }} size={20} /></button>
+                        </div> : ''}
+                    </div>
+                ))}
+                {/* display socket */}
+                {JSON.stringify(messageReceive) === '{}' ? '' : <div className='item-mess'>
+                    <div className='avatar' style={{ width: '30px', height: '30px' }}>
+                        <img src={userfriend?.avatar?.data} alt='avatar'></img>
+                    </div>
+                    {renderMessSocket(messageReceive)}
+                    <div className='iconReply'>
+                        <button onClick={() => handleReplyMessage(messageReceive.message)}><ArrowBendUpLeft style={{ cursor: 'pointer' }} size={20} /></button>
+                    </div>
+                </div>}
+                <div id='testtstss' ref={messagesEndRef} />
+            </ScrollToBottom>
 
-                            </div>
-                            {currentUser?._id !== mess?.sourceId ? <div className='iconReply'>
-                                <button onClick={() => handleReplyMessage(mess)}><ArrowBendUpLeft style={{ cursor: 'pointer' }} size={20} /></button>
-                            </div> : ''}
-                        </div>
-                    )) : <></>}
-                    {/* display socket */}
-                    {JSON.stringify(messageReceive) === '{}' ? '' : <div className='item-mess'>
-                        <div className='avatar' style={{ width: '30px', height: '30px' }}>
-                            <img src={userfriend?.avatar?.data} alt='avatar'></img>
-                        </div>
-                        {renderMessSocket(messageReceive)}
-                        <div className='iconReply'>
-                            <button onClick={() => handleReplyMessage(messageReceive.message)}><ArrowBendUpLeft style={{ cursor: 'pointer' }} size={20} /></button>
-                        </div>
-                    </div>}
-
-                </InfiniteScroll>
-                <div ref={messagesEndRef} />
-            </div>
             {/* Input */}
             <div style={{ position: 'absolute', bottom: '20px', width: '90%', height: '70px', left: '5%', right: '5%' }}>
                 <div className={reply ? 'reply' : 'non-reply'}>
@@ -382,7 +378,7 @@ function ChatDetail(props) {
                     </div>
                 </div>
                 <FormControl style={{ position: 'absolute', bottom: '10px', width: '100%', height: '25px', display: 'flex', flexDirection: 'row' }}>
-                    <Input style={{ fontSize: '18px', width: '100%' }}
+                    <Input style={{ fontSize: '18px', width: '100%', fontFamily: '-moz-initial' }}
                         startAdornment={
                             <InputAdornment position="start">
                                 <Smiley size={25} onClick={handlePickerVisible} cursor='pointer' />
@@ -420,3 +416,25 @@ function ChatDetail(props) {
 }
 
 export default ChatDetail;
+
+function ScrollToBottom({ children }) {
+    // console.log(children[2])
+    const [key, setKey] = useState(0);
+    const containerRef = useRef(null);
+    useEffect(() => {
+        if (containerRef.current) {
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+        // console.log(key);
+    }, [key]);
+
+    useEffect(() => {
+        setKey(key + 1);
+    }, [children[2]]);
+
+    return (
+        <div ref={containerRef} style={{ overflowY: 'auto', overflowX: 'hidden', height: 'calc(100% - 75px)' }}>
+            {children}
+        </div>
+    );
+}

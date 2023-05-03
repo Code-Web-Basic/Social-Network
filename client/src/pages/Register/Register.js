@@ -64,6 +64,29 @@ function Register() {
     const handleClose = () => {
         setOpen(false);
     };
+    const handleClickGoogle = async () => {
+        const url = 'http://localhost:3240/v1/auth/google';
+        window.open(url, '_self');
+        console.log('click login google');
+        // window.addEventListener('message', async (event) => {
+        //     console.log('click login after close window google');
+        //     if (event.origin === window.location.origin) {
+        //         popup.close();
+
+        //         // Get the authorization code from the event data
+        //         const code = event.data.code;
+
+        //         // Call your API with the authorization code
+        //         console.log(code);
+        //         try {
+        //             // window.open('http://localhost:3240/v1/auth/google', '_self');
+        //             await dispatch(signInGoogle());
+        //         } catch (error) {
+        //             console.log('failed', error);
+        //         }
+        //     }
+        // });
+    };
     return (
         <Grid container width="100%" height={'100vh'}>
             <Grid item xs={6} height="100%" alignItems="center" justifyContent="center">
@@ -203,6 +226,7 @@ function Register() {
                             }}
                         >
                             <Button
+                                onClick={handleClickGoogle}
                                 variant="outlined"
                                 sx={{
                                     height: 44,
@@ -218,7 +242,7 @@ function Register() {
                             >
                                 Google
                             </Button>
-                            <Button
+                            {/* <Button
                                 variant="outlined"
                                 sx={{
                                     height: 44,
@@ -233,7 +257,7 @@ function Register() {
                                 startIcon={<GithubLogo size={20} />}
                             >
                                 Github
-                            </Button>
+                            </Button> */}
                         </Box>
                     </Stack>
                 </Stack>
