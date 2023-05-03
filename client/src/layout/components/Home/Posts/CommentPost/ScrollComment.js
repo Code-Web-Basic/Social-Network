@@ -14,7 +14,9 @@ function ScrollComment({ id, open }) {
     const [pagingPost, setPagingPost] = useState(1);
     useEffect(() => {
         // setMessages(data);
+        // if(data?.length)
         dispatch(clearDataComment());
+        setShowBottomBar(true);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
@@ -38,7 +40,7 @@ function ScrollComment({ id, open }) {
             fetchMorePost();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isVisible, pagingPost, showBottomBar, id]);
+    }, [isVisible, pagingPost, showBottomBar, open]);
     const renderComment = () =>
         data?.map((item) => {
             return <CommentItemPost key={item?._id} data={item} />;
