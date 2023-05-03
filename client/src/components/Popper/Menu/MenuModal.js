@@ -28,6 +28,8 @@ function MenuModal({ children, data = [] }) {
                 alignItems="center"
                 justifyContent="center"
                 spacing={2}
+                component={item.component}
+                to={item.to}
                 sx={{
                     '&:hover': {
                         bgcolor: theme.palette.grey[100],

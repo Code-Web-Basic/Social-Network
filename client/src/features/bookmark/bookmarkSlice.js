@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import * as bookmarkApi from '~/api/bookmarksApi/bookmarksApi';
 
 export const getBookMarkFirst = createAsyncThunk('bookmark/getBookmarkFirst', async (params, thunkAPI) => {
-    const res = await bookmarkApi.getBookMarks();
+    const res = await bookmarkApi.getAllBookMark();
     return res;
 });
 export const addNewBookmark = createAsyncThunk('bookmark/addNewBookmark', async (params, thunkAPI) => {

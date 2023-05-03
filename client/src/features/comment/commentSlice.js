@@ -56,6 +56,11 @@ export const CommentSlice = createSlice({
             arrTmp[index].reaction = arrTmp[index].reaction.filter((i) => i !== action.payload.idUser);
             state.data = JSON.parse(JSON.stringify(arrTmp));
         },
+        clearDataComment: (state, action) => {
+            state.loading = false;
+            state.error = '';
+            state.data = [];
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(getFirstComment.pending, (state, action) => {
@@ -115,5 +120,5 @@ export const CommentSlice = createSlice({
         });
     },
 });
-export const { increaseReactionComment, decreaseReactionComment } = CommentSlice.actions;
+export const { increaseReactionComment, decreaseReactionComment, clearDataComment } = CommentSlice.actions;
 export default CommentSlice.reducer;

@@ -43,10 +43,11 @@ const create = async (data) => {
 
 const deleteBookmark = async (userId, id) => {
   try {
-    await getDB()
+    const data = await getDB()
       .collection(bookmarkCollectionName)
-      .deleteOne({ _id: ObjectId(id), userId: userId });
-    return "deleted successfully";
+      .deleteOne({ postId: id, userId: userId });
+    if (data.deletedCount > 0) return "deleted successfully";
+    else return "not found";
   } catch (error) {
     throw new Error(error);
   }
@@ -57,7 +58,9 @@ const deleteAll = async (userId) => {
       .collection(bookmarkCollectionName)
       .deleteMany({ userId: userId });
     return "deleted successfully";
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 const getBookmarks = async (id, paging) => {
   try {
@@ -79,7 +82,21 @@ const getBookmarks = async (id, paging) => {
       .skip((paging - 1) * 15)
       .toArray();
     return result;
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const getAlBookmark = async (id) => {
+  try {
+    const result = await getDB()
+      .collection(bookmarkCollectionName)
+      .find({ userId: id })
+      .toArray();
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 module.exports = {
@@ -87,4 +104,5 @@ module.exports = {
   deleteBookmark,
   deleteAll,
   getBookmarks,
+  getAlBookmark,
 };

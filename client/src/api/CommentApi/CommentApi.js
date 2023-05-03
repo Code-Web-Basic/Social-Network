@@ -7,10 +7,11 @@ export const getComment = async (params) => {
                 paging: params.paging,
             },
         });
+        console.log(params);
         return res?.result;
         // console.log(params.id);
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const getCommentReply = async (params) => {
@@ -22,7 +23,7 @@ export const getCommentReply = async (params) => {
         });
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const createComment = async (data) => {
@@ -32,7 +33,7 @@ export const createComment = async (data) => {
         });
         return res;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const updateComment = async (params) => {
@@ -40,7 +41,7 @@ export const updateComment = async (params) => {
         const res = await httpRequest.post(`comment/update/${params.id}`);
         return res;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const deleteComment = async (params) => {
@@ -48,7 +49,7 @@ export const deleteComment = async (params) => {
         const res = await httpRequest.post(`comment/delete/${params.id}`);
         return res;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -57,6 +58,6 @@ export const likeComment = async (params) => {
         const res = await httpRequest.put(`/comment/reaction/${params?.id}`);
         return res;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };

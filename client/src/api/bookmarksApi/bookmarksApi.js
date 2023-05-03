@@ -6,10 +6,18 @@ export const getBookMarks = async () => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
-
+export const getAllBookMark = async () => {
+    try {
+        const res = await httpRequest.get('bookmark/getAllBookmark');
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+};
 export const createBookMarks = async (params) => {
     try {
         const res = await httpRequest.post('bookmark/create', {
@@ -18,18 +26,16 @@ export const createBookMarks = async (params) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const deleteBookMarks = async (params) => {
     try {
-        const res = await httpRequest.post(`bookmark/delete/${params.postId}`, {
-            postId: params.postId,
-        });
+        const res = await httpRequest.post(`bookmark/delete/${params.postId}`);
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 

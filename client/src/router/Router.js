@@ -9,6 +9,7 @@ import Create from '~/pages/Create/Create';
 import VideoCall from '~/layout/components/Message/ChatBox/VideoCall';
 import VoiceCall from '~/layout/components/Message/ChatBox/VoiceCall';
 import Explore from '~/pages/Explore/Explore';
+import Reels from '~/pages/Reel';
 
 const publicRoutes = [
     { path: routerConfig.login, component: Login, layout: null },
@@ -18,7 +19,7 @@ const privateRoutes = [
     { path: routerConfig.home, component: Home },
     { path: routerConfig.search, component: Home },
     { path: routerConfig.explore, component: Explore },
-    { path: routerConfig.reels, component: Home },
+    { path: routerConfig.reels, component: Reels },
     { path: routerConfig.message, component: Message },
     { path: routerConfig.create, component: Create },
     { path: routerConfig.profile, component: Profile },

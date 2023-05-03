@@ -16,7 +16,7 @@ export const getUserInfo = async () => {
         const res = await httpRequest.get('/auth/login/success');
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -25,7 +25,7 @@ export const logout = async () => {
         const res = await httpRequest.post('/auth/logout');
         console.log(res?.result);
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -42,6 +42,6 @@ export const registerPassword = async (params) => {
         console.log(res);
         return res;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
