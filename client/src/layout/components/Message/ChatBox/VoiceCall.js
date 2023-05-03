@@ -8,8 +8,8 @@ function VoiceCall() {
     const currentUser = useSelector((state) => state.auth.currentUser.data);
     const { id } = useParams()
     const myMeeting = async (element) => {
-        const appID = 1615715795;
-        const serverSecret = "989c7ce4e12b8579315ea72ef671dc8e";
+        const appID = 2010773050;
+        const serverSecret = "6d5a42d37b322b11406d9adc96c9fb36";
         const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, id, Date.now().toString(), currentUser?.Name);
         const zp = ZegoUIKitPrebuilt.create(kitToken);
         // start the call

@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { BookmarkSimple, GridFour, Tag, X } from 'phosphor-react';
-import { Avatar, Button, Modal, Stack, useTheme } from '@mui/material';
+import { Avatar, Button, CircularProgress, Modal, Skeleton, Stack, useTheme } from '@mui/material';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Post from '~/layout/components/Profile/Post';
 import Saved from '~/layout/components/Profile/Saved';
@@ -65,6 +65,7 @@ function Profile() {
     const theme = useTheme();
     const navigate = useNavigate();
     const currentUser = useSelector((state) => state.auth.currentUser.data);
+    const loading = useSelector((state) => state.auth.loading);
     //
     const [value, setValue] = useState(0);
     const [openfollower, setOpenFollower] = useState(false);
@@ -73,21 +74,40 @@ function Profile() {
     const [following, setFollowing] = useState([])
     const [post, setPost] = useState([])
     const [user, getUser] = useState(null)
-    const [follow, setFollow] = useState(false)
+    const [follow, setFollow] = useState(null)
     //
     const handleOpenFollower = () => setOpenFollower(true);
     const handleCloseFollower = () => setOpenFollower(false);
     const handleOpenFollowing = () => setOpenFollowing(true);
     const handleCloseFollowing = () => setOpenFollowing(false);
     const { id } = useParams()
-    //console.log(id)
+    // get friend
     const getfriend = async () => {
         const res = await userApi.getFriend(id)
         getUser(res)
     }
+
     useEffect(() => {
         getfriend()
     }, [id])
+
+    const checkFollow = async (id) => {
+        if (currentUser?._id !== id) {
+            const res = await followApi.checkUserFollow(id)
+            console.log(res)
+            if (res?.isFollow) {
+                setFollow(true)
+            }
+            else {
+                setFollow(false)
+            }
+        }
+    }
+    useEffect(() => {
+        checkFollow(id)
+    }, [id])
+
+    // handle follow
     const handleFollow = async () => {
         await followApi.follow(id)
         await getFollowing()
@@ -98,28 +118,28 @@ function Profile() {
         await getFollowing()
         setFollow(false)
     }
+
+    // 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
-    const handleEdit = () => {
+    const handleNewMessage = () => {
         navigate(`/message/${id}`)
     }
 
+    // call Api follow and post
     const getPostOfUser = async () => {
         const res = await userApi.getPostOfUser(id)
-        //console.log(res)
         setPost(res)
     }
 
     const getFollower = async () => {
         const res = await followApi.getFollower(id)
-        //console.log(res)
         setFollower(res)
     }
     const getFollowing = async () => {
         const res = await followApi.getFollowing(id)
-        //console.log(res)
         setFollowing(res)
     }
     useEffect(() => {
@@ -127,10 +147,13 @@ function Profile() {
         getFollower()
         getFollowing()
     }, [id])
+
+    // handle unfollower/ unfollowing
     const handleUnFollower = async (id) => {
         await followApi.unFollower(id)
         await getFollower()
     }
+
     const handleUnFollowing = async (id) => {
         const data = {
             followerId: id
@@ -138,6 +161,8 @@ function Profile() {
         await followApi.unFollowing(data)
         await getFollowing()
     }
+
+    // render list follower
     const renderFollower = () => {
         return (
             <>{
@@ -171,6 +196,8 @@ function Profile() {
             }</>
         );
     };
+
+    // render list following
     const renderFollowing = () => {
         return (
             <>{
@@ -204,19 +231,21 @@ function Profile() {
             }</>
         );
     };
+
+    // change avatar
     const dispatch = useDispatch();
     const handleChangeAvatar = async (e) => {
         let formData = new FormData();
         formData.append('file', e.target.files[0]);
-        console.log(formData.get('file'))
         await dispatch(updateUser(formData))
     }
     return (
         <Grid container height='100vh' sx={{ overflow: 'auto' }}>
             <Grid item xs={1.5}></Grid>
             <Grid item xs={9} borderRadius='5px' boxShadow='rgba(0, 0, 0, 0.16) 0px 1px 4px' padding='20px 10px' sx={{ height: '100%' }}>
+                {/* profile */}
                 <div style={{ borderBottom: '1px solid rgb(219, 219, 219)', width: '100%', height: '150px', paddingBottom: '44px', display: 'flex' }}>
-
+                    {/* display and update avatar */}
                     {user?._id === currentUser?._id ?
                         <div style={{ width: '30%', height: '100%', display: 'flex', justifyContent: 'center' }}>
                             <input
@@ -229,35 +258,63 @@ function Profile() {
                             />
                             <label htmlFor="file" >
                                 <div style={{ width: '30%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}>
-                                    <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
+                                    {!loading && <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename}
+                                        src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data}
+                                        style={{ width: '150px', height: '150px' }}
+                                    />}
+                                    {loading && <CircularProgress color="secondary" />}
                                 </div>
                             </label>
                         </div>
                         :
                         <div style={{ width: '30%', height: '100%', display: 'flex', objectFit: 'cover', justifyContent: 'center' }}>
-                            <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename} src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data} style={{ width: '150px', height: '150px' }} />
+                            {!loading && <Avatar alt={user?._id === currentUser?._id ? currentUser?.avatar?.filename : user?.avatar?.filename}
+                                src={user?._id === currentUser?._id ? currentUser?.avatar?.data : user?.avatar?.data}
+                                style={{ width: '150px', height: '150px' }}
+                            />}
+                            {loading && <CircularProgress color="secondary" />}
                         </div>}
+                    {/* display info  */}
                     <div style={{ width: '70%', height: '100%' }}>
                         <div style={{ display: 'flex', padding: '5px' }}>
+                            {/* display user */}
                             <div>
-                                <h4>{user?._id === currentUser?._id ? currentUser?.userName : user?.userName}</h4>
+                                {!loading && <h4>{user?._id === currentUser?._id ? currentUser?.userName : user?.userName}</h4>}
+                                {loading && <Skeleton animation="wave" />}
                             </div>
+                            {/* display button message */}
                             <div style={{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                {user?._id !== currentUser?._id ?
-                                    <button style={{ padding: '8px 10px', backgroundColor: 'rgb(0, 149, 246)', color: 'white', cursor: 'pointer', fontWeight: '600', borderRadius: '5px' }} onClick={handleEdit}>Message</button> :
-                                    ''}
+                                {user?._id !== currentUser?._id &&
+                                    <button style={{
+                                        padding: '8px 10px', backgroundColor: 'rgb(0, 149, 246)',
+                                        color: 'white', cursor: 'pointer',
+                                        fontWeight: '600', borderRadius: '5px'
+                                    }}
+                                        onClick={handleNewMessage}>
+                                        Message
+                                    </button>}
                             </div>
+                            {/* button follow/ unfollow */}
                             {
-                                user?._id !== currentUser?._id ? <div style={{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    {follow ? <button onClick={handleUnFollow}><b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>UnFollow</b></button> : <button onClick={handleFollow}><b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>Follow</b></button>}
-                                </div> : ''
+                                user?._id !== currentUser?._id &&
+                                <div style={{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    {follow ? <button onClick={handleUnFollow}>
+                                        <b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>UnFollow</b>
+                                    </button>
+                                        :
+                                        <button onClick={handleFollow}>
+                                            <b style={{ padding: '8px 10px', color: 'black', fontSize: '13px', cursor: 'pointer' }}>
+                                                Follow</b>
+                                        </button>}
+                                </div>
                             }
-
                         </div>
+                        {/* display number post/ follower/ following */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px', position: 'relative' }}>
                             <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
                                 <p ><b>{post?.length}</b> Posts</p>
                             </div>
+                            {/* display follower */}
                             <div style={{ cursor: 'pointer' }}>
                                 <button onClick={handleOpenFollowing} style={{ cursor: 'pointer', fontSize: '16px' }}><b>{following?.length}</b> Followers</button>
                                 <Modal
@@ -289,8 +346,11 @@ function Profile() {
                                     </Box>
                                 </Modal>
                             </div>
+                            {/* display following */}
                             <div style={{ cursor: 'pointer' }}>
-                                <button onClick={handleOpenFollower} style={{ cursor: 'pointer', fontSize: '16px' }} ><b>{follower?.length}</b> Following</button>
+                                <button onClick={handleOpenFollower} style={{ cursor: 'pointer', fontSize: '16px' }} >
+                                    <b>{follower?.length}</b> Following
+                                </button>
                                 <Modal
                                     open={openfollower}
                                     onClose={handleCloseFollower}
@@ -326,18 +386,24 @@ function Profile() {
                         </div>
                     </div>
                 </div>
+
+                {/* tab pen */}
                 <div style={{ width: '100%', height: '78px' }}>
                     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
                         <Box sx={{ borderColor: 'divider' }}>
                             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                                 <Tab icon={<GridFour />} iconPosition="start" label="POSTS" {...a11yProps(0)} />
-                                {user?._id === currentUser?._id ? <Tab icon={<BookmarkSimple />} iconPosition="start" label="SAVED" {...a11yProps(1)} /> : ''}
+                                {user?._id === currentUser?._id ?
+                                    <Tab icon={<BookmarkSimple />} iconPosition="start" label="SAVED" {...a11yProps(1)} />
+                                    :
+                                    ''}
                             </Tabs>
                         </Box>
                     </Box>
                 </div>
+                {/* child in tab pen */}
                 <TabPanel value={value} index={0}>
-                    <Post post={post} />
+                    <Post post={post} setPost={setPost} />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <Saved />
