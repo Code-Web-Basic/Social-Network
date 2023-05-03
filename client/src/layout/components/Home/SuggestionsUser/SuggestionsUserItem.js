@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 //mui ui
 import { Avatar, Button, IconButton, Stack, Typography, useTheme } from '@mui/material';
 // components
-import TippyHeadless from '@tippyjs/react/headless';
-import MenuUserFollowing from '../Posts/MenuUserFollowing/MenuUserFollowing';
 import { X } from 'phosphor-react';
 import { useState } from 'react';
 import * as followerApi from '~/api/followApi/followApi';
+import * as routerConfig from '~/config/config';
+import { Link } from 'react-router-dom';
 function SuggestionsUserItem({ data = {}, typeLayout = 'row' }) {
     const theme = useTheme();
     // const [hover, setHover] = useState();
@@ -34,7 +34,7 @@ function SuggestionsUserItem({ data = {}, typeLayout = 'row' }) {
     };
     return typeLayout === 'row' ? (
         <Stack direction="row" alignItems="center" justifyContent="space-between" p={1}>
-            <TippyHeadless
+            {/* <TippyHeadless
                 interactive
                 placement="bottom-start"
                 render={(attrs) => (
@@ -42,19 +42,24 @@ function SuggestionsUserItem({ data = {}, typeLayout = 'row' }) {
                         <MenuUserFollowing data={data} />
                     </div>
                 )}
+            > */}
+            <Stack
+                direction="row"
+                spacing={2}
+                component={Link}
+                to={routerConfig.router.profile.slice(0, -3) + `${data?._id}`}
             >
-                <Stack direction="row" spacing={2}>
-                    <Avatar src={`${data?.avatar?.data ? data?.avatar.data : ''}`} alt="user" />
-                    <Stack direction="column">
-                        <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
-                            {data?.userName}
-                        </Typography>
-                        <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
-                            Suggested for you
-                        </Typography>
-                    </Stack>
+                <Avatar src={`${data?.avatar?.data ? data?.avatar.data : ''}`} alt="user" />
+                <Stack direction="column">
+                    <Typography variant="body2" fontWeight={600} color={theme.palette.text.primary}>
+                        {data?.userName}
+                    </Typography>
+                    <Typography variant="body2" fontWeight={400} color={theme.palette.text.secondary}>
+                        Suggested for you
+                    </Typography>
                 </Stack>
-            </TippyHeadless>
+            </Stack>
+            {/* </TippyHeadless> */}
 
             <Stack direction="row">
                 {!isFollower ? (
