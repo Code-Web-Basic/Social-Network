@@ -149,11 +149,20 @@ function UploadCreatePost({ setSelectedFile, selectedFile = [], handleNextShare 
                                                 background: 'black',
                                             }}
                                         >
-                                            <img
-                                                src={URL.createObjectURL(i)}
-                                                alt="post"
-                                                style={{ objectFit: 'cover', maxHeight: '100%', maxWidth: '100%' }}
-                                            />
+                                            {i.type === 'video/mp4' ? (
+                                                <video
+                                                    controls
+                                                    style={{ objectFit: 'cover', maxHeight: '100%', maxWidth: '100%' }}
+                                                >
+                                                    <source src={URL.createObjectURL(i)} type="video/mp4" />
+                                                </video>
+                                            ) : (
+                                                <img
+                                                    src={URL.createObjectURL(i)}
+                                                    alt="post"
+                                                    style={{ objectFit: 'cover', maxHeight: '100%', maxWidth: '100%' }}
+                                                />
+                                            )}
                                         </Stack>
                                     </SwiperSlide>
                                 );

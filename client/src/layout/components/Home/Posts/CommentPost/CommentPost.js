@@ -16,6 +16,7 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper';
 import SharePost from '../SharePost/SharePost';
+import VideoMedia from '~/components/VideoMedia/VideoMedia';
 // styles
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -115,7 +116,24 @@ function CommentPost({
                                         overflow: 'hidden',
                                     }}
                                 ></Box> */}
-                <img src={`${i?.data}`} alt="post" style={{ objectFit: 'cover', maxHeight: '100%', width: '100%' }} />
+                {i.type.includes('image') ? (
+                    <img
+                        src={`${i?.data}`}
+                        alt="post"
+                        style={{ objectFit: 'cover', maxHeight: '100%', width: '100%' }}
+                    />
+                ) : (
+                    <VideoMedia
+                        autoPlay={true}
+                        style={{
+                            objectFit: 'cover',
+                            maxHeight: '100%',
+                            width: '100%',
+                        }}
+                        src={`${i?.data}`}
+                        type={i?.type}
+                    />
+                )}
             </SwiperSlide>
         ));
     };

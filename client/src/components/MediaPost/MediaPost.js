@@ -3,6 +3,7 @@ import { Box, Stack } from '@mui/material';
 // swipper
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper';
+import VideoMedia from '../VideoMedia/VideoMedia';
 function MediaPost({ data = [], isImages = false }) {
     const renderItemMedia = () => {
         return data.map((i) => {
@@ -16,30 +17,41 @@ function MediaPost({ data = [], isImages = false }) {
                     }}
                 >
                     <Stack
+                        position={'relative'}
                         direction="column"
                         overflow="hidden"
                         alignItems="center"
                         justifyContent="center"
                         sx={{
-                            aspectRatio: '1 / 1',
+                            // aspectRatio: '1 / 1',
                             flexBasis: '888px',
                             // background: 'black',
                         }}
                     >
-                        <img
-                            alt={i?.filename}
-                            src={`${i?.data}`}
-                            style={{
-                                // position: 'absolute',
-                                // top: 0,
-                                // left: 0,
-                                // bottom: 0,
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                minHeight: '150px',
-                            }}
-                        />
+                        {i.type.includes('image') ? (
+                            <img
+                                alt={i?.filename}
+                                src={`${i?.data}`}
+                                style={{
+                                    width: '100%',
+                                    maxHeight: '100%',
+                                    objectFit: 'cover',
+                                    minHeight: '150px',
+                                }}
+                            />
+                        ) : (
+                            <VideoMedia
+                                autoPlay={false}
+                                style={{
+                                    width: '100%',
+                                    maxHeight: '100%',
+                                    objectFit: 'cover',
+                                    minHeight: '150px',
+                                }}
+                                src={`${i?.data}`}
+                                type={i?.type}
+                            />
+                        )}
                     </Stack>
                 </SwiperSlide>
             );
@@ -52,7 +64,7 @@ function MediaPost({ data = [], isImages = false }) {
                     position: 'relative',
                     overflow: 'hidden',
                     borderRadius: 1,
-                    maxHeight: '700px',
+                    maxHeight: '850px',
                     // minHeight: '550px',
                     // height: '550px',
 

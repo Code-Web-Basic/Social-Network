@@ -20,7 +20,7 @@ import {
     useTheme,
 } from '@mui/material';
 // icon
-import { CaretLeft, CaretRight, Smiley } from 'phosphor-react';
+import { CaretLeft, Smiley } from 'phosphor-react';
 
 // tippy
 import Tippy from '@tippyjs/react/headless';
@@ -53,28 +53,45 @@ function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelected
         setValueInput(message);
     };
 
-    const sendSharePost = async (event) => {
+    const sendSharePostImage = async (event) => {
         event.preventDefault();
         let formData = new FormData();
         formData.append('caption', valueInput);
         formData.append('isVideo', false);
 
-        selectedFile.forEach((e, index) => formData.append('files', selectedFile[index]));
-        // for (const file of selectedFile) {
-        //     formData.append('files', file); // appending every file to formdata
-        // }
-        handleOpen();
+        selectedFile.forEach((e, index) => formData.append('files', e));
         if (valueInput.length > 0) {
-            // handleSendChatValue(valueFormChat);
-            // dispatch(addNewComment(dataComment));
             try {
+                handleOpen();
                 const res = await postApi.createPostImages({ data: formData });
                 console.log(res);
             } catch (error) {
                 console.log(error);
             }
             handleClose();
-            setValueInput(' ');
+            setValueInput('');
+            setSelectedFile([]);
+            handleBack();
+        }
+    };
+    const sendSharePostVideo = async (event) => {
+        event.preventDefault();
+        let formData = new FormData();
+        formData.append('caption', valueInput);
+        formData.append('isVideo', true);
+        // formData.append('files', selectedFile[0]);
+        selectedFile.forEach((e, index) => formData.append('files', e));
+
+        if (valueInput.length > 0) {
+            try {
+                handleOpen();
+                const res = await postApi.createPostVideo({ data: formData });
+                console.log(res);
+            } catch (error) {
+                console.log(error);
+            }
+            handleClose();
+            setValueInput('');
             setSelectedFile([]);
             handleBack();
         }
@@ -110,7 +127,11 @@ function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelected
                             Create new post
                         </Typography>
                     </Stack>
-                    <Stack direction={'row'} onClick={sendSharePost}>
+                    <Stack
+                        direction={'row'}
+                        onClick={selectedFile[0].type.includes('video') ? sendSharePostVideo : sendSharePostImage}
+                        // onClick={sendSharePostImage}
+                    >
                         <Button size="small" variant="text" sx={{ fontSize: '0.8rem' }} disabled={loadingShare}>
                             Share
                         </Button>
@@ -160,11 +181,28 @@ function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelected
                                                     background: 'black',
                                                 }}
                                             >
-                                                <img
-                                                    src={URL.createObjectURL(i)}
-                                                    alt="post"
-                                                    style={{ objectFit: 'cover', maxHeight: '100%', maxWidth: '100%' }}
-                                                />
+                                                {i.type.includes('video') ? (
+                                                    <video
+                                                        controls
+                                                        style={{
+                                                            objectFit: 'cover',
+                                                            maxHeight: '100%',
+                                                            maxWidth: '100%',
+                                                        }}
+                                                    >
+                                                        <source src={URL.createObjectURL(i)} type="video/mp4" />
+                                                    </video>
+                                                ) : (
+                                                    <img
+                                                        src={URL.createObjectURL(i)}
+                                                        alt="post"
+                                                        style={{
+                                                            objectFit: 'cover',
+                                                            maxHeight: '100%',
+                                                            maxWidth: '100%',
+                                                        }}
+                                                    />
+                                                )}
                                             </Stack>
                                         </SwiperSlide>
                                     );

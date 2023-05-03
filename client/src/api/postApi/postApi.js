@@ -19,17 +19,18 @@ export const createPostImages = async (params) => {
         });
         return res;
     } catch (error) {
-        console.log(error);
+        Promise.reject(error);
     }
 };
 export const createPostVideo = async (params) => {
     try {
-        const res = await httpRequest.post('post/uploadImage', params.data, {
+        console.log(params.data?.getAll('files'));
+        const res = await httpRequest.post('post/uploadVideo', params.data, {
             'Content-Type': 'multipart/form-data',
         });
         return res;
     } catch (error) {
-        console.log(error);
+        Promise.reject(error);
     }
 };
 export const deletePost = async (params) => {
