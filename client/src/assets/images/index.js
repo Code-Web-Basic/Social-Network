@@ -1,5 +1,5 @@
 const images = {
-    logo: require('~/assets/images/logo.svg').default,
+    logo: require('~/assets/images/logoins.png'),
     post: require('~/assets/images/post1.jpg'),
     iconCheck: require('~/assets/images/illo-confirm-refresh-light.png'),
     googleIcon: require('~/assets/images/google.svg').default,
@@ -7,7 +7,7 @@ const images = {
     githubIcon: require('~/assets/images/github.svg').default,
     loginBackground: require('~/assets/images/loginBackground.png'),
     uploadIcon: require('~/assets/images/uploadImages.svg').default,
-    image: require('~/assets/images/img.png')
+    image: require('~/assets/images/img.png'),
 };
 
 export default images;

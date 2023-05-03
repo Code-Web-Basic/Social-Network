@@ -15,12 +15,21 @@ import { router as configRouter } from '~/config/config';
 import Notifications from '../Notifications/Notifications';
 import Search from '../Search/Search';
 import { useSelector } from 'react-redux';
+import useOnClickOutside from '~/hook/useOnClickOutside';
+import { useRef } from 'react';
+import images from '~/assets/images';
 function Sidebar() {
     const theme = useTheme();
     const location = useLocation();
     const [openSideBar, setOpenSidebar] = useState(true);
-    const [activeCurrent, SetActiveCurrent] = useState(0);
+    const [activeCurrent, setActiveCurrent] = useState(0);
     const currentUser = useSelector((state) => state.auth.currentUser.data);
+    const ref = useRef();
+    useOnClickOutside(ref, () => {
+        setOpenSidebar(false);
+        setActiveCurrent(10);
+    });
+
     const renderComponent = () => {
         if (activeCurrent === 1) {
             return <Search />;
@@ -29,8 +38,9 @@ function Sidebar() {
             return <Notifications />;
         }
     };
+
     return (
-        <Box sx={{ position: 'sticky', top: '0px', zIndex: 1000 }}>
+        <Box sx={{ position: 'sticky', top: '0px', zIndex: 1000 }} ref={ref}>
             <Stack direction="row">
                 <Stack
                     direction={'column'}
@@ -53,7 +63,7 @@ function Sidebar() {
                         justifyContent="center"
                     >
                         {openSideBar ? (
-                            <Typography variant="h5">Sidebar</Typography>
+                            <img src={images.logo} alt="logo" style={{ width: '70px', height: '70px' }} />
                         ) : (
                             <>
                                 <InstagramLogo size={24} weight="regular" />
@@ -84,7 +94,7 @@ function Sidebar() {
                             to={configRouter.home}
                             onClick={() => {
                                 setOpenSidebar(true);
-                                SetActiveCurrent(0);
+                                setActiveCurrent(0);
                             }}
                         >
                             {location.pathname === configRouter.home ? (
@@ -126,7 +136,7 @@ function Sidebar() {
                             spacing={3}
                             onClick={() => {
                                 setOpenSidebar(false);
-                                SetActiveCurrent(1);
+                                setActiveCurrent(1);
                             }}
                         >
                             {activeCurrent === 1 ? (
@@ -172,7 +182,7 @@ function Sidebar() {
                             to={configRouter.explore}
                             onClick={() => {
                                 setOpenSidebar(true);
-                                SetActiveCurrent(2);
+                                setActiveCurrent(2);
                             }}
                         >
                             {location.pathname === configRouter.explore ? (
@@ -218,7 +228,7 @@ function Sidebar() {
                             to={configRouter.reels}
                             onClick={() => {
                                 setOpenSidebar(true);
-                                SetActiveCurrent(3);
+                                setActiveCurrent(3);
                             }}
                         >
                             {location.pathname === configRouter.reels ? (
@@ -264,7 +274,7 @@ function Sidebar() {
                             to={configRouter.message}
                             onClick={() => {
                                 setOpenSidebar(true);
-                                SetActiveCurrent(4);
+                                setActiveCurrent(4);
                             }}
                         >
                             {location.pathname === configRouter.message ? (
@@ -306,7 +316,7 @@ function Sidebar() {
                             spacing={3}
                             onClick={() => {
                                 setOpenSidebar(false);
-                                SetActiveCurrent(5);
+                                setActiveCurrent(5);
                             }}
                         >
                             {activeCurrent === 5 ? (
@@ -352,7 +362,7 @@ function Sidebar() {
                             spacing={3}
                             onClick={() => {
                                 setOpenSidebar(true);
-                                SetActiveCurrent(6);
+                                setActiveCurrent(6);
                             }}
                         >
                             {location.pathname === configRouter.create ? (
@@ -399,7 +409,7 @@ function Sidebar() {
                             to={`/profile/${currentUser?._id}`}
                             onClick={() => {
                                 setOpenSidebar(true);
-                                SetActiveCurrent(7);
+                                setActiveCurrent(7);
                             }}
                         >
                             {location.pathname === `/profile/${currentUser?._id}` ? (

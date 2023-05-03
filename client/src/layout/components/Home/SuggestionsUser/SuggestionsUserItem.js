@@ -76,7 +76,7 @@ function SuggestionsUserItem({ data = {}, typeLayout = 'row' }) {
                         }}
                         onClick={handleClickFollowing}
                     >
-                        Following
+                        Follow
                     </Button>
                 ) : (
                     <Button
@@ -97,7 +97,7 @@ function SuggestionsUserItem({ data = {}, typeLayout = 'row' }) {
                         }}
                         onClick={handleClickFollowing}
                     >
-                        unFollowing
+                        unFollow
                     </Button>
                 )}
             </Stack>
