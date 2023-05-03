@@ -5,7 +5,7 @@ export const getShowMessage = async (idfriend, paging) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -14,20 +14,18 @@ export const getShowChats = async () => {
         const res = await httpRequest.get(`/message/showChats`);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
 export const postSendMessage = async (data) => {
     try {
-        const res = await httpRequest.post(`message/sendMessage`, data,
-            {
-                'Content-Type': 'multipart/form-data',
-            }
-        );
+        const res = await httpRequest.post(`message/sendMessage`, data, {
+            'Content-Type': 'multipart/form-data',
+        });
 
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };

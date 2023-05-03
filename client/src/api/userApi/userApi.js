@@ -8,7 +8,7 @@ export const searchUser = async (query) => {
         });
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -17,7 +17,7 @@ export const getHistorySearch = async () => {
         const res = await httpRequest.get('searchHistory');
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -30,7 +30,7 @@ export const getUserFollower = async (params) => {
         });
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -40,7 +40,7 @@ export const getFriend = async (idfriend) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -53,7 +53,7 @@ export const getUserFollowing = async (params) => {
         });
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -63,7 +63,7 @@ export const getPostOfUser = async (userid) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -73,7 +73,7 @@ export const getNotify = async (paging) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -86,7 +86,7 @@ export const putUpdateUser = async (param) => {
         delete res?.result;
         return res;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const addSearchUser = async (param) => {
@@ -97,7 +97,7 @@ export const addSearchUser = async (param) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const removeSearchHistory = async (param) => {
@@ -106,7 +106,7 @@ export const removeSearchHistory = async (param) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const removeSearchHistoryAll = async () => {
@@ -115,7 +115,7 @@ export const removeSearchHistoryAll = async () => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
