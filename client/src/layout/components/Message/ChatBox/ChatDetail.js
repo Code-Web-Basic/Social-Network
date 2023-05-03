@@ -170,7 +170,7 @@ function ChatDetail(props) {
     // render message
     const renderMessage = (mess) => {
         if (mess.message === ' ') {
-            return (mess?.postId !== '' ?
+            return ((mess?.postId !== '' && mess?.postId) ?
                 <RenderPostMess mess={mess} />
                 :
                 (<img src={mess.source[0]?.data} alt='imgmess' style={{ maxWidth: '250px', maxHeight: '250px' }} />))
