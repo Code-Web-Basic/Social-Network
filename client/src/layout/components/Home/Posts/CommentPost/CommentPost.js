@@ -17,6 +17,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper';
 import SharePost from '../SharePost/SharePost';
 import VideoMedia from '~/components/VideoMedia/VideoMedia';
+import { Link } from 'react-router-dom';
+import * as routerConfig from '~/config/config';
 // styles
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -35,49 +37,6 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
 };
-// menu setting post
-const MENU_ITEMS = [
-    {
-        title: 'Report',
-        color: 'error',
-        fontWeight: 600,
-    },
-    {
-        title: 'Unfollow',
-        color: 'error',
-        fontWeight: 600,
-    },
-    {
-        title: 'Add to favorites',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'Go to post',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'Share to...',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'Copy Link',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'Embed',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'About this account',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-];
 //comment post modal
 function CommentPost({
     data,
@@ -88,6 +47,15 @@ function CommentPost({
     handleBookmarkPost = () => {},
     styles,
 }) {
+    const MENU_ITEMS = [
+        {
+            title: 'About this account',
+            color: 'text.primary',
+            fontWeight: 400,
+            component: Link,
+            to: routerConfig.router.profile.slice(0, -3) + `${data?.User?._id}`,
+        },
+    ];
     const theme = useTheme();
     const [open, setOpen] = useState(false);
     // const heartRef = useRef(null);
@@ -286,7 +254,7 @@ function CommentPost({
                                                     },
                                                 }}
                                             >
-                                                <ScrollComment id={data?.Post?._id} />
+                                                <ScrollComment id={data?.Post?._id} open={open} />
                                             </Stack>
                                             {/* post navigate */}
                                             <Stack

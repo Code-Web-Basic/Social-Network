@@ -2,13 +2,11 @@ import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // ui
-import Tippy from '@tippyjs/react/headless';
 import { Avatar, Box, Stack, styled, Typography, useTheme } from '@mui/material';
 //icon
 import { BookmarkSimple, ChatCircle, DotsThree, Heart, PaperPlaneTilt } from 'phosphor-react';
 //components
 import NewCommentPost from './CommentPost/NewCommentPost';
-import MenuUserFollowing from './MenuUserFollowing/MenuUserFollowing';
 import MenuModal from '~/components/Popper/Menu/MenuModal';
 import CommentPost from './CommentPost/CommentPost';
 import SharePost from './SharePost/SharePost';
@@ -19,6 +17,8 @@ import { reactionPost } from '~/api/postApi/postApi';
 import { decreaseNumberLike, increaseNumberLike } from '~/features/post/postSlice';
 import { addNewBookmark, removeNewBookmark } from '~/features/bookmark/bookmarkSlice';
 import MediaPost from '~/components/MediaPost/MediaPost';
+import { Link } from 'react-router-dom';
+import * as routerConfig from '~/config/config';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -27,49 +27,18 @@ const ItemReaction = styled('div')(({ theme }) => ({
     },
 }));
 //data menu setting post
-const MENU_ITEMS = [
-    {
-        title: 'Report',
-        color: 'error',
-        fontWeight: 600,
-    },
-    {
-        title: 'Unfollow',
-        color: 'error',
-        fontWeight: 600,
-    },
-    {
-        title: 'Add to favorites',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'Go to post',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'Share to...',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'Copy Link',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'Embed',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-    {
-        title: 'About this account',
-        color: 'text.primary',
-        fontWeight: 400,
-    },
-];
+
 function PostItem({ data }) {
+    const MENU_ITEMS = [
+        {
+            title: 'About this account',
+            color: 'text.primary',
+            fontWeight: 400,
+            component: Link,
+            to: routerConfig.router.profile.slice(0, -3) + `${data?.User?._id}`,
+        },
+    ];
+
     const currentUser = useSelector((state) => state.auth.currentUser.data);
     const dataBookmark = useSelector((state) => state.bookmark.data);
 
@@ -115,12 +84,16 @@ function PostItem({ data }) {
         }
     };
     const handleBookmarkPost = async () => {
-        if (bookmark) {
-            await dispatch(removeNewBookmark({ idPost: data?.Post?._id }));
-            setBookmark(false);
-        } else {
-            await dispatch(addNewBookmark({ idPost: data?.Post?._id }));
-            setBookmark(true);
+        try {
+            if (bookmark) {
+                await dispatch(removeNewBookmark({ idPost: data?.Post?._id }));
+                setBookmark(false);
+            } else {
+                await dispatch(addNewBookmark({ idPost: data?.Post?._id }));
+                setBookmark(true);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -130,7 +103,7 @@ function PostItem({ data }) {
                 {/* information post */}
                 <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row" alignItems="center" spacing={2}>
-                        <Tippy
+                        {/* <Tippy
                             interactive
                             placement="bottom-start"
                             render={(attrs) => {
@@ -140,13 +113,13 @@ function PostItem({ data }) {
                                     </div>
                                 );
                             }}
-                        >
-                            <Avatar
-                                src={data ? `${data?.User?.avatar?.data}` : ''}
-                                style={{ width: 32, height: 32 }}
-                                alt="user"
-                            />
-                        </Tippy>
+                        > */}
+                        <Avatar
+                            src={data ? `${data?.User?.avatar?.data}` : ''}
+                            style={{ width: 32, height: 32 }}
+                            alt="user"
+                        />
+                        {/* </Tippy> */}
                         <Typography variant="body2" fontWeight="600">
                             {data?.User?.userName}
                         </Typography>
