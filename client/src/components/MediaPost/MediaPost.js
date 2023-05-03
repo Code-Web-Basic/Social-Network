@@ -4,55 +4,76 @@ import { Box, Stack } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper';
 import VideoMedia from '../VideoMedia/VideoMedia';
+import { useEffect, useRef } from 'react';
+import useElementOnScreen from '~/hook/useElementOnScreen';
+import { useState } from 'react';
+
+export function MediaPostItem({ item }) {
+    const [containerRef, isVisible] = useElementOnScreen({ root: null, threshold: 1 });
+    const videoRef = useRef();
+    useEffect(() => {
+        if (videoRef.current) return;
+    }, [isVisible]);
+    return (
+        <>
+            <div
+                ref={containerRef}
+                style={{ position: 'relative', alignItems: 'center', justifyContent: 'center' }}
+            ></div>
+            <Stack
+                position={'relative'}
+                direction="column"
+                overflow="hidden"
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    // aspectRatio: '1 / 1',
+                    flexBasis: '888px',
+                    // background: 'black',
+                }}
+            >
+                {item.type.includes('image') ? (
+                    <img
+                        alt={item?.filename}
+                        src={`${item?.data}`}
+                        style={{
+                            width: '100%',
+                            maxHeight: '100%',
+                            objectFit: 'cover',
+                            minHeight: '150px',
+                        }}
+                    />
+                ) : (
+                    <VideoMedia
+                        autoPlay={false}
+                        style={{
+                            width: '100%',
+                            maxHeight: '100%',
+                            objectFit: 'cover',
+                            minHeight: '150px',
+                        }}
+                        src={`${item?.data}`}
+                        type={item?.type}
+                    />
+                )}
+            </Stack>
+        </>
+    );
+}
+
 function MediaPost({ data = [], isImages = false }) {
     const renderItemMedia = () => {
         return data.map((i) => {
             return (
                 <SwiperSlide
-                    key={i?.filename}
+                    key={i.filename}
                     style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                     }}
                 >
-                    <Stack
-                        position={'relative'}
-                        direction="column"
-                        overflow="hidden"
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{
-                            // aspectRatio: '1 / 1',
-                            flexBasis: '888px',
-                            // background: 'black',
-                        }}
-                    >
-                        {i.type.includes('image') ? (
-                            <img
-                                alt={i?.filename}
-                                src={`${i?.data}`}
-                                style={{
-                                    width: '100%',
-                                    maxHeight: '100%',
-                                    objectFit: 'cover',
-                                    minHeight: '150px',
-                                }}
-                            />
-                        ) : (
-                            <VideoMedia
-                                autoPlay={false}
-                                style={{
-                                    width: '100%',
-                                    maxHeight: '100%',
-                                    objectFit: 'cover',
-                                    minHeight: '150px',
-                                }}
-                                src={`${i?.data}`}
-                                type={i?.type}
-                            />
-                        )}
-                    </Stack>
+                    <MediaPostItem item={i} />
                 </SwiperSlide>
             );
         });

@@ -10,7 +10,7 @@ export const getComment = async (params) => {
         return res?.result;
         // console.log(params.id);
     } catch (error) {
-        console.log(error);
+        Promise.reject(error);
     }
 };
 export const getCommentReply = async (params) => {

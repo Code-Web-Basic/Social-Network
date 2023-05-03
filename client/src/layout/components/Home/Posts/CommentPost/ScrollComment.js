@@ -1,62 +1,35 @@
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getFirstComment } from '~/features/comment/commentSlice';
+import { getSkipComment } from '~/features/comment/commentSlice';
 import CommentItemPost from './CommentItemPost';
+import useElementOnScreen from '~/hook/useElementOnScreen';
 
 function ScrollComment({ id }) {
     const dispatch = useDispatch();
-    const [messages, setMessages] = useState([]);
+    const { data, loading } = useSelector((state) => state.comment);
+    const [containerRef, isVisible] = useElementOnScreen({ root: null, threshold: 1 });
     const [paging, setPaging] = useState(1);
-
-    const loadingComment = false;
-    // const [showBottomBar, setShowBottomBar] = useState(true);
-    const { data, loading, error } = useSelector((state) => state.comment);
-    // console.log(data);
+    const [showBottomBar, setShowBottomBar] = useState(data.length === 0 ? true : false);
     useEffect(() => {
-        // setMessages(data);
-        dispatch(getFirstComment({ id, paging }));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    //lazy load
-    const observer = useRef(
-        new IntersectionObserver(async (entries) => {
-            const first = entries[0];
-            if (first.isIntersecting) {
+        if (isVisible && showBottomBar) {
+            const fetchMorePost = async () => {
                 try {
-                    if (data?.length > 0) {
-                        setMessages(data);
+                    const originalPromiseResult = await dispatch(getSkipComment({ id: id, paging: paging })).unwrap();
+                    if (originalPromiseResult.length < 15) {
+                        setShowBottomBar(false);
                     } else {
-                        setTimeout(() => {
-                            // setShowBottomBar(false);
-                        }, 3000);
+                        setPaging((prev) => prev + 1);
                     }
-                    // handle result here
-                } catch (rejectedValueOrSerializedError) {
-                    // handle error here
-                    console.log(rejectedValueOrSerializedError);
+                } catch (error) {
+                    console.log(error);
                 }
-            }
-        }),
-        { threshold: 1 },
-    );
-
-    const [bottomBar, setBottomBar] = useState(null);
-
-    useEffect(() => {
-        const currentBottomBar = bottomBar;
-        const currentObserver = observer.current;
-        if (currentBottomBar) {
-            currentObserver.observe(currentBottomBar);
+            };
+            fetchMorePost();
         }
-        return () => {
-            if (currentBottomBar) {
-                currentObserver.unobserve(currentBottomBar);
-            }
-        };
-    }, [bottomBar]);
-
+        console.log(isVisible, data, paging);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isVisible, paging, showBottomBar]);
     const renderComment = () => (
         <Stack direction={'column'} spacing={0.5} width="100%" height="100%">
             {data?.length > 0 ? (
@@ -75,8 +48,9 @@ function ScrollComment({ id }) {
     return (
         <>
             {renderComment()}
-            {data?.length > 9 && loadingComment ? (
-                <Box sx={{ display: 'flex', justifyContent: ' center', width: '100%' }} ref={setBottomBar}>
+            <div ref={containerRef} width="100%"></div>
+            {showBottomBar ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                     <CircularProgress size={20} />
                 </Box>
             ) : null}

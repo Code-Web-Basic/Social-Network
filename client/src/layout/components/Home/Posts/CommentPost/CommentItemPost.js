@@ -24,7 +24,7 @@ function CommentItemPost({ data, replyId }) {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.auth.currentUser.data);
     const likeRef = useRef(null);
-    const [likeComment, setLikeComment] = useState(data?.reaction.some((i) => i === currentUser?._id));
+    const [likeComment, setLikeComment] = useState(data?.reaction?.some((i) => i === currentUser?._id));
     const [arrowUp, setArrowUp] = useState(false);
     const [showReplyComment, setShowReplyComment] = useState(false);
 
@@ -73,7 +73,7 @@ function CommentItemPost({ data, replyId }) {
                 <Stack direction={'row'} width={'100%'}>
                     <Typography variant="body2">{data?.content}</Typography>
                 </Stack>
-                <Stack direction={'row'} alignItems="center" justifyContent="flex-start" spacing={5} width={'100%'}>
+                <Stack direction={'row'} alignItems="center" justifyContent="space-between" spacing={5} width={'100%'}>
                     <Stack direction={'row'} alignItems="center" spacing={2}>
                         <Box sx={{ display: 'flex', alignItems: 'center', padding: '5px', gap: '5px' }}>
                             <Tooltip title="Like">

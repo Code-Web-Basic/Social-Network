@@ -1,15 +1,16 @@
 import { Box, IconButton, useTheme } from '@mui/material';
-import { Play, SpeakerHigh, SpeakerSimpleNone, SpeakerSlash } from 'phosphor-react';
+import { Play, SpeakerHigh, SpeakerSlash } from 'phosphor-react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
 
-function VideoMedia({ autoPlay = true, muted = true, controls = false, style, src, type }) {
+function VideoMedia({ autoPlay = true, muted = true, controls = false, style, src, type }, ref) {
     const theme = useTheme();
     const videoRef = useRef();
     const [isPlaying, setIsPlaying] = useState(false);
     const [isAwaiting, setIsAwaiting] = useState(false);
     const [isMute, setIsMute] = useState(false);
+
     useEffect(() => {
         if (!videoRef.current) return;
         const onPlay = () => {
@@ -24,12 +25,7 @@ function VideoMedia({ autoPlay = true, muted = true, controls = false, style, sr
             if (isPlaying) setIsPlaying(true);
             setIsAwaiting(true);
         };
-        const onMute = () => {
-            setIsMute(true);
-        };
-        const onUnMute = () => {
-            setIsMute(false);
-        };
+
         const element = videoRef.current;
         element.addEventListener('play', onPlay);
         element.addEventListener('playing', onPlay);

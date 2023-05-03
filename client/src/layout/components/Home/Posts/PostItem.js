@@ -19,6 +19,7 @@ import { reactionPost } from '~/api/postApi/postApi';
 import { decreaseNumberLike, increaseNumberLike } from '~/features/post/postSlice';
 import { addNewBookmark, removeNewBookmark } from '~/features/bookmark/bookmarkSlice';
 import MediaPost from '~/components/MediaPost/MediaPost';
+import useElementOnScreen from '~/hook/useElementOnScreen';
 
 const ItemReaction = styled('div')(({ theme }) => ({
     color: theme.palette.text.primary,
@@ -90,6 +91,7 @@ function PostItem({ data }) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [like]);
+
     useEffect(() => {
         if (bookmark || dataBookmark.some((e) => e.postId === data?.Post?._id)) {
             bookmarkRef.current.style.color = 'black';
@@ -114,6 +116,7 @@ function PostItem({ data }) {
             console.log(error);
         }
     };
+
     const handleBookmarkPost = async () => {
         if (bookmark) {
             await dispatch(removeNewBookmark({ idPost: data?.Post?._id }));
