@@ -18,7 +18,11 @@ const deleteBookmark = async (req, res) => {
       req.user.sub,
       req.params.id
     );
-    res.status(HttpStatusCode.OK).json({ result: result });
+    if (result === "not found") {
+      res.status(404).json({ result: result });
+    } else {
+      res.status(HttpStatusCode.OK).json({ result: result });
+    }
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
       error: new Error(error).message,
@@ -50,10 +54,21 @@ const getBookmarks = async (req, res) => {
     });
   }
 };
+const getAlBookmark = async (req, res) => {
+  try {
+    const result = await bookmarkService.getAlBookmark(req.user.sub);
+    res.status(HttpStatusCode.OK).json({ result: result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      error: new Error(error).message,
+    });
+  }
+};
 
 module.exports = {
   create,
   deleteAll,
   deleteBookmark,
   getBookmarks,
+  getAlBookmark,
 };
