@@ -40,7 +40,6 @@ function ScrollComment({ id }) {
     }, [isVisible, pagingPost, showBottomBar]);
     const renderComment = () =>
         data?.map((item) => {
-            console.log(item);
             return <CommentItemPost key={item?._id} data={item} />;
         });
 
