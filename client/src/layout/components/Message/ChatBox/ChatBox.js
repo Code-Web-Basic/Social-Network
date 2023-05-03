@@ -82,7 +82,7 @@ function ChatBox() {
                 }
                 else {
                     setPaging(2);
-                    // setShowBottomBar(true);
+                    setShowBottomBar(true);
                 }
             }
         };
