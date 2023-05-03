@@ -8,7 +8,7 @@ export const getShowChats = createAsyncThunk('/message/showChats', async (params
     return res;
 });
 export const postSendMessage = createAsyncThunk('message/sendMessage', async (params, thunkAPI) => {
-    console.log(params);
+    // console.log(params);
     const res = await messageApi.postSendMessage(params);
     return res;
 });
@@ -19,7 +19,7 @@ export const getShowMessage = createAsyncThunk('/message/showMessage', async (pa
     // res.messages = getMessages
     // return res;
     const res = await messageApi.getShowMessage(params?.id, params?.paging);
-    console.log(res)
+    // console.log(res)
     return res;
 });
 export const messageSlice = createSlice({
@@ -68,7 +68,7 @@ export const messageSlice = createSlice({
             state.loading = false;
             state.error = '';
             // state.messages
-            console.log(action.payload)
+            // console.log(action.payload)
             // console.log(state.messages)
             state.messages = state.messages.concat(action.payload);
         });

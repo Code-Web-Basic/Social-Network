@@ -9,7 +9,7 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearMessage, getShowMessage, postSendMessage } from '~/features/message/messageSlice';
+import { clearMess, clearMessage, getShowMessage, postSendMessage } from '~/features/message/messageSlice';
 import * as messageApi from '~/api/messageApi/messageApi';
 import './ChatDetail.css'
 import { Link, useParams } from 'react-router-dom';
@@ -53,10 +53,15 @@ function ChatDetail(props) {
     const [replyValue, setReplyValue] = useState('')
     const [messageReceive, setMessageReceive] = useState({})
 
+    const [containerRef, isVisible] = useElementOnScreen({ root: null, threshold: 1 });
+    // load het paging
+
+    const [loading, setLoading] = useState(false)
+
     const messagesEndRef = useRef(null)
     const { id } = useParams()
     const dispatch = useDispatch();
-    const { online, paging, setPaging } = props
+    const { online, paging, setPaging, showBottomBar, setShowBottomBar } = props
 
     // get info
     const messageData = useSelector((state) => state.message.messages);
@@ -181,7 +186,7 @@ function ChatDetail(props) {
         }
         else {
             return (<div>
-                {mess.replyId ? (
+                {(mess.replyId && ('messReply' in mess)) ? (
                     <div>
                         {
                             mess?.messReply[0]?.message === '❤' &&
@@ -274,10 +279,6 @@ function ChatDetail(props) {
         }
     }
 
-    const [containerRef, isVisible] = useElementOnScreen({ root: null, threshold: 1 });
-    // load het paging
-    const [showBottomBar, setShowBottomBar] = useState(true);
-    const [loading, setLoading] = useState(false)
     useEffect(() => {
         if (isVisible && showBottomBar && messageData?.length >= 15) {
             const fetchMorePost = async () => {

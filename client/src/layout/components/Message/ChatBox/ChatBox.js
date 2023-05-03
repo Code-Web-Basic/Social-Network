@@ -64,19 +64,29 @@ function ChatBox() {
     };
     const { id } = useParams()
     const [paging, setPaging] = useState(1);
+
+    const [showBottomBar, setShowBottomBar] = useState(true);
     // get message
     const dispatch = useDispatch();
     useEffect(() => {
-        setPaging(1)
-        dispatch(clearMess())
-        const data = {
-            id: id,
-            paging: 1
-        }
-        if (id !== undefined) {
-            dispatch(getShowMessage(data))
-            setPaging(2)
-        }
+        const fetchMorePost = async () => {
+            await dispatch(clearMess())
+            if (id !== undefined) {
+                const originalPromiseResult = await dispatch(getShowMessage({
+                    id: id,
+                    paging: 1
+                }))
+                console.log(originalPromiseResult)
+                if (originalPromiseResult?.payload?.length < 15) {
+                    setShowBottomBar(false);
+                }
+                else {
+                    setPaging(2);
+                    // setShowBottomBar(true);
+                }
+            }
+        };
+        fetchMorePost();
     }, [id])
 
     // check online
@@ -102,7 +112,9 @@ function ChatBox() {
     }
     return (<>
         {id ? (
-            <ChatDetail paging={paging} setPaging={setPaging} online={checkUserOnline()} />
+            <ChatDetail paging={paging} setPaging={setPaging}
+                online={checkUserOnline()} showBottomBar={showBottomBar} setShowBottomBar={setShowBottomBar}
+            />
         ) : (<>
             <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <div style={{ borderRadius: '50%', border: '1px solid black', width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
