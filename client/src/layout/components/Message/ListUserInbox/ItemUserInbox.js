@@ -2,10 +2,6 @@ import { Stack, Avatar } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import * as React from 'react';
-import { useEffect } from 'react';
-import { useState } from "react";
-import io from 'socket.io-client';
-const socket = io("http://localhost:3240");
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -37,19 +33,6 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 function ItemUserInbox(props) {
     const { user, online } = props
-    // const [usersOnline, setUsersOnline] = useState([])
-    // useEffect(() => {
-    //     socket.on('get-online-user', data => {
-    //         console.log(data)
-    //         setUsersOnline(data)
-    //     })
-    // }, [])
-    // const checkUserOnline = () => {
-    //     if (usersOnline.find(u => u?.userId === user[0]?._id)) {
-    //         return true;
-    //     }
-    //     return false;
-    // }
     return (<Stack direction='row' height='80px' width='100%' padding='10px'>
         <div style={{
             width: '50px', height: '50px', marginRight: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center'

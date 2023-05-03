@@ -56,8 +56,8 @@ const bootServer = () => {
     !users.some((user) => user.userId == userId) &&
       users.push({ userId, socketId });
   };
-  const removeUser = (socketId) => {
-    users = users.filter((user) => user.socketId !== socketId);
+  const removeUser = (userId) => {
+    users = users.filter((user) => user.userId !== userId);
   };
   io.on('connection', (socket) => {
     console.log("connect")
@@ -67,13 +67,22 @@ const bootServer = () => {
     socket.on("add-user", (userId) => {
       if (userId) {
         addUser(userId, socket.id);
+        console.log(users)
+        socket.broadcast.emit("get-online-user", users);
+      }
+    });
+    socket.on("remove-user", (userId) => {
+      if (userId) {
+        console.log(userId)
+        removeUser(userId);
+        console.log(users)
         socket.broadcast.emit("get-online-user", users);
       }
     });
     socket.on("disconnecting", () => {
       console.log("disconect")
-      removeUser(socket.id);
-      io.emit("get-online-user", users);
+      // removeUser(socket.id);
+      // io.emit("get-online-user", users);
     });
   })
 };

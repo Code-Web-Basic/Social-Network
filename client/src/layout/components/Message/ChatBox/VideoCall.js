@@ -8,8 +8,8 @@ function VideoCall() {
     const currentUser = useSelector((state) => state.auth.currentUser.data);
     const { id } = useParams()
     const myMeeting = async (element) => {
-        const appID = 1293426449;
-        const serverSecret = "b432d6c3445dccd2e5ec05cf9eccac1d";
+        const appID = 920794739;
+        const serverSecret = "d7c47156e5569297b5a5a4f1871c3f42";
         const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, id, Date.now().toString(), currentUser?.Name);
         const zp = ZegoUIKitPrebuilt.create(kitToken);
         // start the call
