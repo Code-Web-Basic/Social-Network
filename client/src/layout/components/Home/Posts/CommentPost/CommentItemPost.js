@@ -24,7 +24,7 @@ function CommentItemPost({ data, replyId }) {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.auth.currentUser.data);
     const likeRef = useRef(null);
-    const [likeComment, setLikeComment] = useState(data?.reaction.some((i) => i === currentUser?._id));
+    const [likeComment, setLikeComment] = useState(data?.reaction?.some((i) => i === currentUser?._id));
     const [arrowUp, setArrowUp] = useState(false);
     const [showReplyComment, setShowReplyComment] = useState(false);
 
