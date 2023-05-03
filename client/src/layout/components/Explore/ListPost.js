@@ -16,6 +16,7 @@ import CommentPost from '../Home/Posts/CommentPost/CommentPost';
 import useElementOnScreen from '~/hook/useElementOnScreen';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNewBookmark, removeNewBookmark } from '~/features/bookmark/bookmarkSlice';
+import VideoMedia from '~/components/VideoMedia/VideoMedia';
 
 function srcset(image) {
     return {
@@ -34,6 +35,7 @@ function ListPost() {
         if (isVisible && showBottomBar) {
             const callApi = async () => {
                 const resExplore = await postApi.getExplore({ paging: pagingPost });
+                // console.log(resExplore, pagingPost);
                 if (resExplore.length >= 15) {
                     setData((prev) => [...prev, ...resExplore]);
                     setPagingPost((prev) => prev + 1);
@@ -52,9 +54,9 @@ function ListPost() {
             <ImageList sx={{ width: '100%', padding: '10px 250px' }} variant="quilted" cols={3} rowHeight={320}>
                 {data.map((item, index) => {
                     if ((index + 1) % 10 === 3 || (index + 1) % 10 === 6) {
-                        return <ItemListPost item={item} rows={2} key={item?._id} data={data} setData={setData} />;
+                        return <ItemListPost item={item} rows={2} key={index} data={data} setData={setData} />;
                     } else {
-                        return <ItemListPost item={item} rows={1} key={item?._id} data={data} setData={setData} />;
+                        return <ItemListPost item={item} rows={1} key={index} data={data} setData={setData} />;
                     }
                 })}
             </ImageList>
@@ -86,7 +88,6 @@ export const ItemListPost = ({ item, rows, data, setData }) => {
     const [hover, setHover] = useState(false);
     const [like, setLike] = useState(item?.reaction?.includes(currentUser?._id));
     const [bookmark, setBookmark] = useState(dataBookmark.some((e) => e.postId === item?._id));
-    const video = false;
 
     const increaseNumberLike = () => {
         const arrTmp = data;
@@ -148,13 +149,24 @@ export const ItemListPost = ({ item, rows, data, setData }) => {
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
-            <img
-                style={{ objectFit: 'cover' }}
-                src={item?.source[0].data}
-                alt={item?.source[0].filename}
-                loading="lazy"
-            />
-            {video ? (
+            {item?.source[0]?.type?.includes('video') ? (
+                <video
+                    src={item?.source[0].data}
+                    type={'video/mp4'}
+                    autoPlay={false}
+                    muted={false}
+                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                />
+            ) : (
+                <img
+                    style={{ objectFit: 'cover' }}
+                    src={item?.source[0].data}
+                    alt={item?.source[0].filename}
+                    loading="lazy"
+                />
+            )}
+
+            {item?.source[0]?.type?.includes('video') ? (
                 <IconButton sx={{ position: 'absolute', top: 0, right: 0 }}>
                     <VideoCamera size={20} weight="bold" color={theme.palette.common.white} />
                 </IconButton>
