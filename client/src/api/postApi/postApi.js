@@ -9,7 +9,7 @@ export const getNewFeed = async (params) => {
         });
         return res?.result;
     } catch (error) {
-        console.log(error);
+        Promise.reject(error);
     }
 };
 export const createPostImages = async (params) => {
@@ -59,6 +59,19 @@ export const showUserReactionPost = async (params) => {
 export const getPostById = async (id) => {
     try {
         const res = await httpRequest.get(`post/getById/${id}`);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const getExplore = async (params) => {
+    try {
+        const res = await httpRequest.get(`post/explore`, {
+            params: {
+                paging: params?.paging,
+            },
+        });
         return res?.result;
     } catch (error) {
         console.log(error);

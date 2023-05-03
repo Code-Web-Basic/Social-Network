@@ -136,13 +136,13 @@ function PostItem({ data }) {
                             render={(attrs) => {
                                 return (
                                     <div className="box" tabIndex="-1" {...attrs}>
-                                        <MenuUserFollowing id={data?.User?._id} data={data} />
+                                        <MenuUserFollowing id={data?.User?._id} data={data?.User} />
                                     </div>
                                 );
                             }}
                         >
                             <Avatar
-                                src={data ? `${data?.User?.avatar.data}` : ''}
+                                src={data ? `${data?.User?.avatar?.data}` : ''}
                                 style={{ width: 32, height: 32 }}
                                 alt="user"
                             />

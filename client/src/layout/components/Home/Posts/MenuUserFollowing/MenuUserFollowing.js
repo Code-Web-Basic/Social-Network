@@ -9,11 +9,11 @@ function MenuUserFollowing({ id, data }) {
         <WrapperPopper>
             <Stack direction="column" p={1.5} sx={{ minWidth: 300 }} spacing={2}>
                 <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={2}>
-                    <Avatar src={`${data?.User?.avatar.data}`} alt="user" sx={{ width: 50, height: 50 }} />
+                    <Avatar src={`${data?.avatar?.data}`} alt="user" sx={{ width: 50, height: 50 }} />
                     <Stack direction="column">
                         <Stack direction="row">
                             <Typography variant="body2" fontWeight={600} sx={{ color: theme.palette.text.primary }}>
-                                {data?.User?.userName}
+                                {data?.userName}
                             </Typography>
                         </Stack>
                         <Typography
@@ -22,7 +22,7 @@ function MenuUserFollowing({ id, data }) {
                             fontSize="0.8rem"
                             sx={{ color: theme.palette.text.secondary }}
                         >
-                            {data?.User?.Name}
+                            {data?.Name}
                         </Typography>
                     </Stack>
                 </Stack>

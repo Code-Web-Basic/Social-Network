@@ -5,7 +5,7 @@ import SuggestionsUser from '../SuggestionsUser/SuggestionsUser';
 import PostEnd from './PostEnd';
 import PostItem from './PostItem';
 //
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getBookMarkFirst } from '~/features/bookmark/bookmarkSlice';
 import { getSkipPost } from '~/features/post/postSlice';
 import useElementOnScreen from '~/hook/useElementOnScreen';
@@ -18,17 +18,15 @@ const StyleDivider = styled(Divider)(({ theme }) => ({
 
 function ScrollPost() {
     const dispatch = useDispatch();
-
     const { data } = useSelector((state) => state.post);
-    const [containerRef, isVisible] = useElementOnScreen({ root: null, threshold: 1 });
+    const [containerRef, isVisible] = useElementOnScreen({ root: null, rootMargin: '10px', threshold: 1.0 });
 
-    const [showBottomBar, setShowBottomBar] = useState(true);
+    const [showBottomBar, setShowBottomBar] = useState(data.length === 0 ? true : false);
     const [pagingPost, setPagingPost] = useState(1);
 
     useEffect(() => {
         dispatch(getBookMarkFirst());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         if (isVisible && showBottomBar) {
@@ -39,6 +37,7 @@ function ScrollPost() {
                         setShowBottomBar(false);
                     } else {
                         setPagingPost((prev) => prev + 1);
+                        setShowBottomBar(true);
                     }
                 } catch (error) {
                     console.log(error);
@@ -46,7 +45,8 @@ function ScrollPost() {
             };
             fetchMorePost();
         }
-    }, [dispatch, isVisible, pagingPost, showBottomBar]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isVisible, pagingPost, showBottomBar]);
 
     const renderPost = () => {
         return data?.map((item, index) =>
@@ -54,8 +54,8 @@ function ScrollPost() {
                 <Stack direction={'column'} key={item?.Post?._id}>
                     {/* <StyleDivider /> */}
                     <PostItem data={item} />
-                    <StyleDivider />
-                    <SuggestionsUser typeLayout="row" />
+                    {/* <StyleDivider /> */}
+                    {/* <SuggestionsUser typeLayout="row" /> */}
                     {/* <StyleDivider /> */}
                 </Stack>
             ) : (
@@ -67,25 +67,23 @@ function ScrollPost() {
         );
     };
     return (
-        <div>
-            <Stack direction="column" spacing={2} p="30px 10px" justifyContent="center">
-                {renderPost()}
-                {data?.length === 0 && !showBottomBar ? (
-                    <Typography variant="h6" fontSize="1.2rem" width="100%" textAlign="center">
-                        No Posts
-                    </Typography>
-                ) : null}
-
-                {showBottomBar ? (
-                    <Stack direction={'column'} width="100%" spacing={2} ref={containerRef}>
-                        <SkeletonLoading type="post" />
-                        <SkeletonLoading type="post" />
-                    </Stack>
-                ) : (
-                    <PostEnd />
-                )}
-            </Stack>
-        </div>
+        <Stack direction="column" spacing={2} p="30px 10px" justifyContent="center">
+            {renderPost()}
+            {data?.length === 0 && !showBottomBar ? (
+                <Typography variant="h6" fontSize="1.2rem" width="100%" textAlign="center">
+                    No Posts
+                </Typography>
+            ) : null}
+            <div ref={containerRef} width="100%" style={{ height: '10xp' }}></div>
+            {showBottomBar ? (
+                <Stack direction={'column'} width="100%" spacing={2}>
+                    <SkeletonLoading type="post" />
+                    <SkeletonLoading type="post" />
+                </Stack>
+            ) : (
+                <PostEnd />
+            )}
+        </Stack>
     );
 }
 
