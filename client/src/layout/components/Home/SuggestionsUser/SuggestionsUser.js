@@ -13,18 +13,35 @@ import { Navigation } from 'swiper';
 import SuggestionsUserItem from './SuggestionsUserItem';
 import { useRef } from 'react';
 import { CaretLeft, CaretRight } from 'phosphor-react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
-function SuggestionsUser({ data, typeLayout = 'column' }) {
+// api
+import * as userApi from '~/api/userApi/userApi';
+
+function SuggestionsUser({ typeLayout = 'column' }) {
     const theme = useTheme();
     const swiperRef = useRef();
+    const [dataUser, setDataUser] = useState([]);
+
     const renderItemColumn = () => {
-        return <SuggestionsUserItem />;
+        return dataUser.map((item) => <SuggestionsUserItem key={item._id} data={item} />);
     };
+
+    useEffect(() => {
+        const callApi = async () => {
+            const res = await userApi.suggestionUser();
+            if (res) {
+                setDataUser(res);
+            }
+        };
+        callApi();
+    }, []);
+
     const renderItemRow = () => {
-        const data = [1, 2, 3, 4, 5];
-        return data.map((item) => {
+        return dataUser.map((item) => {
             return (
-                <SwiperSlide key={item}>
+                <SwiperSlide key={item._id}>
                     <SuggestionsUserItem typeLayout="column" data={item} />
                 </SwiperSlide>
             );
@@ -36,9 +53,9 @@ function SuggestionsUser({ data, typeLayout = 'column' }) {
                 <Typography variant="body1" fontSize="0.8rem" fontWeight={500} color={theme.palette.text.secondary}>
                     Suggestions for you
                 </Typography>
-                <Typography variant="body2" fontWeight={400} fontSize="0.6rem" color={theme.palette.text.primary}>
+                {/* <Typography variant="body2" fontWeight={400} fontSize="0.6rem" color={theme.palette.text.primary}>
                     See All
-                </Typography>
+                </Typography> */}
             </Stack>
             <Stack direction="column" width="100%">
                 {renderItemColumn()}

@@ -163,8 +163,8 @@ const reaction = async (id, userId) => {
       const result = await findOneById(id);
       const notificationData = {
         sourceId: userId,
-        targetId: result.ownerId,
-        type: { typeName: "post", id: id },
+        targetId: result.senderId,
+        type: { typeName: "comment", id: id },
       };
       await notification.createNotification(notificationData);
       return result;

@@ -19,11 +19,8 @@ import {
     Typography,
     useTheme,
 } from '@mui/material';
-// import MuiAccordion from '@mui/material/Accordion';
-// import MuiAccordionSummary from '@mui/material/AccordionSummary';
-// import MuiAccordionDetails from '@mui/material/AccordionDetails';
 // icon
-import { CaretLeft, CaretRight, Smiley } from 'phosphor-react';
+import { CaretLeft, Smiley } from 'phosphor-react';
 
 // tippy
 import Tippy from '@tippyjs/react/headless';
@@ -33,75 +30,6 @@ import EmojiPicker from '@emoji-mart/react';
 import dataEmoji from '@emoji-mart/data';
 // api
 import * as postApi from '~/api/postApi/postApi';
-
-// const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
-//     border: `1px solid ${theme.palette.divider}`,
-//     '&:not(:last-child)': {
-//         borderBottom: 0,
-//     },
-//     '&:before': {
-//         display: 'none',
-//     },
-// }));
-
-// const AccordionSummary = styled((props) => <MuiAccordionSummary expandIcon={<CaretRight size={24} />} {...props} />)(
-//     ({ theme }) => ({
-//         // backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .05)' : 'rgba(0, 0, 0, .03)',
-//         flexDirection: 'row-reverse',
-//         '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-//             transform: 'rotate(90deg)',
-//         },
-//         '& .MuiAccordionSummary-content': {
-//             marginLeft: theme.spacing(1),
-//         },
-//     }),
-// );
-
-// const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-//     padding: theme.spacing(2),
-//     borderTop: '1px solid rgba(0, 0, 0, .125)',
-// }));
-
-// const AntSwitch = styled(Switch)(({ theme }) => ({
-//     width: 28,
-//     height: 16,
-//     padding: 0,
-//     display: 'flex',
-//     '&:active': {
-//         '& .MuiSwitch-thumb': {
-//             width: 15,
-//         },
-//         '& .MuiSwitch-switchBase.Mui-checked': {
-//             transform: 'translateX(9px)',
-//         },
-//     },
-//     '& .MuiSwitch-switchBase': {
-//         padding: 2,
-//         '&.Mui-checked': {
-//             transform: 'translateX(12px)',
-//             color: '#fff',
-//             '& + .MuiSwitch-track': {
-//                 opacity: 1,
-//                 backgroundColor: theme.palette.mode === 'dark' ? '#177ddc' : '#1890ff',
-//             },
-//         },
-//     },
-//     '& .MuiSwitch-thumb': {
-//         boxShadow: '0 2px 4px 0 rgb(0 35 11 / 20%)',
-//         width: 12,
-//         height: 12,
-//         borderRadius: 6,
-//         transition: theme.transitions.create(['width'], {
-//             duration: 200,
-//         }),
-//     },
-//     '& .MuiSwitch-track': {
-//         borderRadius: 16 / 2,
-//         opacity: 1,
-//         backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.25)',
-//         boxSizing: 'border-box',
-//     },
-// }));
 
 function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelectedFile = () => {} }) {
     // mui ui
@@ -117,10 +45,6 @@ function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelected
         setLoadingShare(true);
     };
 
-    // const handleChange = (panel) => (event, newExpanded) => {
-    //     setExpanded(newExpanded ? panel : false);
-    // };
-    //   value input string
     const [valueInput, setValueInput] = useState('');
 
     const handleEmojiClick = (event) => {
@@ -129,25 +53,45 @@ function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelected
         setValueInput(message);
     };
 
-    const sendSharePost = async (event) => {
+    const sendSharePostImage = async (event) => {
         event.preventDefault();
         let formData = new FormData();
         formData.append('caption', valueInput);
         formData.append('isVideo', false);
 
-        selectedFile.forEach((e) => formData.append('files', selectedFile[0]));
-        handleOpen();
+        selectedFile.forEach((e, index) => formData.append('files', e));
         if (valueInput.length > 0) {
-            // handleSendChatValue(valueFormChat);
-            // dispatch(addNewComment(dataComment));
             try {
+                handleOpen();
                 const res = await postApi.createPostImages({ data: formData });
                 console.log(res);
             } catch (error) {
                 console.log(error);
             }
             handleClose();
-            setValueInput(' ');
+            setValueInput('');
+            setSelectedFile([]);
+            handleBack();
+        }
+    };
+    const sendSharePostVideo = async (event) => {
+        event.preventDefault();
+        let formData = new FormData();
+        formData.append('caption', valueInput);
+        formData.append('isVideo', true);
+        // formData.append('files', selectedFile[0]);
+        selectedFile.forEach((e, index) => formData.append('files', e));
+
+        if (valueInput.length > 0) {
+            try {
+                handleOpen();
+                const res = await postApi.createPostVideo({ data: formData });
+                console.log(res);
+            } catch (error) {
+                console.log(error);
+            }
+            handleClose();
+            setValueInput('');
             setSelectedFile([]);
             handleBack();
         }
@@ -183,7 +127,11 @@ function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelected
                             Create new post
                         </Typography>
                     </Stack>
-                    <Stack direction={'row'} onClick={sendSharePost}>
+                    <Stack
+                        direction={'row'}
+                        onClick={selectedFile[0].type.includes('video') ? sendSharePostVideo : sendSharePostImage}
+                        // onClick={sendSharePostImage}
+                    >
                         <Button size="small" variant="text" sx={{ fontSize: '0.8rem' }} disabled={loadingShare}>
                             Share
                         </Button>
@@ -233,11 +181,28 @@ function ShareCreatePost({ handleBack = () => {}, selectedFile = [], setSelected
                                                     background: 'black',
                                                 }}
                                             >
-                                                <img
-                                                    src={URL.createObjectURL(i)}
-                                                    alt="post"
-                                                    style={{ objectFit: 'cover', maxHeight: '100%', maxWidth: '100%' }}
-                                                />
+                                                {i.type.includes('video') ? (
+                                                    <video
+                                                        controls
+                                                        style={{
+                                                            objectFit: 'cover',
+                                                            maxHeight: '100%',
+                                                            maxWidth: '100%',
+                                                        }}
+                                                    >
+                                                        <source src={URL.createObjectURL(i)} type="video/mp4" />
+                                                    </video>
+                                                ) : (
+                                                    <img
+                                                        src={URL.createObjectURL(i)}
+                                                        alt="post"
+                                                        style={{
+                                                            objectFit: 'cover',
+                                                            maxHeight: '100%',
+                                                            maxWidth: '100%',
+                                                        }}
+                                                    />
+                                                )}
                                             </Stack>
                                         </SwiperSlide>
                                     );

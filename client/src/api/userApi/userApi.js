@@ -118,3 +118,12 @@ export const removeSearchHistoryAll = async () => {
         console.log(error);
     }
 };
+
+export const suggestionUser = async () => {
+    try {
+        const res = await httpRequest.get(`follow/suggestions`);
+        return res?.result;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+};
