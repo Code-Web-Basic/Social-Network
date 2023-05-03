@@ -1,15 +1,28 @@
 import * as React from 'react';
 import * as bookmarksApi from '~/api/bookmarksApi/bookmarksApi'
 // mui ui
-import { Box, ImageList, ImageListItem, Typography, useTheme } from '@mui/material';
+import { Box, Button, ImageList, ImageListItem, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import * as postApi from '~/api/postApi/postApi'
 import * as userApi from '~/api/userApi/userApi'
+import * as bookMarkApi from '~/api/bookmarksApi/bookmarksApi'
 import CommentPost from '../Home/Posts/CommentPost/CommentPost';
 import { ChatCircle, Heart } from 'phosphor-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewBookmark, removeNewBookmark } from '~/features/bookmark/bookmarkSlice';
+import { addNewBookmark, clearAllBookMarks, removeNewBookmark } from '~/features/bookmark/bookmarkSlice';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    background: 'rgb(255, 255, 255)',
+    p: 1,
+    borderRadius: '10px',
+};
+
 function Saved() {
     const [bookMarks, getBookMarks] = useState([])
 
@@ -22,12 +35,89 @@ function Saved() {
         getBookMark()
     }, [])
 
+    const [openClear, setOpenClear] = useState(false)
+    const handleClearAllBookMark = () => {
+        setOpenClear(true)
+    }
+    const handleCloseClearAllBookMark = () => {
+        setOpenClear(false)
+    }
+    const theme = useTheme()
+    const dispatch = useDispatch()
+    const handleConfirmClearAllBookMark = async () => {
+        await bookMarkApi.deleteAllBookMarks()
+        await dispatch(clearAllBookMarks())
+        setOpenClear(false)
+        getBookMark()
+    }
     return (
-        <ImageList sx={{ width: '100%', overflow: 'hidden' }} cols={3} rowHeight={250} variant="quilted">
-            {bookMarks.map((bookMark) => (
-                <ItemListSaved key={bookMark?.postId} bookMark={bookMark} />
-            ))}
-        </ImageList >
+        <Box>
+            {bookMarks?.length > 0 && <Button onClick={handleClearAllBookMark}>Clear all bookmark</Button>}
+            <Modal
+                open={openClear}
+                onClose={handleCloseClearAllBookMark}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style} minWidth="400px" height="100px" overflow="auto">
+                    <Box sx={style} minWidth="400px" maxWidth="600px">
+                        <Stack direction="column">
+                            <Stack
+                                direction="row"
+                                p={1}
+                                alignItems="center"
+                                justifyContent="center"
+                                spacing={2}
+                                sx={{
+                                    '&:hover': {
+                                        bgcolor: theme.palette.grey[100],
+                                        borderRadius: 1,
+                                    },
+                                    '&:active': {
+                                        bgcolor: theme.palette.grey[200],
+                                        borderRadius: 1,
+                                    },
+                                    cursor: 'pointer',
+                                }}
+                                onClick={handleConfirmClearAllBookMark}
+                            >
+                                <Typography variant="body2" fontWeight={500} color={theme.palette.primary.light}>
+                                    Confirm
+                                </Typography>
+                            </Stack>
+                            <Stack
+                                direction="row"
+                                p={1}
+                                alignItems="center"
+                                justifyContent="center"
+                                spacing={2}
+                                onClick={handleCloseClearAllBookMark}
+                                sx={{
+                                    '&:hover': {
+                                        bgcolor: theme.palette.grey[100],
+                                        borderRadius: 1,
+                                    },
+                                    '&:active': {
+                                        bgcolor: theme.palette.grey[200],
+                                        borderRadius: 1,
+                                    },
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                <Typography variant="body2" fontWeight={400}>
+                                    Cancel
+                                </Typography>
+                            </Stack>
+                        </Stack>
+                    </Box>
+                </Box>
+            </Modal>
+            <ImageList sx={{ width: '100%', overflow: 'hidden' }} cols={3} rowHeight={250} variant="quilted">
+                {bookMarks.map((bookMark) => (
+                    <ItemListSaved key={bookMark?.postId} bookMark={bookMark} />
+                ))}
+            </ImageList >
+        </Box>
     );
 }
 
@@ -35,7 +125,7 @@ export default Saved;
 
 export const ItemListSaved = ({ bookMark }) => {
     const [post, setPost] = useState([])
-    const [user, getUser] = useState([])
+    const [user, setUser] = useState([])
     const [hover, setHover] = useState(false);
     const [like, setLike] = useState(null);
     const [bookmark, setBookmark] = useState(null);
@@ -52,7 +142,7 @@ export const ItemListSaved = ({ bookMark }) => {
     }
     const getUserById = async (userId) => {
         const res = await userApi.getFriend(userId)
-        getUser(res)
+        setUser(res)
     }
 
     // get post in bookmark

@@ -32,3 +32,13 @@ export const deleteBookMarks = async (params) => {
         console.log(error);
     }
 };
+
+export const deleteAllBookMarks = async () => {
+    try {
+        const res = await httpRequest.post('bookmark/deleteAll');
+        //console.log(res);
+        return res?.result;
+    } catch (error) {
+        console.log(error);
+    }
+};

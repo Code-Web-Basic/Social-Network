@@ -76,7 +76,7 @@ function ChatBox() {
                     id: id,
                     paging: 1
                 }))
-                console.log(originalPromiseResult)
+                // console.log(originalPromiseResult)
                 if (originalPromiseResult?.payload?.length < 15) {
                     setShowBottomBar(false);
                 }

@@ -17,6 +17,7 @@ import * as userApi from '~/api/userApi/userApi'
 import { useRef } from 'react';
 import io from 'socket.io-client';
 import useElementOnScreen from '~/hook/useElementOnScreen';
+import RenderPostMess from './RenderPostMess';
 const socket = io("http://localhost:3240");
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -169,7 +170,10 @@ function ChatDetail(props) {
     // render message
     const renderMessage = (mess) => {
         if (mess.message === ' ') {
-            return (<img src={mess.source[0]?.data} alt='imgmess' style={{ maxWidth: '250px', maxHeight: '250px' }} />)
+            return (mess?.postId !== '' ?
+                <RenderPostMess mess={mess} />
+                :
+                (<img src={mess.source[0]?.data} alt='imgmess' style={{ maxWidth: '250px', maxHeight: '250px' }} />))
         }
         else if (mess.message === '❤') {
             return (<p
