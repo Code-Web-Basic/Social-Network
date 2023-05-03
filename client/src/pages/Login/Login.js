@@ -327,22 +327,6 @@ function Login() {
                                     />
                                 </FormControl>
                             </Stack>
-                            {/* recover password */}
-                            <Stack
-                                direction={'row'}
-                                alignItems="center"
-                                justifyContent={'space-between'}
-                                padding="10px 0px"
-                                width={400}
-                            >
-                                <Stack direction={'row'} alignItems="center" spacing={2}>
-                                    <IOSSwitch />
-                                    <Typography variant="body1">Remember me</Typography>
-                                </Stack>
-                                <Stack direction={'row'} alignItems="center" fontSize="0.8rem">
-                                    Recover Password
-                                </Stack>
-                            </Stack>
                             {/* button login */}
                             <LoadingButton
                                 onClick={handleClickButtonSignIn}
