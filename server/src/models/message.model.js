@@ -13,6 +13,7 @@ const messageCollectionSchema = Joi.object({
     .default([]),
   isReply: Joi.boolean().required(),
   replyId: Joi.string().default(null),
+  postId: Joi.string().default(null),
   isDestroy: Joi.boolean().default(false),
   createdAt: Joi.string().default(""),
   updatedAt: Joi.date().timestamp().default(null),

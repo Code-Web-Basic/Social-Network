@@ -164,19 +164,20 @@ function SharePost({ children, idPost }) {
             userChecks.forEach((i) => {
                 const data = {
                     targetId: i._id,
-                    message: idPost,
+                    message: valueInputMessage ? valueInputMessage : ' ',
                     isReply: false,
+                    postId: idPost,
                 };
                 const callApi = async () => {
                     const res = await messageApi.postSendMessage(data);
-                    if (valueInputMessage) {
-                        const res1 = await messageApi.postSendMessage({
-                            targetId: i._id,
-                            message: valueInputMessage,
-                            isReply: false,
-                        });
-                    }
-                    console.log(res);
+                    // if (valueInputMessage) {
+                    //     const res1 = await messageApi.postSendMessage({
+                    //         targetId: i._id,
+                    //         message: valueInputMessage,
+                    //         isReply: false,
+                    //     });
+                    // }
+                    // console.log(res);
                 };
                 callApi();
             });
