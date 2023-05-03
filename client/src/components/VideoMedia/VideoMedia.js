@@ -55,7 +55,7 @@ function VideoMedia({ autoPlay = true, muted = true, controls = false, style, sr
     };
     const handleMuteClick = () => {
         if (!videoRef.current) return;
-        if (videoRef.current.muteds) {
+        if (videoRef.current.muted) {
             videoRef.current.muted = false;
             setIsMute(true);
         } else {
