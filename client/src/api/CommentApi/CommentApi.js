@@ -7,6 +7,7 @@ export const getComment = async (params) => {
                 paging: params.paging,
             },
         });
+        console.log(params);
         return res?.result;
         // console.log(params.id);
     } catch (error) {

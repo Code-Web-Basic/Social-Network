@@ -39,10 +39,18 @@ const getBookmarks = async (userId, paging) => {
     throw new Error(error);
   }
 };
-
+const getAlBookmark = async (userId) => {
+  try {
+    const result = await bookmarkModel.getAlBookmark(userId);
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 module.exports = {
   create,
   deleteAll,
   deleteBookmark,
   getBookmarks,
+  getAlBookmark,
 };

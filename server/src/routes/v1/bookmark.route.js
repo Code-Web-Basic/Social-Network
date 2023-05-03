@@ -10,6 +10,8 @@ router
   .post(verifyToken, bookmarkController.deleteBookmark);
 router.route("/deleteAll").post(verifyToken, bookmarkController.deleteAll);
 router.route("/getBookmarks").get(verifyToken, bookmarkController.getBookmarks);
-
+router
+  .route("/getAllBookmark")
+  .get(verifyToken, bookmarkController.getAlBookmark);
 module.exports = router;
 //paging
