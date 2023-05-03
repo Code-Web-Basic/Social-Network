@@ -45,7 +45,7 @@ const deleteBookmark = async (userId, id) => {
   try {
     const data = await getDB()
       .collection(bookmarkCollectionName)
-      .deleteOne({ _id: ObjectId(id), userId: userId });
+      .deleteOne({ postId: id, userId: userId });
     if (data.deletedCount > 0) return "deleted successfully";
     else return "not found";
   } catch (error) {

@@ -6,7 +6,7 @@ export const getFollower = async (userid) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -16,7 +16,7 @@ export const getFollowing = async (userid) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -26,7 +26,7 @@ export const unFollower = async (userid) => {
         //console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -36,7 +36,7 @@ export const follow = async (userid) => {
         // console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -46,7 +46,7 @@ export const unFollowing = async (data) => {
         // console.log(res);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -55,6 +55,6 @@ export const checkUserFollow = async (userId) => {
         const res = await httpRequest.get(`follow/checkFollow/${userId}`);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };

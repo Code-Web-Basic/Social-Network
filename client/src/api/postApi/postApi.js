@@ -9,7 +9,7 @@ export const getNewFeed = async (params) => {
         });
         return res?.result;
     } catch (error) {
-        Promise.reject(error);
+        return Promise.reject(error);
     }
 };
 export const createPostImages = async (params) => {
@@ -19,7 +19,7 @@ export const createPostImages = async (params) => {
         });
         return res;
     } catch (error) {
-        Promise.reject(error);
+        return Promise.reject(error);
     }
 };
 export const createPostVideo = async (params) => {
@@ -30,7 +30,7 @@ export const createPostVideo = async (params) => {
         });
         return res;
     } catch (error) {
-        Promise.reject(error);
+        return Promise.reject(error);
     }
 };
 export const deletePost = async (params) => {
@@ -38,7 +38,7 @@ export const deletePost = async (params) => {
         const res = await httpRequest.post(`post/deletePost/${params.id}`);
         return res;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const reactionPost = async (params) => {
@@ -46,7 +46,7 @@ export const reactionPost = async (params) => {
         const res = await httpRequest.post(`post/reaction/${params.id}`);
         return res;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const showUserReactionPost = async (params) => {
@@ -54,7 +54,7 @@ export const showUserReactionPost = async (params) => {
         const res = await httpRequest.post(`post/showReactionOfPost/${params.id}`);
         return res;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 export const getPostById = async (id) => {
@@ -62,7 +62,7 @@ export const getPostById = async (id) => {
         const res = await httpRequest.get(`post/getById/${id}`);
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
 
@@ -75,6 +75,6 @@ export const getExplore = async (params) => {
         });
         return res?.result;
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 };
