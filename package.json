@@ -6,7 +6,7 @@
   "scripts": {
     "server": "npm run dev --prefix server",
     "client": "npm start --prefix client ",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1; node .github/setup.js"
   },
   "repository": {
     "type": "git",
