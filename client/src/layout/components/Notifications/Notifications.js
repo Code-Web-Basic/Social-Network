@@ -74,6 +74,7 @@ function Notifications() {
                                     {notify?.type?.typeName === 'Comment' && <RenderComment notify={notify} />}
                                     {notify?.type?.typeName === 'post' && <RenderComment notify={notify} />}
                                     {notify?.type?.typeName === 'replyComment' && <RenderComment notify={notify} />}
+                                    {notify?.type?.typeName === 'comment' && <RenderComment notify={notify} />}
                                 </div>
                             </Stack >
                         </div>)
