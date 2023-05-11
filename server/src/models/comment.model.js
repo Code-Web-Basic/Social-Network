@@ -47,7 +47,7 @@ const create = async (data) => {
       const notificationData = {
         sourceId: data.senderId,
         targetId: post.ownerId,
-        type: { typeName: "replyComment", id: data.replyId },
+        type: { typeName: "replyComment", id: data.postId },
       };
       await notification.createNotification(notificationData);
     } else {
@@ -170,7 +170,7 @@ const reaction = async (id, userId) => {
       return result;
     } else {
       await getDB()
-        .collection(postCollectionName)
+        .collection(commentCollectionName)
         .findOneAndUpdate(
           { _id: ObjectId(id) },
           { $pull: { reaction: userId } }
