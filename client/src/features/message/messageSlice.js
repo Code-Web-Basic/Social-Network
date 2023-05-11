@@ -92,7 +92,7 @@ export const messageSlice = createSlice({
             // if (!isChildArray)
             //     newData = [...action.payload, ...state.messages]
 
-            newData = action.payload?.concat(state.messages)
+            newData = action.payload.reverse()?.concat(state.messages)
             // clear mess
             state.loading = false;
             state.error = '';

@@ -10,7 +10,7 @@ function VoiceCall() {
     const myMeeting = async (element) => {
         const appID = 2010773050;
         const serverSecret = "6d5a42d37b322b11406d9adc96c9fb36";
-        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, id, Date.now().toString(), currentUser?.Name);
+        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, id, Date.now().toString(), "Name");
         const zp = ZegoUIKitPrebuilt.create(kitToken);
         // start the call
         zp.joinRoom({

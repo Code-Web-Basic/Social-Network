@@ -73,6 +73,7 @@ function Notifications() {
                                     {notify?.type?.typeName === 'follow' && renderFollow(notify)}
                                     {notify?.type?.typeName === 'Comment' && <RenderComment notify={notify} />}
                                     {notify?.type?.typeName === 'post' && <RenderComment notify={notify} />}
+                                    {notify?.type?.typeName === 'replyComment' && <RenderComment notify={notify} />}
                                 </div>
                             </Stack >
                         </div>)
