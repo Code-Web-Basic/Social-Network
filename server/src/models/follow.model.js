@@ -32,10 +32,12 @@ const follow = async (data) => {
   try {
     const validatedValue = await validateSchema(data);
     const notificationData = { ...data, type: { typeName: "follow" } };
-    await notification.createNotification(notificationData);
     const result = await getDB()
       .collection(followCollectionName)
       .insertOne(validatedValue);
+
+    await notification.createNotification(notificationData);
+
     return await findOneById(result.insertedId.toString());
   } catch (error) {
     throw new Error(error);

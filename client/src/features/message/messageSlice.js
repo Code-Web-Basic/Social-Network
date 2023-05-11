@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
-import * as messageApi from '~/api/messageApi/messageApi'
+import * as messageApi from '~/api/messageApi/messageApi';
 
 export const getShowChats = createAsyncThunk('/message/showChats', async (params, thunkAPI) => {
     const res = await messageApi.getShowChats();
@@ -22,25 +22,35 @@ export const getShowMessage = createAsyncThunk('/message/showMessage', async (pa
     // console.log(res)
     return res;
 });
+export const scrollMessage = createAsyncThunk('/message/scroll', async (params, thunkAPI) => {
+    //console.log(params);
+    // const res = await messageApi.getShowChats();
+    // const getMessages = await messageApi.getShowMessage(params);
+    // res.messages = getMessages
+    // return res;
+    const res = await messageApi.getShowMessage(params?.id, params?.paging);
+    // console.log(res)
+    return res;
+});
 export const messageSlice = createSlice({
     name: 'message',
     initialState: {
         loading: false,
         error: '',
         data: [],
-        messages: []
+        messages: [],
     },
     reducers: {
         clearMessage: (state, action) => {
             state.data = [];
             state.loading = false;
             state.error = '';
-            state.messages = []
+            state.messages = [];
         },
         clearMess: (state, action) => {
-            state.messages = []
-            console.log("clear")
-        }
+            state.messages = [];
+            console.log('clear');
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(getShowChats.pending, (state, action) => {
@@ -82,7 +92,7 @@ export const messageSlice = createSlice({
         builder.addCase(getShowMessage.fulfilled, (state, action) => {
             // console.log(state.messages)
             // console.log(action.payload)
-            let newData = []
+            let newData = [];
             // const isChildArray = action.payload.every(parentItem => {
             //     return state.messages.some(childItem => {
             //         return JSON.stringify(childItem) === JSON.stringify(parentItem);
@@ -92,11 +102,41 @@ export const messageSlice = createSlice({
             // if (!isChildArray)
             //     newData = [...action.payload, ...state.messages]
 
-            newData = action.payload.reverse()?.concat(state.messages)
+            // newData = action.payload.reverse()?.concat(state.messages)
             // clear mess
             state.loading = false;
             state.error = '';
-            state.messages = newData
+            state.messages = action.payload.reverse();
+        });
+        builder.addCase(scrollMessage.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(scrollMessage.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error;
+        });
+        builder.addCase(scrollMessage.fulfilled, (state, action) => {
+            // console.log(state.messages)
+            // console.log(action.payload)
+            let newData = [];
+            // const isChildArray = action.payload.every(parentItem => {
+            //     return state.messages.some(childItem => {
+            //         return JSON.stringify(childItem) === JSON.stringify(parentItem);
+            //     });
+            // });
+            // // console.log(isChildArray)
+            // if (!isChildArray)
+            //     newData = [...action.payload, ...state.messages]
+
+            if (
+                !(JSON.stringify(state.messages) === JSON.stringify(action.payload.reverse())) &&
+                action.payload?.length !== 0
+            ) {
+                state.messages = action.payload?.concat(state.messages);
+            }
+            // clear mess
+            state.loading = false;
+            state.error = '';
         });
     },
 });
