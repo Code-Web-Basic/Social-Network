@@ -18,6 +18,7 @@ import { useRef } from 'react';
 import io from 'socket.io-client';
 import useElementOnScreen from '~/hook/useElementOnScreen';
 import RenderPostMess from './RenderPostMess';
+import { calculateTimePassed } from '~/utils/utils';
 const socket = io("http://localhost:3240");
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -160,19 +161,19 @@ function ChatDetail(props) {
     }
 
     // convert timestamp to date time
-    const convertTime = (e) => {
-        console.log(e)
-        const timestamp = parseInt(e, 16);
-        const date = new Date(timestamp);
-        const hour = date.getHours();
-        const minute = date.getMinutes();
-        const time = `${hour}:${minute}`;
+    // const convertTime = (e) => {
+    //     console.log(e)
+    //     const timestamp = parseInt(e, 16);
+    //     const date = new Date(timestamp);
+    //     const hour = date.getHours();
+    //     const minute = date.getMinutes();
+    //     const time = `${hour}:${minute}`;
 
-        // const dateObj = new Date(e * 1000);
-        // const dateString = dateObj.toLocaleString();
-        // const time = dateString.slice(0, 5)
-        return time
-    }
+    //     // const dateObj = new Date(e * 1000);
+    //     // const dateString = dateObj.toLocaleString();
+    //     // const time = dateString.slice(0, 5)
+    //     return time
+    // }
 
     // render message
     const renderMessage = (mess) => {
@@ -356,7 +357,7 @@ function ChatDetail(props) {
                         </div> : ''}
                         <Avatar className='avatar' src={userfriend?.avatar?.data} alt="avatar" sx={{ width: '30px', height: '30px', objectFit: 'cover' }} />
                         <div className='mess-detail'>
-                            <p className='timeSend'>{convertTime(mess?.createdAt)}</p>
+                            <p className='timeSend'>{calculateTimePassed(mess?.createdAt)}</p>
                             {renderMessage(mess)}
                         </div>
                         {currentUser?._id !== mess?.sourceId ? <div className='iconReply'>
