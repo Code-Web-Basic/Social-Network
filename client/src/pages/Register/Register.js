@@ -22,7 +22,7 @@ import { GithubLogo } from 'phosphor-react';
 // component
 import images from '~/assets/images';
 import { registerPassword } from '~/api/authApi/authApi';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Register() {
     const theme = useTheme()
@@ -35,6 +35,17 @@ function Register() {
     const [open, setOpen] = useState(false)
     const [messageError, setMessageError] = useState([])
     const navigate = useNavigate();
+    const isNumber = (str) => {
+        if (str.length === 10)
+            return /^[0-9]+$/.test(str);
+        else
+            return false
+    }
+    const isEmail = (str) => {
+        // Biểu thức chính quy để kiểm tra định dạng email
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        return emailRegex.test(str);
+    }
     const handleSignUp = async (e) => {
         e.preventDefault();
         const newUser = {
@@ -49,10 +60,31 @@ function Register() {
             setMessageError([...messageError, 'Please fill out all fields'])
         }
         else {
-            if (password === confirmPassword) {
-                const res = await registerPassword(newUser)
-                if (res?.user) {
-                    navigate('login')
+            if (!isEmail(email)) {
+                setOpen(true)
+                setMessageError([...messageError, 'Please enter email is valid!'])
+            }
+            else if (!isNumber(phone)) {
+                setOpen(true)
+                setMessageError([...messageError, 'Please enter phone is valid!'])
+            }
+            else if (password === confirmPassword) {
+                if (password.length < 5) {
+                    setOpen(true)
+                    setMessageError([...messageError, 'Please enter a password longer than 6 characters!'])
+                }
+                else {
+                    try {
+                        const res = await registerPassword(newUser)
+                        console.log(res)
+                        if (res?.user) {
+                            navigate('login')
+                        }
+                    }
+                    catch (error) {
+                        setOpen(true)
+                        setMessageError([...messageError, error?.response?.data?.error])
+                    }
                 }
             }
             else {
@@ -68,24 +100,6 @@ function Register() {
         const url = 'http://localhost:3240/v1/auth/google';
         window.open(url, '_self');
         console.log('click login google');
-        // window.addEventListener('message', async (event) => {
-        //     console.log('click login after close window google');
-        //     if (event.origin === window.location.origin) {
-        //         popup.close();
-
-        //         // Get the authorization code from the event data
-        //         const code = event.data.code;
-
-        //         // Call your API with the authorization code
-        //         console.log(code);
-        //         try {
-        //             // window.open('http://localhost:3240/v1/auth/google', '_self');
-        //             await dispatch(signInGoogle());
-        //         } catch (error) {
-        //             console.log('failed', error);
-        //         }
-        //     }
-        // });
     };
     return (
         <Grid container width="100%" height={'100vh'}>
@@ -242,22 +256,10 @@ function Register() {
                             >
                                 Google
                             </Button>
-                            {/* <Button
-                                variant="outlined"
-                                sx={{
-                                    height: 44,
-                                    width: 126,
-                                    borderRadius: 2,
-                                    color: theme.palette.text.secondary,
-                                    borderColor: theme.palette.text.secondary,
-                                    '&:hover': {
-                                        color: theme.palette.text.secondary,
-                                    },
-                                }}
-                                startIcon={<GithubLogo size={20} />}
-                            >
-                                Github
-                            </Button> */}
+                            {/* login */}
+                            <Stack direction={'row'} alignItems="center" fontSize="0.8rem">
+                                Have an account? <Link to={'/login'} style={{ color: 'blue', fontSize: '15px' }}>Log in</Link>
+                            </Stack>
                         </Box>
                     </Stack>
                 </Stack>

@@ -22,7 +22,13 @@ const bookmarkSlice = createSlice({
         loading: false,
         error: '',
     },
-    reducers: {},
+    reducers: {
+        clearAllBookMarks: (state, action) => {
+            state.data = [];
+            state.loading = false;
+            state.error = '';
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(getBookMarkFirst.pending, (state, action) => {
             state.loading = true;
@@ -60,6 +66,6 @@ const bookmarkSlice = createSlice({
         });
     },
 });
-// export const {} = bookmarkSlice.actions;
+export const { clearAllBookMarks } = bookmarkSlice.actions;
 
 export default bookmarkSlice.reducer;
