@@ -32,23 +32,26 @@ const setUpInterceptor = (store) => {
             return config;
         }
         const user = select(store.getState());
-        let date = new Date();
+        const date = new Date();
+        const formattedDate = date.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' });
+
+        const convertedDate = new Date(formattedDate);
         if (user?.data?.accessToken) {
             const decodedToken = jwtDecode(user?.data?.accessToken);
-            if (decodedToken.exp < date.getTime() / 1000) {
-                // const access_token = await refreshAccessToken();
+            if (decodedToken.exp < convertedDate.getTime() / 1000) {
+                const access_token = await refreshAccessToken();
                 console.log('refetch token before');
-                // if (access_token) {
-                //     const refreshUser = {
-                //         data: { ...user?.data, accessToken: access_token },
-                //         status: 'true',
-                //         message: 'successfully',
-                //     };
-                //     store.dispatch(refetchToken(refreshUser));
-                //     // config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
-                // }
+                if (access_token) {
+                    const refreshUser = {
+                        data: { ...user?.data, accessToken: access_token },
+                        status: 'true',
+                        message: 'successfully',
+                    };
+                    store.dispatch(refetchToken(refreshUser));
+                    // config.headers['token'] = user?.data?.accessToken ? `Bearer ${user?.data?.accessToken}` : '';
+                }
                 // console.log('call refetch user', refreshUser, user);
-                // return config;
+                return config;
             }
         }
 
