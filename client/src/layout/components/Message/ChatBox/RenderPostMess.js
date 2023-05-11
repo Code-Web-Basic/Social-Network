@@ -18,6 +18,7 @@ function RenderPostMess({ mess }) {
     // get post by id
     const getPostById = async (postId) => {
         const res = await postApi.getPostById(postId)
+        console.log(res)
         setPost(res)
     }
     const getUserById = async (userId) => {
@@ -112,9 +113,9 @@ function RenderPostMess({ mess }) {
                     handleBookmarkPost={handleBookmarkPost}
                 >{
                         !post?.isVideo ? (
-                            <img style={{ objectFit: 'cover', width: '100%', height: '100%' }} src={post?.length > 0 && post?.source[0]?.data} />
+                            <img style={{ objectFit: 'cover', width: '100%', height: '100%' }} src={post?.caption && post?.source[0]?.data} />
                         ) : (
-                            <video src={post?.source[0]?.data} style={{ width: '100%', height: '100%', cursor: 'pointer', objectFit: 'none' }} />
+                            <video src={post?.length > 0 && post?.source[0]?.data} style={{ width: '100%', height: '100%', cursor: 'pointer', objectFit: 'none' }} />
                         )
                     }</CommentPost>
                 <CardContent>
