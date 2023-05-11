@@ -13,7 +13,6 @@ export const calculateTimePassed = (time) => {
     const formattedDate = date.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' });
 
     const convertedDate = new Date(formattedDate);
-    // console.log(convertedDate.getTime);
     // var date = new Date(time);
     const diff = Date.now() - convertedDate.getTime();
     for (const key in unit) {
