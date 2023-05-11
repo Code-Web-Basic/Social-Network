@@ -336,7 +336,7 @@ function CommentPost({
                                                         color={theme.palette.text.secondary}
                                                         fontSize="0.5rem"
                                                     >
-                                                        {calculateTimePassed(data?.Post?.updatedAt)}
+                                                        {calculateTimePassed(data?.Post?.createdAt)}
                                                     </Typography>
                                                 </Stack>
                                             </Stack>

@@ -124,7 +124,7 @@ function PostItem({ data }) {
                             {data?.User?.userName}
                         </Typography>
                         <Typography variant="body2" fontSize="400">
-                            {calculateTimePassed(data?.Post?.updatedAt)}
+                            {calculateTimePassed(data?.Post?.createdAt)}
                         </Typography>
                     </Stack>
                     <Stack direction="row" alignItems="center" justifyContent="center">
