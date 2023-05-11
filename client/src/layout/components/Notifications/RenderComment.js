@@ -101,6 +101,9 @@ function RenderComment(props) {
             {
                 notify?.type?.typeName === 'replyComment' && <p><Link to={`/profile/${notify?.User[0]?._id}`} style={{ fontWeight: '600' }}>{notify?.User[0]?.Name}</Link> Reply commented on this post</p>
             }
+            {
+                notify?.type?.typeName === 'comment' && <p><Link to={`/profile/${notify?.User[0]?._id}`} style={{ fontWeight: '600' }}>{notify?.User[0]?.Name}</Link> commented on this post</p>
+            }
             <CommentPost
                 data={itemPost}
                 like={like}
