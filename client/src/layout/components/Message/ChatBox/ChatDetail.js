@@ -161,9 +161,16 @@ function ChatDetail(props) {
 
     // convert timestamp to date time
     const convertTime = (e) => {
-        const dateObj = new Date(e * 1000);
-        const dateString = dateObj.toLocaleString();
-        const time = dateString.slice(0, 5)
+        console.log(e)
+        const timestamp = parseInt(e, 16);
+        const date = new Date(timestamp);
+        const hour = date.getHours();
+        const minute = date.getMinutes();
+        const time = `${hour}:${minute}`;
+
+        // const dateObj = new Date(e * 1000);
+        // const dateString = dateObj.toLocaleString();
+        // const time = dateString.slice(0, 5)
         return time
     }
 
