@@ -74,10 +74,12 @@ function ChatBox() {
         const fetchMorePost = async () => {
             await dispatch(clearMess());
             if (id !== undefined) {
-                const originalPromiseResult = await dispatch(getShowMessage({
-                    id: id,
-                    paging: 1
-                }))
+                const originalPromiseResult = await dispatch(
+                    getShowMessage({
+                        id: id,
+                        paging: 1,
+                    }),
+                );
                 if (originalPromiseResult?.payload?.length < 15) {
                     setShowBottomBar(false);
                 } else {
