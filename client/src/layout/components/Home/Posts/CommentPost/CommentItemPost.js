@@ -43,7 +43,7 @@ function CommentItemPost({ data, replyId }) {
             dispatch(decreaseReactionComment({ idComment: data?._id, idUser: currentUser?._id }));
             setLikeComment(false);
         } else {
-            await commentApi.likeComment({ id: currentUser?._id });
+            await commentApi.likeComment({ id: data?._id });
             dispatch(increaseReactionComment({ idComment: data?._id, idUser: currentUser?._id }));
             setLikeComment(true);
         }
@@ -67,7 +67,7 @@ function CommentItemPost({ data, replyId }) {
                         {data?.User[0]?.userName}
                     </Typography>
                     <Typography variant="body2" fontSize={'0.8rem'} fontWeight={400}>
-                        {calculateTimePassed(data?.updatedAt)}
+                        {calculateTimePassed(data?.createdAt)}
                     </Typography>
                 </Stack>
                 <Stack direction={'row'} width={'100%'}>

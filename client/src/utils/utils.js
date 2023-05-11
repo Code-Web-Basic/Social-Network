@@ -9,7 +9,13 @@ export const calculateTimePassed = (time) => {
         hour: 60 * 60 * 1000,
         minute: 60 * 1000,
     };
-    const diff = Date.now() - time;
+    const date = new Date(typeof time === 'string' ? parseInt(time) : time);
+    const formattedDate = date.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' });
+
+    const convertedDate = new Date(formattedDate);
+    console.log(convertedDate.getTime);
+    // var date = new Date(time);
+    const diff = Date.now() - convertedDate.getTime();
     for (const key in unit) {
         if (diff > unit[key]) {
             const value = unit[key];
@@ -26,7 +32,7 @@ calculateTimePassed.prototype = {
 
 export function timeAgo(input) {
     const date = input instanceof Date ? input : new Date(input);
-    const formatter = new Intl.RelativeTimeFormat('en');
+    const formatter = new Intl.RelativeTimeFormat('vn');
     const ranges = {
         years: 3600 * 24 * 365,
         months: 3600 * 24 * 30,
