@@ -115,15 +115,15 @@ function ChatDetail(props) {
         formData.append('message', ' ');
         formData.append('files', e.target.files[0]);
         await dispatch(postSendMessage(formData));
-        const res = await messageApi.postSendMessage(formData);
-        socket.emit('send_message', {
-            message: {
-                targetId: res?.targetId,
-                isReply: res?.isReply,
-                message: res?.message,
-                files: res?.source[0]?.data,
-            },
-        });
+        // const res = await messageApi.postSendMessage(formData);
+        // socket.emit('send_message', {
+        //     message: {
+        //         targetId: res?.targetId,
+        //         isReply: res?.isReply,
+        //         message: res?.message,
+        //         files: res?.source[0]?.data,
+        //     },
+        // });
         videoRef.current?.scrollIntoView({ block: 'nearest', behavior: 'auto' });
     };
 
@@ -496,8 +496,7 @@ function ChatDetail(props) {
                         );
                     })}
                     {/* display socket */}
-
-                    {JSON.stringify(messageReceive) === '{}' ? (
+                    {(currentUser?._id === messageReceive?.ownerId || JSON.stringify(messageReceive) === '{}') ? (
                         ''
                     ) : (
                         <div className="item-mess">
@@ -512,6 +511,7 @@ function ChatDetail(props) {
                             </div>
                         </div>
                     )}
+
                 </div>
                 {/* Input */}
                 <div
